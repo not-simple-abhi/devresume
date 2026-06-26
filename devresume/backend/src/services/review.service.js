@@ -8,6 +8,7 @@ import { analyzeGrammar } from '../ai/agents/grammarAgent.js';
 import { analyzeSkills } from '../ai/agents/skillsAgent.js';
 import { analyzeProjects } from '../ai/agents/projectAgent.js';
 import { aggregateReports } from '../ai/aggregator/aggregatorAgent.js';
+import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } from '../ai/agents/companyAgent.js';
 import path from 'path';
 
 // Parse the uploaded file and delete it after — resume text never stored
@@ -117,4 +118,21 @@ export const deleteReview = async (reviewId, userId) => {
 
   await prisma.review.delete({ where: { id: reviewId } });
   return { message: 'Review deleted' };
+};
+
+// Analyze resume against a single company — no login required
+export const analyzeForCompanyGuest = async (file, company) => {
+  const resumeText = await parseAndCleanup(file);
+  return await analyzeForCompany(resumeText, company);
+};
+
+// Analyze resume against multiple companies — no login required
+export const analyzeForCompaniesGuest = async (file, companies) => {
+  const resumeText = await parseAndCleanup(file);
+  return await analyzeForMultipleCompanies(resumeText, companies);
+};
+
+// Get list of all supported companies with their profiles
+export const getSupportedCompanies = () => {
+  return SUPPORTED_COMPANIES;
 };
