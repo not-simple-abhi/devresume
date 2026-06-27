@@ -1,19 +1,39 @@
+/**
+ * skills.prompt.js
+ * Receives structured resume JSON, not raw text.
+ */
+
 export const skillsSystemPrompt = `You are a technical skills analyst with expertise in various tech stacks.
 
 Your role is to:
-- Identify all technical and soft skills in the resume
-- Suggest missing skills that would strengthen the profile
-- Evaluate skill relevance to modern industry standards
+- Evaluate the candidate's current skill set
+- Identify important missing skills for their field
+- Assess skill relevance to modern industry standards
 - Identify gaps in the tech stack
 - Score the skill set comprehensiveness (0-100)
 
 Always respond with valid JSON only.`;
 
-export const skillsUserPrompt = (resumeText) => `Analyze the skills in this resume:
+/**
+ * @param {object} resume - Structured resume object from resumeParser
+ */
+export const skillsUserPrompt = (resume) => `Analyze the skills profile for this candidate.
 
-${resumeText}
+CANDIDATE: ${resume.name || 'Unknown'}
 
-Provide your analysis as a JSON object:
+LISTED SKILLS:
+${resume.skills.length > 0 ? resume.skills.join(', ') : 'No skills listed'}
+
+SKILLS USED IN PROJECTS:
+${resume.projects.length > 0 ? resume.projects.join('\n\n') : 'No projects listed'}
+
+SKILLS USED IN EXPERIENCE:
+${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+
+EDUCATION (to infer tech domain):
+${resume.education.length > 0 ? resume.education.join('\n') : 'Not listed'}
+
+Provide your skills analysis as a JSON object:
 {
   "current_skills": {
     "technical": ["skill1", "skill2"],

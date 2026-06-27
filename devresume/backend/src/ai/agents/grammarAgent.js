@@ -1,21 +1,11 @@
-import openai from '../../config/openai.js';
+import { callAI } from '../../config/aiClient.js';
 import { grammarSystemPrompt, grammarUserPrompt } from '../prompts/grammar.prompt.js';
-import { extractJsonFromText } from '../../utils/responseFormatter.js';
 
-export const analyzeGrammar = async (resumeText) => {
+export const analyzeGrammar = async (resume) => {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: grammarSystemPrompt },
-        { role: 'user', content: grammarUserPrompt(resumeText) },
-      ],
-      temperature: 0.2,
-      response_format: { type: 'json_object' },
-    });
-    return extractJsonFromText(response.choices[0].message.content);
+    return await callAI(grammarSystemPrompt, grammarUserPrompt(resume));
   } catch (error) {
-    console.error('Grammar Agent Error:', error);
+    console.error('[Grammar Agent] Error:', error.message);
     throw new Error(`Grammar analysis failed: ${error.message}`);
   }
 };

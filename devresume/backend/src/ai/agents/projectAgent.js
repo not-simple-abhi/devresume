@@ -1,21 +1,19 @@
-import openai from '../../config/openai.js';
+/**
+ * projectAgent.js
+ * Receives structured resume JSON from resumeParser.
+ */
+import { callAI } from '../../config/aiClient.js';
 import { projectSystemPrompt, projectUserPrompt } from '../prompts/project.prompt.js';
-import { extractJsonFromText } from '../../utils/responseFormatter.js';
 
-export const analyzeProjects = async (resumeText) => {
+/**
+ * @param {object} resume - Structured resume object from resumeParser
+ */
+export const analyzeProjects = async (resume) => {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: projectSystemPrompt },
-        { role: 'user', content: projectUserPrompt(resumeText) },
-      ],
-      temperature: 0.5,
-      response_format: { type: 'json_object' },
-    });
-    return extractJsonFromText(response.choices[0].message.content);
+    const data = await callAI(projectSystemPrompt, projectUserPrompt(resume));
+    return data;
   } catch (error) {
-    console.error('Project Agent Error:', error);
+    console.error('[Project Agent] Error:', error.message);
     throw new Error(`Project analysis failed: ${error.message}`);
   }
 };

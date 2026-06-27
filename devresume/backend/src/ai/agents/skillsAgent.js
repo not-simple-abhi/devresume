@@ -1,21 +1,19 @@
-import openai from '../../config/openai.js';
+/**
+ * skillsAgent.js
+ * Receives structured resume JSON from resumeParser.
+ */
+import { callAI } from '../../config/aiClient.js';
 import { skillsSystemPrompt, skillsUserPrompt } from '../prompts/skills.prompt.js';
-import { extractJsonFromText } from '../../utils/responseFormatter.js';
 
-export const analyzeSkills = async (resumeText) => {
+/**
+ * @param {object} resume - Structured resume object from resumeParser
+ */
+export const analyzeSkills = async (resume) => {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: skillsSystemPrompt },
-        { role: 'user', content: skillsUserPrompt(resumeText) },
-      ],
-      temperature: 0.3,
-      response_format: { type: 'json_object' },
-    });
-    return extractJsonFromText(response.choices[0].message.content);
+    const data = await callAI(skillsSystemPrompt, skillsUserPrompt(resume));
+    return data;
   } catch (error) {
-    console.error('Skills Agent Error:', error);
+    console.error('[Skills Agent] Error:', error.message);
     throw new Error(`Skills analysis failed: ${error.message}`);
   }
 };

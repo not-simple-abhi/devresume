@@ -1,13 +1,17 @@
+/**
+ * resume.routes.js
+ *
+ * POST /api/resume/parse  → parse resume file, return structured JSON
+ *                           (no AI, no DB — just extraction + parsing)
+ */
+
 import express from 'express';
-import { authMiddleware } from '../middleware/auth.middleware.js';
 import { uploadMiddleware } from '../middleware/upload.middleware.js';
-import { uploadResume, getResumes, getResume, removeResume } from '../controllers/resume.controller.js';
+import { parseResume } from '../controllers/resume.controller.js';
 
 const router = express.Router();
 
-router.post('/upload', authMiddleware, uploadMiddleware.single('resume'), uploadResume);
-router.get('/', authMiddleware, getResumes);
-router.get('/:id', authMiddleware, getResume);
-router.delete('/:id', authMiddleware, removeResume);
+// Public — no login needed to parse a resume
+router.post('/parse', uploadMiddleware.single('resume'), parseResume);
 
 export default router;

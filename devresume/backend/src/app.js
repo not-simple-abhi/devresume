@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import compareRoutes from './routes/compare.routes.js';
 import companyRoutes from './routes/company.routes.js';
+import resumeRoutes from './routes/resume.routes.js';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
+      resume: '/api/resume',
       review: '/api/review',
       compare: '/api/compare',
       company: '/api/company',
@@ -33,6 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/resume', resumeRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/compare', compareRoutes);
 app.use('/api/company', companyRoutes);

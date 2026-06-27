@@ -1,7 +1,23 @@
-import fs from 'fs/promises';
+/**
+ * review.service.js
+ *
+ * Orchestrates the full analysis pipeline:
+ *
+ *   Uploaded File
+ *        ↓
+ *   processUploadedResume()   ← resume.service.js handles extraction + parsing
+ *        ↓
+ *   Structured Resume JSON    { name, email, skills, projects, experience, ... }
+ *        ↓
+ *   AI Agents (run in parallel)
+ *        ↓
+ *   Aggregator                combines all agent results
+ *        ↓
+ *   Final Report              saved to DB (logged-in) or returned (guest)
+ */
+
 import prisma from '../database/client.js';
-import { parsePDF } from '../utils/pdfParser.js';
-import { parseDOCX } from '../utils/docxParser.js';
+import { processUploadedResume } from './resume.service.js';
 import { analyzeATS } from '../ai/agents/atsAgent.js';
 import { analyzeRecruiter } from '../ai/agents/recruiterAgent.js';
 import { analyzeGrammar } from '../ai/agents/grammarAgent.js';
@@ -9,57 +25,90 @@ import { analyzeSkills } from '../ai/agents/skillsAgent.js';
 import { analyzeProjects } from '../ai/agents/projectAgent.js';
 import { aggregateReports } from '../ai/aggregator/aggregatorAgent.js';
 import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } from '../ai/agents/companyAgent.js';
-import path from 'path';
 
-// Parse the uploaded file and delete it after — resume text never stored
-const parseAndCleanup = async (file) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  let result;
+// ─────────────────────────────────────────────────────────────
+// CORE: Run all 5 AI agents in parallel on structured resume
+// ─────────────────────────────────────────────────────────────
 
-  try {
-    if (ext === '.pdf') {
-      result = await parsePDF(file.path);
-    } else if (ext === '.docx' || ext === '.doc') {
-      result = await parseDOCX(file.path);
-    } else {
-      throw new Error('Unsupported file format. Use PDF or DOCX.');
-    }
-  } finally {
-    // Always delete the temp file regardless of success/failure
-    await fs.unlink(file.path).catch(() => {});
-  }
+/**
+ * runAgents(resume)
+ *
+ * Sends structured resume data to all 5 agents at the same time.
+ * Agents now receive a clean JSON object instead of raw PDF text.
+ *
+ * @param {object} resume - Structured resume from resumeParser
+ * @returns {object} Aggregated final report
+ */
+const runAgents = async (resume) => {
+  console.log(`[ReviewService] Running 5 agents for: ${resume.name || 'Unknown'}`);
 
-  return result.text;
-};
-
-// Run all agents in parallel
-const runAgents = async (resumeText) => {
-  console.log('Running multi-agent analysis...');
-
+  // All agents run at the same time — no waiting for each other
   const [ats, recruiter, grammar, skills, projects] = await Promise.all([
-    analyzeATS(resumeText),
-    analyzeRecruiter(resumeText),
-    analyzeGrammar(resumeText),
-    analyzeSkills(resumeText),
-    analyzeProjects(resumeText),
+    analyzeATS(resume),
+    analyzeRecruiter(resume),
+    analyzeGrammar(resume),
+    analyzeSkills(resume),
+    analyzeProjects(resume),
   ]);
 
+  console.log('[ReviewService] All agents done. Aggregating...');
   return aggregateReports({ ats, recruiter, grammar, skills, projects });
 };
 
-// Guest analysis — no login required, nothing saved
+// ─────────────────────────────────────────────────────────────
+// GUEST ANALYSIS — No login required, nothing saved to DB
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * analyzeGuest(file)
+ *
+ * Full pipeline for an unauthenticated user.
+ * Returns the analysis report. Nothing is saved.
+ *
+ * @param {object} file - Multer file object
+ */
 export const analyzeGuest = async (file) => {
-  const resumeText = await parseAndCleanup(file);
-  const report = await runAgents(resumeText);
-  return report;
+  // Step 1: Extract text + parse into structured JSON
+  const resume = await processUploadedResume(file);
+
+  // Step 2: Run AI agents on structured data
+  const report = await runAgents(resume);
+
+  // Step 3: Include parsed info in the response (useful for the frontend)
+  return {
+    ...report,
+    parsedInfo: {
+      name: resume.name,
+      email: resume.email,
+      phone: resume.phone,
+      skillsFound: resume.skills.length,
+      projectsFound: resume.projects.length,
+      experienceFound: resume.experience.length,
+    },
+  };
 };
 
-// Logged-in analysis — saves only scores + report, not resume text
-export const analyzeAndSave = async (file, userId) => {
-  const resumeText = await parseAndCleanup(file);
-  const report = await runAgents(resumeText);
+// ─────────────────────────────────────────────────────────────
+// AUTHENTICATED ANALYSIS — Login required, result saved to DB
+// ─────────────────────────────────────────────────────────────
 
-  // Save only the result, not the resume
+/**
+ * analyzeAndSave(file, userId)
+ *
+ * Full pipeline for a logged-in user.
+ * Saves only the scores + report to DB — resume text is never stored.
+ *
+ * @param {object} file - Multer file object
+ * @param {string} userId - Authenticated user's ID
+ */
+export const analyzeAndSave = async (file, userId) => {
+  // Step 1: Extract text + parse into structured JSON
+  const resume = await processUploadedResume(file);
+
+  // Step 2: Run AI agents on structured data
+  const report = await runAgents(resume);
+
+  // Step 3: Save only the result to DB (NOT the resume text)
   const saved = await prisma.review.create({
     data: {
       userId,
@@ -70,10 +119,28 @@ export const analyzeAndSave = async (file, userId) => {
     },
   });
 
-  return { ...report, reviewId: saved.id };
+  return {
+    ...report,
+    reviewId: saved.id,
+    parsedInfo: {
+      name: resume.name,
+      email: resume.email,
+      phone: resume.phone,
+      skillsFound: resume.skills.length,
+      projectsFound: resume.projects.length,
+      experienceFound: resume.experience.length,
+    },
+  };
 };
 
-// Get user's review history (for graphs/dashboard)
+// ─────────────────────────────────────────────────────────────
+// HISTORY & SAVED REVIEWS
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * getUserHistory(userId)
+ * Returns all past reviews for a user — used for graphs/dashboard.
+ */
 export const getUserHistory = async (userId) => {
   return await prisma.review.findMany({
     where: { userId },
@@ -89,7 +156,10 @@ export const getUserHistory = async (userId) => {
   });
 };
 
-// Get a single review by ID
+/**
+ * getReviewById(reviewId, userId)
+ * Returns a single saved review. Ensures the review belongs to this user.
+ */
 export const getReviewById = async (reviewId, userId) => {
   const review = await prisma.review.findFirst({
     where: { id: reviewId, userId },
@@ -104,7 +174,10 @@ export const getReviewById = async (reviewId, userId) => {
   return review;
 };
 
-// Delete a review
+/**
+ * deleteReview(reviewId, userId)
+ * Deletes a saved review. Ensures the review belongs to this user.
+ */
 export const deleteReview = async (reviewId, userId) => {
   const review = await prisma.review.findFirst({
     where: { id: reviewId, userId },
@@ -120,19 +193,34 @@ export const deleteReview = async (reviewId, userId) => {
   return { message: 'Review deleted' };
 };
 
-// Analyze resume against a single company — no login required
+// ─────────────────────────────────────────────────────────────
+// COMPANY ANALYSIS
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * analyzeForCompanyGuest(file, company)
+ * Analyzes resume against a specific company's hiring bar.
+ * No login required.
+ */
 export const analyzeForCompanyGuest = async (file, company) => {
-  const resumeText = await parseAndCleanup(file);
-  return await analyzeForCompany(resumeText, company);
+  const resume = await processUploadedResume(file);
+  return await analyzeForCompany(resume, company);
 };
 
-// Analyze resume against multiple companies — no login required
+/**
+ * analyzeForCompaniesGuest(file, companies)
+ * Analyzes resume against multiple companies at once.
+ * No login required. Max 5 companies per request.
+ */
 export const analyzeForCompaniesGuest = async (file, companies) => {
-  const resumeText = await parseAndCleanup(file);
-  return await analyzeForMultipleCompanies(resumeText, companies);
+  const resume = await processUploadedResume(file);
+  return await analyzeForMultipleCompanies(resume, companies);
 };
 
-// Get list of all supported companies with their profiles
+/**
+ * getSupportedCompanies()
+ * Returns the list of all supported company keys.
+ */
 export const getSupportedCompanies = () => {
   return SUPPORTED_COMPANIES;
 };

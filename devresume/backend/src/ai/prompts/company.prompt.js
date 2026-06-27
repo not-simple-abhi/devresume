@@ -5,7 +5,7 @@ export const COMPANY_PROFILES = {
     focus: ['algorithms', 'data structures', 'system design', 'scalability', 'open source contributions'],
     techStack: ['Python', 'Java', 'C++', 'Go', 'Kubernetes', 'TensorFlow', 'BigQuery', 'GCP'],
     softSkills: ['leadership', 'communication', 'googleyness', 'collaboration'],
-    minCGPA: 7.5,
+    minCGPA: 0,
     expectations: [
       'Strong DSA fundamentals (LeetCode hard level)',
       'System design experience at scale',
@@ -251,26 +251,43 @@ Your role is to:
 
 Always respond with valid JSON only.`;
 
-export const companyUserPrompt = (resumeText, company) => {
+/**
+ * @param {object} resume - Structured resume object from resumeParser
+ * @param {string} company - Company key (e.g. "google", "amazon")
+ */
+export const companyUserPrompt = (resume, company) => {
   const profile = COMPANY_PROFILES[company.toLowerCase().replace(/\s/g, '')];
 
   if (!profile) {
     throw new Error(`Company profile not found for: ${company}`);
   }
 
-  return `Analyze this resume specifically for a role at ${profile.name}.
+  return `Analyze this candidate's profile for a role at ${profile.name}.
 
 COMPANY PROFILE:
 - Tier: ${profile.tier}
 - Key Focus Areas: ${profile.focus.join(', ')}
 - Primary Tech Stack: ${profile.techStack.join(', ')}
 - Important Soft Skills: ${profile.softSkills.join(', ')}
-- Minimum CGPA Expected: ${profile.minCGPA}
 - What ${profile.name} looks for:
 ${profile.expectations.map((e) => `  • ${e}`).join('\n')}
 
-RESUME:
-${resumeText}
+CANDIDATE: ${resume.name || 'Unknown'}
+
+SKILLS:
+${resume.skills.length > 0 ? resume.skills.join(', ') : 'No skills listed'}
+
+EXPERIENCE:
+${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+
+PROJECTS:
+${resume.projects.length > 0 ? resume.projects.join('\n\n') : 'No projects listed'}
+
+EDUCATION:
+${resume.education.length > 0 ? resume.education.join('\n') : 'Not listed'}
+
+ACHIEVEMENTS:
+${resume.achievements.length > 0 ? resume.achievements.join('\n') : 'None listed'}
 
 Evaluate how ready this candidate is for ${profile.name} and respond with this exact JSON structure:
 {
