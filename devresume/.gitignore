@@ -1,5 +1,25 @@
-# Ignore node modules
+# Dependencies
 node_modules/
 
-# Ignore build outputs
+# Build outputs
 dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploads
+uploads/
+
+# Prisma
+prisma/migrations/
