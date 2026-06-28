@@ -18,12 +18,7 @@
 
 import prisma from '../database/client.js';
 import { processUploadedResume } from './resume.service.js';
-import { analyzeATS } from '../ai/agents/atsAgent.js';
-import { analyzeRecruiter } from '../ai/agents/recruiterAgent.js';
-import { analyzeGrammar } from '../ai/agents/grammarAgent.js';
-import { analyzeSkills } from '../ai/agents/skillsAgent.js';
-import { analyzeProjects } from '../ai/agents/projectAgent.js';
-import { aggregateReports } from '../ai/aggregator/aggregatorAgent.js';
+import { orchestrate } from '../ai/orchestrator/agentManager.js';
 import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } from '../ai/agents/companyAgent.js';
 
 // ─────────────────────────────────────────────────────────────
@@ -33,33 +28,13 @@ import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } f
 /**
  * runAgents(resume)
  *
- * Runs all 5 agents SEQUENTIALLY to avoid rate limiting on free tier.
- * Each agent waits for the previous one to finish before starting.
+ * Coordinates execution of multi-agent AI resume reviewer via agentManager.
  *
  * @param {object} resume - Structured resume from resumeParser
  * @returns {object} Aggregated final report
  */
 const runAgents = async (resume) => {
-  console.log(`[ReviewService] Running agents for: ${resume.name || 'Unknown'}`);
-
-  // Sequential — one at a time to respect free tier rate limits
-  const ats       = await analyzeATS(resume);
-  console.log('[ReviewService] ATS done');
-
-  const recruiter = await analyzeRecruiter(resume);
-  console.log('[ReviewService] Recruiter done');
-
-  const grammar   = await analyzeGrammar(resume);
-  console.log('[ReviewService] Grammar done');
-
-  const skills    = await analyzeSkills(resume);
-  console.log('[ReviewService] Skills done');
-
-  const projects  = await analyzeProjects(resume);
-  console.log('[ReviewService] Projects done');
-
-  console.log('[ReviewService] All agents done. Aggregating...');
-  return aggregateReports({ ats, recruiter, grammar, skills, projects });
+  return await orchestrate(resume);
 };
 
 // ─────────────────────────────────────────────────────────────

@@ -213,6 +213,15 @@ const parseSkills = (text) => {
     items.forEach(s => skills.add(s));
   }
 
+  // Fallback: if no labeled matches found, treat the whole block as a list of skills
+  if (skills.size === 0) {
+    const items = text
+      .split(/[,|\n]/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0 && s.length < 40);
+    items.forEach(s => skills.add(s));
+  }
+
   // Remove junk entries
   const cleaned = [...skills]
     .filter(s => s.length > 1)
