@@ -1,19 +1,20 @@
-/**
- * skillsAgent.js
- * Receives structured resume JSON from resumeParser.
- */
 import { callAI } from '../../config/aiClient.js';
 import { skillsSystemPrompt, skillsUserPrompt } from '../prompts/skills.prompt.js';
 
-/**
- * @param {object} resume - Structured resume object from resumeParser
- */
 export const analyzeSkills = async (resume) => {
   try {
-    const data = await callAI(skillsSystemPrompt, skillsUserPrompt(resume));
-    return data;
+    return await callAI(skillsSystemPrompt, skillsUserPrompt(resume));
   } catch (error) {
     console.error('[Skills Agent] Error:', error.message);
-    throw new Error(`Skills analysis failed: ${error.message}`);
+    return {
+      current_skills: {
+        technical: resume.skills || [],
+        soft: [],
+        tools: [],
+      },
+      missing_skills: [],
+      skill_relevance_score: 50,
+      trending_skills_to_add: [],
+    };
   }
 };

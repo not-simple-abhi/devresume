@@ -6,6 +6,12 @@ export const analyzeRecruiter = async (resume) => {
     return await callAI(recruiterSystemPrompt, recruiterUserPrompt(resume));
   } catch (error) {
     console.error('[Recruiter Agent] Error:', error.message);
-    throw new Error(`Recruiter analysis failed: ${error.message}`);
+    return {
+      strengths: [],
+      weaknesses: ['Could not complete recruiter analysis at this time'],
+      impact_score: 50,
+      standout_points: [],
+      red_flags: [],
+    };
   }
 };

@@ -1,96 +1,126 @@
 /**
  * resumeParser.js
  *
- * Converts raw resume text into a clean structured JSON object.
- * Uses regex patterns and simple heuristics — no AI required.
- *
- * Output shape:
- * {
- *   name, email, phone, linkedin, github,
- *   education: [],
- *   skills: [],
- *   experience: [],
- *   projects: [],
- *   achievements: []
- * }
+ * Converts raw resume text into structured JSON.
+ * Handles common Indian resume formats including single-line PDF layouts.
  */
 
 // ─────────────────────────────────────────────
-// SECTION HEADER DETECTION
-// Detects common resume section headings.
+// KNOWN SECTION HEADINGS — inject newlines before these
+// when the PDF collapses everything to one line
 // ─────────────────────────────────────────────
 
+const SECTION_KEYWORDS = [
+  'EDUCATION',
+  'PROJECT',
+  'PROJECTS',
+  'EXPERIENCE',
+  'WORK EXPERIENCE',
+  'INTERNSHIP',
+  'INTERNSHIPS',
+  'SKILLS',
+  'TECHNICAL SKILLS',
+  'OTHER INFORMATION',
+  'ACADEMIC ACHIEVEMENTS',
+  'ACHIEVEMENTS',
+  'POSITIONS OF RESPONSIBILITY',
+  'CERTIFICATIONS',
+  'AWARDS',
+  'ACTIVITIES',
+  'SUMMARY',
+  'OBJECTIVE',
+  'ABOUT',
+];
+
+/**
+ * normalizeText(rawText)
+ *
+ * Inserts newlines before known section headings so the splitter
+ * can detect them even when the PDF collapses everything to one line.
+ */
+const normalizeText = (rawText) => {
+  let text = rawText
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/\t/g, ' ');
+
+  // Insert a newline before each known section keyword
+  // Uses word boundary to avoid splitting mid-word
+  for (const keyword of SECTION_KEYWORDS) {
+    // Escape special regex chars in keyword
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`(?<![\\n])\\s+(${escaped})\\s`, 'g');
+    text = text.replace(pattern, `\n$1\n`);
+  }
+
+  return text;
+};
+
 const SECTION_PATTERNS = {
-  education:    /^(education|academic|qualification|degree)/i,
-  skills:       /^(skills|technologies|tech stack|tools|competencies|expertise)/i,
-  experience:   /^(experience|work experience|employment|professional experience|internship|internships|work history)/i,
-  projects:     /^(projects|personal projects|academic projects|side projects|portfolio)/i,
-  achievements: /^(achievements|awards|honors|accomplishments|certifications|certificates|recognition)/i,
+  education: /^(education|academic background|academics|qualification)/i,
+
+  skills: /^(skills|technical skills|technologies|tech stack|tools|competencies|expertise|other information|languages|programming|key skills)/i,
+
+  experience: /^(experience|work experience|employment|professional experience|internship|internships|work history|positions? of responsibility|volunteering|leadership)/i,
+
+  projects: /^(projects?|personal projects?|academic projects?|side projects?|portfolio|key projects?)/i,
+
+  achievements: /^(achievements?|awards?|honors?|honours?|accomplishments?|certifications?|certificates?|recognition|academic achievements?|competitive|extra)/i,
 };
 
 // ─────────────────────────────────────────────
-// CONTACT INFO EXTRACTORS
+// CONTACT INFO
 // ─────────────────────────────────────────────
 
-/**
- * Extracts email address from text.
- * Example: "john@gmail.com" → "john@gmail.com"
- */
 const extractEmail = (text) => {
   const match = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
   return match ? match[0] : '';
 };
 
-/**
- * Extracts phone number from text.
- * Handles formats like +91-9876543210, (123) 456-7890, 9876543210
- */
 const extractPhone = (text) => {
-  const match = text.match(/(\+?\d{1,3}[\s\-]?)?(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}/);
+  const match = text.match(/(\+?\d{1,3}[\s\-]?)?\d{10}/);
   return match ? match[0].trim() : '';
 };
 
-/**
- * Extracts LinkedIn profile URL.
- * Example: "linkedin.com/in/johndoe"
- */
 const extractLinkedIn = (text) => {
   const match = text.match(/linkedin\.com\/in\/[a-zA-Z0-9\-_%]+/i);
   return match ? `https://${match[0]}` : '';
 };
 
-/**
- * Extracts GitHub profile URL.
- * Example: "github.com/johndoe"
- */
 const extractGitHub = (text) => {
   const match = text.match(/github\.com\/[a-zA-Z0-9\-_%]+/i);
   return match ? `https://${match[0]}` : '';
 };
 
 /**
- * Extracts the candidate's name.
- *
- * Strategy:
- * 1. Look at the first few lines (name is almost always at the top).
- * 2. Pick the first line that looks like a real name:
- *    - Only letters (and spaces/hyphens/dots for names like "Mary-Jane")
- *    - Not an email, phone, or URL
- *    - Between 2 and 6 words
+ * Extracts name — looks for the very first non-empty line
+ * that looks like a person's name (before email/phone).
  */
-const extractName = (lines) => {
-  for (let i = 0; i < Math.min(8, lines.length); i++) {
+const extractName = (text) => {
+  const lines = text.split('\n');
+
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
+    // Handle case where name and phone are on same line:
+    // "Abhinav Kumar  +91-9205004103 | ..."
+    // Split on | or multiple spaces or + to isolate the name part
     const line = lines[i].trim();
+    if (!line) continue;
 
-    if (!line) continue;                          // skip blank lines
-    if (line.includes('@')) continue;             // skip emails
-    if (line.match(/\d{5,}/)) continue;           // skip lines with long numbers (phones)
-    if (line.match(/https?:\/\//i)) continue;     // skip URLs
-    if (line.match(/linkedin|github/i)) continue; // skip social links
+    // Take the part before any | or phone pattern
+    const namePart = line
+      .split(/\s{2,}|\||\+91|\+1/)[0]
+      .trim();
 
-    // A name: only letters, spaces, hyphens, dots — 2 to 6 words
-    if (line.match(/^[a-zA-Z][a-zA-Z\s\-\.]{2,50}$/) && line.split(' ').length <= 6) {
-      return line;
+    if (!namePart) continue;
+    if (namePart.includes('@')) continue;
+    if (namePart.match(/\d{5,}/)) continue;
+    if (namePart.match(/https?:\/\//i)) continue;
+    if (namePart.match(/linkedin|github|leetcode/i)) continue;
+    if (namePart.length < 2 || namePart.length > 60) continue;
+
+    // Must look like a name: only letters and spaces
+    if (namePart.match(/^[a-zA-Z][a-zA-Z\s\-\.]{1,40}$/)) {
+      return namePart;
     }
   }
   return '';
@@ -98,20 +128,8 @@ const extractName = (lines) => {
 
 // ─────────────────────────────────────────────
 // SECTION SPLITTER
-// Splits the full text into named sections.
 // ─────────────────────────────────────────────
 
-/**
- * Splits resume text into sections based on section headers.
- *
- * Returns an object like:
- * {
- *   header: "John Doe\njohn@email.com...",
- *   education: "B.Tech CSE...",
- *   skills: "React, Node.js...",
- *   ...
- * }
- */
 const splitIntoSections = (text) => {
   const lines = text.split('\n');
   const sections = { header: [] };
@@ -120,191 +138,169 @@ const splitIntoSections = (text) => {
   for (const line of lines) {
     const trimmed = line.trim();
 
-    // Check if this line is a section heading
-    let matchedSection = null;
-    for (const [sectionName, pattern] of Object.entries(SECTION_PATTERNS)) {
-      if (pattern.test(trimmed)) {
-        matchedSection = sectionName;
-        break;
+    // Section headings are typically SHORT ALL-CAPS or Title Case lines
+    // Check if this line is purely a section heading (no sentence content)
+    if (trimmed.length > 0 && trimmed.length <= 60) {
+      let matchedSection = null;
+
+      for (const [sectionName, pattern] of Object.entries(SECTION_PATTERNS)) {
+        if (pattern.test(trimmed)) {
+          matchedSection = sectionName;
+          break;
+        }
+      }
+
+      if (matchedSection) {
+        currentSection = matchedSection;
+        if (!sections[currentSection]) {
+          sections[currentSection] = [];
+        }
+        continue; // skip heading line itself
       }
     }
 
-    if (matchedSection) {
-      // Start collecting under the new section
-      currentSection = matchedSection;
-      if (!sections[currentSection]) {
-        sections[currentSection] = [];
-      }
-    } else {
-      // Add line to current section
-      if (!sections[currentSection]) {
-        sections[currentSection] = [];
-      }
-      sections[currentSection].push(line);
+    if (!sections[currentSection]) {
+      sections[currentSection] = [];
     }
+    sections[currentSection].push(line);
   }
 
-  // Convert each section's array of lines back to a string
   const result = {};
-  for (const [key, lines] of Object.entries(sections)) {
-    result[key] = lines.join('\n').trim();
+  for (const [key, linesArr] of Object.entries(sections)) {
+    result[key] = linesArr.join('\n').trim();
   }
 
   return result;
 };
 
 // ─────────────────────────────────────────────
-// SECTION CONTENT PARSERS
-// Each parses one section into an array of items.
+// SECTION PARSERS
 // ─────────────────────────────────────────────
 
-/**
- * Parses education section.
- * Splits by blank lines — each block = one education entry.
- *
- * Example output:
- * ["B.Tech in Computer Science, IIT Delhi, 2020–2024"]
- */
 const parseEducation = (text) => {
   if (!text) return [];
 
-  // Split by double newlines (blank lines separate entries)
-  const entries = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
+  // Your resume has education as a table on one line — split by double spaces or newlines
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
-  // If no blank-line separation, each non-empty line is an entry
-  if (entries.length <= 1) {
-    return text.split('\n').map(l => l.trim()).filter(Boolean);
-  }
+  // Each line that contains a year (4 digits) is an education entry
+  const entries = lines.filter(l => l.match(/\d{4}/));
 
-  return entries;
+  // If we found year-based entries, return them
+  if (entries.length > 0) return entries;
+
+  // Fallback: blank-line separated blocks
+  const blocks = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
+  return blocks.length > 0 ? blocks : lines;
 };
 
 /**
- * Parses skills section into a flat array of skill strings.
- *
- * Handles comma-separated, pipe-separated, and newline-separated lists.
- * Also strips bullet characters.
- *
- * Example output:
- * ["React", "Node.js", "Python", "PostgreSQL"]
+ * Parses skills — handles your "Languages: C++, Python..." format
+ * and also comma/newline separated lists.
  */
 const parseSkills = (text) => {
   if (!text) return [];
 
-  // Remove common bullet characters
-  const cleaned = text.replace(/[•·▪▸➢\-\*]/g, ',');
+  const skills = new Set();
 
-  // Split by comma, pipe, newline, or semicolon
-  const skills = cleaned
-    .split(/[,|\n;]+/)
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && s.length < 60); // ignore very long strings
-
-  return [...new Set(skills)]; // remove duplicates
-};
-
-/**
- * Parses experience section.
- * Splits by blank lines — each block = one job entry.
- *
- * Example output:
- * ["Software Engineer at Google\nJan 2023 – Present\n- Built scalable APIs..."]
- */
-const parseExperience = (text) => {
-  if (!text) return [];
-
-  const entries = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
-
-  if (entries.length <= 1) {
-    return text.split('\n').map(l => l.trim()).filter(Boolean);
+  // Extract from "Label: skill1, skill2, skill3" pattern
+  const labeledMatches = text.matchAll(/(?:languages?|frameworks?.*?|tools?|databases?|core cs concepts?|skills?)[:\s]+([^\n]+)/gi);
+  for (const match of labeledMatches) {
+    const items = match[1]
+      .split(/[,|]/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0 && s.length < 40);
+    items.forEach(s => skills.add(s));
   }
 
-  return entries;
+  // Remove junk entries
+  const cleaned = [...skills]
+    .filter(s => s.length > 1)
+    .filter(s => !s.match(/^[\d\s◦•▪]+$/))         // remove bullet chars
+    .filter(s => !s.match(/frameworks?\s*&?\s*tools?/i)) // remove section labels
+    .filter(s => !s.match(/core cs concepts?/i))
+    .filter(s => !s.match(/databases?:?$/i))
+    .filter(s => !s.match(/languages?:?$/i))
+    .map(s => s.replace(/\(.*?\)/g, '').trim())     // remove parenthetical notes
+    .filter(s => s.length > 1 && s.length < 40);
+
+  return [...new Set(cleaned)];
 };
 
-/**
- * Parses projects section.
- * Splits by blank lines — each block = one project.
- *
- * Example output:
- * ["devresume | AI Resume Reviewer\nReact, Node.js, Gemini\n- Built multi-agent resume analysis..."]
- */
+const parseExperience = (text) => {
+  if (!text) return [];
+  const blocks = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
+  if (blocks.length > 0) return blocks;
+  return text.split('\n').map(l => l.trim()).filter(Boolean);
+};
+
 const parseProjects = (text) => {
   if (!text) return [];
 
-  const entries = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const projects = [];
+  let current = [];
 
-  if (entries.length <= 1) {
-    return text.split('\n').map(l => l.trim()).filter(Boolean);
+  for (const line of lines) {
+    // A new project starts when we see a short title-like line
+    // (capitalized, not a bullet, not starting with a verb like "Built/Created")
+    const isNewProjectTitle =
+      line.length < 80 &&
+      line.match(/^[A-Z]/) &&
+      !line.match(/^(Built|Created|Designed|Implemented|Developed|Managed|Helped|Presented|Achieved|Selected|Successfully)/i) &&
+      !line.match(/^[•·▪▸➢►▶\-\*◦]/);
+
+    if (isNewProjectTitle && current.length > 0) {
+      projects.push(current.join('\n').trim());
+      current = [line];
+    } else {
+      current.push(line);
+    }
   }
+  if (current.length > 0) projects.push(current.join('\n').trim());
 
-  return entries;
+  return projects.filter(p => p.length > 10);
 };
 
-/**
- * Parses achievements section.
- * Each non-empty line = one achievement.
- *
- * Example output:
- * ["Winner – Smart India Hackathon 2023", "Top 10 at HackMIT"]
- */
 const parseAchievements = (text) => {
   if (!text) return [];
-
   return text
     .split('\n')
-    .map(l => l.replace(/^[•·▪▸➢\-\*]\s*/, '').trim()) // remove bullet chars
-    .filter(l => l.length > 3);
+    .map(l => l.replace(/^[•·▪▸➢►▶\-\*✓✔◦]\s*/, '').trim())
+    .filter(l => l.length > 5);
 };
 
 // ─────────────────────────────────────────────
-// MAIN PARSER FUNCTION
+// MAIN EXPORT
 // ─────────────────────────────────────────────
 
-/**
- * parseResume(rawText)
- *
- * Takes the raw extracted text from a PDF/DOCX and returns
- * a clean structured JSON object.
- *
- * @param {string} rawText - Raw text from PDF/DOCX parser
- * @returns {object} Structured resume data
- */
 export const parseResume = (rawText) => {
-  // Clean up the text a bit — remove excessive whitespace
-  const cleanText = rawText
-    .replace(/\r\n/g, '\n')   // normalize Windows line endings
-    .replace(/\r/g, '\n')     // normalize old Mac line endings
-    .replace(/\t/g, ' ')      // tabs → spaces
-    .replace(/ {3,}/g, ' ');  // collapse 3+ spaces into one
+  // First normalize — inject newlines before section headings
+  // This handles PDFs that collapse everything to one line
+  const cleanText = normalizeText(rawText)
+    .replace(/ {4,}/g, '   '); // keep some spacing for table detection
 
-  const lines = cleanText.split('\n').map(l => l.trim());
-
-  // Split the full text into named sections
   const sections = splitIntoSections(cleanText);
 
-  // Use the header section to extract contact info
-  const headerText = sections.header || '';
+  // Debug log
+  const found = Object.entries(sections)
+    .filter(([k, v]) => k !== 'header' && v.trim().length > 0)
+    .map(([k]) => k);
+  console.log(`[ResumeParser] Sections found: ${found.length > 0 ? found.join(', ') : 'NONE'}`);
 
-  const structured = {
-    // ── Contact Info ──────────────────────────
-    name:         extractName(lines),
-    email:        extractEmail(headerText),
-    phone:        extractPhone(headerText),
+  return {
+    name:         extractName(cleanText),
+    email:        extractEmail(cleanText),
+    phone:        extractPhone(cleanText),
     linkedin:     extractLinkedIn(cleanText),
     github:       extractGitHub(cleanText),
 
-    // ── Resume Sections ───────────────────────
     education:    parseEducation(sections.education),
     skills:       parseSkills(sections.skills),
     experience:   parseExperience(sections.experience),
     projects:     parseProjects(sections.projects),
     achievements: parseAchievements(sections.achievements),
 
-    // ── Raw text kept for AI agents ───────────
-    // Agents receive this instead of raw PDF text
-    rawText: cleanText,
+    rawText:      cleanText,
   };
-
-  return structured;
 };

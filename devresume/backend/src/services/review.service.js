@@ -33,23 +33,30 @@ import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } f
 /**
  * runAgents(resume)
  *
- * Sends structured resume data to all 5 agents at the same time.
- * Agents now receive a clean JSON object instead of raw PDF text.
+ * Runs all 5 agents SEQUENTIALLY to avoid rate limiting on free tier.
+ * Each agent waits for the previous one to finish before starting.
  *
  * @param {object} resume - Structured resume from resumeParser
  * @returns {object} Aggregated final report
  */
 const runAgents = async (resume) => {
-  console.log(`[ReviewService] Running 5 agents for: ${resume.name || 'Unknown'}`);
+  console.log(`[ReviewService] Running agents for: ${resume.name || 'Unknown'}`);
 
-  // All agents run at the same time — no waiting for each other
-  const [ats, recruiter, grammar, skills, projects] = await Promise.all([
-    analyzeATS(resume),
-    analyzeRecruiter(resume),
-    analyzeGrammar(resume),
-    analyzeSkills(resume),
-    analyzeProjects(resume),
-  ]);
+  // Sequential — one at a time to respect free tier rate limits
+  const ats       = await analyzeATS(resume);
+  console.log('[ReviewService] ATS done');
+
+  const recruiter = await analyzeRecruiter(resume);
+  console.log('[ReviewService] Recruiter done');
+
+  const grammar   = await analyzeGrammar(resume);
+  console.log('[ReviewService] Grammar done');
+
+  const skills    = await analyzeSkills(resume);
+  console.log('[ReviewService] Skills done');
+
+  const projects  = await analyzeProjects(resume);
+  console.log('[ReviewService] Projects done');
 
   console.log('[ReviewService] All agents done. Aggregating...');
   return aggregateReports({ ats, recruiter, grammar, skills, projects });
