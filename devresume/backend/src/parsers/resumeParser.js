@@ -53,6 +53,9 @@ const normalizeText = (rawText) => {
     text = text.replace(pattern, `\n$1\n`);
   }
 
+  // Insert newlines before bullet points (•, ◦, ▪, etc.) to handle collapsed lines
+  text = text.replace(/(?<!\n)\s*([•◦▪·■★♦❖▲▶►◆●])\s*/g, '\n$1 ');
+
   return text;
 };
 
@@ -177,21 +180,66 @@ const splitIntoSections = (text) => {
 // SECTION PARSERS
 // ─────────────────────────────────────────────
 
+const splitSectionIntoItems = (text) => {
+  if (!text) return [];
+
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const items = [];
+  let current = [];
+
+  for (const line of lines) {
+    // 1. Starts with a main bullet point (e.g. •, ▪, ■, ★, ♦, ❖, ▸, ➢) but not sub-bullets (like ◦)
+    const isMainBullet = line.match(/^[•■★♦❖▲▶►▪◆●]/);
+    
+    // 2. Contains formatting like "Company | Title" or a date range
+    const hasPipelineDelimiter = line.includes(' | ');
+    const hasDateRange = line.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|20\d{2})\b.*(-|to)\b.*(Present|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|20\d{2})\b/i);
+
+    // 3. Short capitalized title line without bullet and without verb prefixes
+    const isCleanTitle =
+      line.length > 3 &&
+      line.length < 80 &&
+      line.match(/^[A-Z]/) &&
+      !line.match(/^(Built|Created|Designed|Implemented|Developed|Managed|Helped|Presented|Achieved|Selected|Successfully)/i) &&
+      !line.match(/^[•·◦◦*+\-\u25E6]/);
+
+    const startsNewItem = isMainBullet || hasPipelineDelimiter || hasDateRange || isCleanTitle;
+
+    if (startsNewItem && current.length > 0) {
+      items.push(current.join('\n').trim());
+      current = [line];
+    } else {
+      current.push(line);
+    }
+  }
+
+  if (current.length > 0) {
+    items.push(current.join('\n').trim());
+  }
+
+  return items.filter(item => item.length > 10);
+};
+
 const parseEducation = (text) => {
   if (!text) return [];
 
-  // Your resume has education as a table on one line — split by double spaces or newlines
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  
+  // Filter out typical table headers
+  const filtered = lines.filter(line => {
+    const isHeader = line.match(/(course|college|university|cgpa|percentage|\b%\b)/i) && 
+                     (line.match(/college/i) || line.match(/university/i) || line.match(/course/i));
+    return !isHeader;
+  });
 
-  // Each line that contains a year (4 digits) is an education entry
-  const entries = lines.filter(l => l.match(/\d{4}/));
+  // Support 20XX format along with standard years like 2024, 2028
+  const entries = filtered.filter(l => l.match(/\b(20\d{2}|19\d{2}|20[xX]{2})\b/));
 
-  // If we found year-based entries, return them
   if (entries.length > 0) return entries;
 
   // Fallback: blank-line separated blocks
   const blocks = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
-  return blocks.length > 0 ? blocks : lines;
+  return blocks.length > 0 ? blocks : filtered;
 };
 
 /**
@@ -240,6 +288,10 @@ const parseSkills = (text) => {
 
 const parseExperience = (text) => {
   if (!text) return [];
+  
+  const items = splitSectionIntoItems(text);
+  if (items.length > 0) return items;
+
   const blocks = text.split(/\n\s*\n/).map(e => e.trim()).filter(Boolean);
   if (blocks.length > 0) return blocks;
   return text.split('\n').map(l => l.trim()).filter(Boolean);
@@ -248,13 +300,15 @@ const parseExperience = (text) => {
 const parseProjects = (text) => {
   if (!text) return [];
 
+  const items = splitSectionIntoItems(text);
+  if (items.length > 0) return items;
+
+  // Fallback to original line-by-line project parser
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const projects = [];
   let current = [];
 
   for (const line of lines) {
-    // A new project starts when we see a short title-like line
-    // (capitalized, not a bullet, not starting with a verb like "Built/Created")
     const isNewProjectTitle =
       line.length < 80 &&
       line.match(/^[A-Z]/) &&

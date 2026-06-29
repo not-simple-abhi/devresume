@@ -7,6 +7,9 @@
  */
 
 import { orchestrate } from '../src/ai/orchestrator/agentManager.js';
+import { analyzeResume } from '../src/intelligence/resumeAnalyzer.js';
+import { calculateScore } from '../src/ruleEngine/calculateScore.js';
+import { buildFinalReport } from '../src/ai/aggregator/aggregatorAgent.js';
 import dotenv from 'dotenv';
 
 // Ensure we have some fake environment variables set
@@ -45,49 +48,45 @@ function assert(condition, message) {
 }
 
 // ─────────────────────────────────────────────
-// MOCK RESPONSES FOR AGENTS
+// MOCK RESPONSES FOR AGENTS (Sprint 3 format)
 // ─────────────────────────────────────────────
 
 const mockAtsResponse = {
-  score: 85,
-  issues: ['Add more keywords'],
-  recommendations: ['Add Redis to skills'],
-  keywords_found: ['JavaScript', 'React'],
-  formatting_issues: []
+  score_explanation: 'Your resume has good formatting and details.',
+  ats_issues: ['Add more keywords'],
+  keyword_recommendations: ["Add 'Redis' to skills"],
+  formatting_recommendations: [],
+  quick_wins: ['easiest change to boost ATS score immediately']
 };
 
 const mockRecruiterResponse = {
+  summary: 'Solid backend engineer candidate.',
   strengths: ['Clear experience descriptions'],
   weaknesses: ['Missing impact metrics'],
-  impact_score: 80,
   standout_points: ['Sprinklr Intern'],
-  red_flags: []
+  red_flags: [],
+  interview_readiness: 'good'
 };
 
 const mockGrammarResponse = {
   errors: [{ type: 'spelling', text: 'teh', suggestion: 'the' }],
-  suggestions: ['Fix spelling error "teh"'],
-  clarity_score: 90,
+  writing_suggestions: ['Fix spelling error "teh"'],
   tone: 'professional',
-  consistency_issues: []
+  tense_consistent: true,
+  overall_writing_quality: 'good'
 };
 
 const mockSkillsResponse = {
-  current_skills: {
-    technical: ['JavaScript', 'React'],
-    soft: [],
-    tools: []
-  },
   missing_skills: [{ skill: 'Redis', reason: 'High demand', priority: 'high' }],
-  skill_relevance_score: 88,
-  trending_skills_to_add: []
+  learning_roadmap: ['Learn Redis commands'],
+  quick_wins: ['Add Redis to resume'],
+  long_term_goals: ['Master system design']
 };
 
 const mockProjectsResponse = {
-  project_strengths: ['Solid fullstack project'],
   project_suggestions: ['Describe project impact'],
-  portfolio_score: 75,
-  recommended_projects: []
+  recommended_projects: ['Build a scaling caching layer'],
+  quick_wins: ['Add GitHub link to your projects']
 };
 
 const responsesInOrder = [
@@ -154,27 +153,29 @@ await testAsync('orchestrates all agents and aggregates results correctly', asyn
       achievements: ['Smart India Hackathon']
     };
 
-    const result = await orchestrate(mockResume);
+    // Run pipeline steps (Sprint 3 style)
+    const analysis = analyzeResume(mockResume);
+    const scores = calculateScore(analysis);
+    const aiReport = await orchestrate(mockResume, analysis, scores);
+    const result = buildFinalReport(mockResume, analysis, scores, aiReport);
 
     // Assert fetch was called exactly 5 times (one for each agent)
     assert(callCount === 5, `Expected fetch to be called 5 times, but got ${callCount}`);
 
-    // Verify aggregated score calculation (average of 85, 80, 90, 88, 75 = 83.6 => rounded to 84)
-    assert(result.summary.overallScore === 84, `Expected overall score 84, got ${result.summary.overallScore}`);
+    // Verify consolidated report fields
+    assert(result.deterministicAnalysis !== undefined, 'Should include deterministicAnalysis');
+    assert(result.aiAnalysis !== undefined, 'Should include aiAnalysis');
+
+    // Verify deterministic parts driven by the Rule Engine
+    assert(result.deterministicAnalysis.overall > 0, `Expected overall score > 0, got ${result.deterministicAnalysis.overall}`);
+    assert(result.deterministicAnalysis.atsScore > 0, `Expected ATS score > 0, got ${result.deterministicAnalysis.atsScore}`);
     
-    // Verify specific fields mapped from sub-agent outputs
-    assert(result.atsScore === 85, `Expected ATS score 85, got ${result.atsScore}`);
-    assert(result.detailedScores.recruiter === 80, `Expected recruiter detailed score 80, got ${result.detailedScores.recruiter}`);
-    assert(result.detailedScores.grammar === 90, `Expected grammar detailed score 90, got ${result.detailedScores.grammar}`);
-    assert(result.detailedScores.skills === 88, `Expected skills detailed score 88, got ${result.detailedScores.skills}`);
-    assert(result.detailedScores.projects === 75, `Expected projects detailed score 75, got ${result.detailedScores.projects}`);
-    
-    // Verify mapped arrays
-    assert(result.strengths.includes('Clear experience descriptions'), 'Should include recruiter strengths');
-    assert(result.weaknesses.includes('Missing impact metrics'), 'Should include recruiter weaknesses');
-    assert(result.missingSkills[0].skill === 'Redis', 'Should include missing skills from skills agent');
-    assert(result.grammarSuggestions[0].issue === 'teh', 'Should map grammar errors to suggestions');
-    assert(result.projectSuggestions.includes('Describe project impact'), 'Should map project suggestions');
+    // Verify AI analysis parts mapped from sub-agent outputs
+    assert(result.aiAnalysis.ats.scoreExplanation === 'Your resume has good formatting and details.', 'Should include ATS explanation');
+    assert(result.aiAnalysis.recruiter.summary === 'Solid backend engineer candidate.', 'Should include recruiter summary');
+    assert(result.aiAnalysis.grammar.writingQuality === 'good', 'Should include grammar writing quality');
+    assert(result.aiAnalysis.skills.learningRoadmap[0] === 'Learn Redis commands', 'Should include skills roadmap');
+    assert(result.aiAnalysis.projects.suggestions[0] === 'Describe project impact', 'Should include project suggestions');
 
   } finally {
     restoreFetch();
