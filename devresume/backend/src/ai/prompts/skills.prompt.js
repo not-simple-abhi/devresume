@@ -1,48 +1,51 @@
 /**
  * skills.prompt.js
- * Receives structured resume JSON, not raw text.
+ *
+ * AI role: Recommend missing skills, explain why they matter.
+ * Do NOT score — Rule Engine handles scoring.
  */
 
-export const skillsSystemPrompt = `You are a technical skills analyst with expertise in various tech stacks.
+export const skillsSystemPrompt = `You are a technical skills advisor for software engineers.
 
-Your role is to:
-- Evaluate the candidate's current skill set
-- Identify important missing skills for their field
-- Assess skill relevance to modern industry standards
-- Identify gaps in the tech stack
-- Score the skill set comprehensiveness (0-100)
+Your role is ONLY to:
+- Recommend specific skills the candidate should learn
+- Explain WHY each skill matters for their domain
+- Suggest a learning roadmap based on their current skills
+- Identify which skills to prioritize
 
+You must NOT calculate scores.
 Always respond with valid JSON only.`;
 
 /**
- * @param {object} resume - Structured resume object from resumeParser
+ * @param {object} resume   - Structured resume
+ * @param {object} analysis - Intelligence Engine facts
+ * @param {object} scores   - Rule Engine scores
  */
-export const skillsUserPrompt = (resume) => `Analyze the skills profile for this candidate.
+export const skillsUserPrompt = (resume, analysis, scores) => `
+Analyze this candidate's skills and recommend what to add.
 
 CANDIDATE: ${resume.name || 'Unknown'}
+DOMAIN: ${analysis.keywords.detectedDomain}
+KEYWORD COVERAGE: ${analysis.keywords.coveragePercent}%
 
-LISTED SKILLS:
-${resume.skills.length > 0 ? resume.skills.join(', ') : 'No skills listed'}
+CURRENT SKILLS:
+${resume.skills.join(', ') || 'None listed'}
 
-SKILLS USED IN PROJECTS:
-${resume.projects.length > 0 ? resume.projects.join('\n\n') : 'No projects listed'}
+SKILLS ALREADY CATEGORIZED:
+- Languages: ${analysis.skills.categorized.languages.join(', ') || 'none'}
+- Frameworks: ${analysis.skills.categorized.frameworks.join(', ') || 'none'}
+- Databases: ${analysis.skills.categorized.databases.join(', ') || 'none'}
+- Tools: ${analysis.skills.categorized.tools.join(', ') || 'none'}
 
-SKILLS USED IN EXPERIENCE:
-${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+TOP MISSING KEYWORDS FOR ${analysis.keywords.detectedDomain.toUpperCase()}:
+${analysis.keywords.missingKeywords.slice(0, 10).join(', ')}
 
-EDUCATION (to infer tech domain):
-${resume.education.length > 0 ? resume.education.join('\n') : 'Not listed'}
-
-Provide your skills analysis as a JSON object:
+Provide skills recommendations as JSON:
 {
-  "current_skills": {
-    "technical": ["skill1", "skill2"],
-    "soft": ["skill1", "skill2"],
-    "tools": ["tool1", "tool2"]
-  },
   "missing_skills": [
-    { "skill": "skill name", "reason": "why beneficial", "priority": "high|medium|low" }
+    { "skill": "Docker", "reason": "why it matters", "priority": "high|medium|low" }
   ],
-  "skill_relevance_score": <number 0-100>,
-  "trending_skills_to_add": ["skill1", "skill2"]
+  "learning_roadmap": ["Step 1: Learn X because...", "Step 2: ..."],
+  "quick_wins": ["skills easy to add that boost score immediately"],
+  "long_term_goals": ["skills worth investing 3-6 months in"]
 }`;

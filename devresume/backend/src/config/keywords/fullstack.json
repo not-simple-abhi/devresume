@@ -1,0 +1,23 @@
+{
+  "domain": "fullstack",
+  "keywords": [
+    "React", "React.js", "Next.js", "Vue.js", "Angular",
+    "Node.js", "Express", "Express.js",
+    "JavaScript", "TypeScript", "Python",
+    "HTML5", "CSS3", "Tailwind CSS", "Bootstrap",
+    "REST API", "GraphQL", "WebSockets",
+    "MongoDB", "PostgreSQL", "MySQL", "Redis",
+    "JWT", "Authentication", "OAuth",
+    "Docker", "AWS", "GCP", "Vercel", "Netlify",
+    "Git", "GitHub", "CI/CD",
+    "Prisma", "Mongoose", "Sequelize",
+    "Redux", "Context API",
+    "Responsive Design", "Mobile First",
+    "Unit Testing", "Jest", "API Design",
+    "System Design", "Database Design",
+    "MVC", "MERN", "MEAN", "MEVN",
+    "Linux", "Bash", "Nginx",
+    "Performance Optimization", "SEO",
+    "Agile", "Scrum", "Git Flow"
+  ]
+}

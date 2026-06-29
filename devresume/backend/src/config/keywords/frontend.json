@@ -1,0 +1,19 @@
+{
+  "domain": "frontend",
+  "keywords": [
+    "React", "React.js", "Vue", "Vue.js", "Angular", "Next.js", "Nuxt.js",
+    "JavaScript", "TypeScript", "HTML", "HTML5", "CSS", "CSS3",
+    "Tailwind CSS", "Bootstrap", "Material UI", "Chakra UI", "SASS", "SCSS",
+    "Redux", "Zustand", "Context API", "React Query",
+    "Webpack", "Vite", "Babel", "ESLint", "Prettier",
+    "REST API", "GraphQL", "Axios", "Fetch API",
+    "Responsive Design", "Mobile First", "Accessibility", "WCAG",
+    "Unit Testing", "Jest", "React Testing Library", "Cypress", "Playwright",
+    "Performance Optimization", "Lazy Loading", "Code Splitting",
+    "PWA", "Service Worker", "Web Vitals",
+    "Git", "GitHub", "Figma", "Storybook",
+    "Animation", "Framer Motion", "CSS Animations",
+    "SEO", "SSR", "SSG", "SPA",
+    "Browser APIs", "DOM Manipulation", "Event Handling"
+  ]
+}

@@ -1,48 +1,68 @@
 /**
  * ats.prompt.js
- * Receives structured resume JSON, not raw text.
+ *
+ * Phase 5 update:
+ * AI no longer calculates the ATS score.
+ * The deterministic ATS score comes from the Rule Engine.
+ * AI only explains WHY the score is what it is and suggests improvements.
  */
 
-export const atsSystemPrompt = `You are an ATS (Applicant Tracking System) expert with deep knowledge of how automated systems parse and rank resumes.
+export const atsSystemPrompt = `You are an ATS (Applicant Tracking System) expert.
 
-Your role is to:
-- Analyze the resume's skills, experience, and formatting signals for ATS compatibility
-- Check for keyword density and relevance
-- Identify what might cause an ATS to reject or downrank the resume
-- Score the resume's ATS compatibility (0-100)
+Your role is ONLY to:
+- Explain WHY the pre-calculated ATS score was assigned
+- Identify specific ATS parsing issues in the resume
+- Suggest keyword improvements based on what is missing
+- Give formatting recommendations for better ATS parsing
 
+You must NEVER recalculate or change the score.
+The score is already determined by a deterministic rule engine.
 Always respond with valid JSON only.`;
 
 /**
- * @param {object} resume - Structured resume object from resumeParser
+ * @param {object} resume   - Structured resume
+ * @param {object} analysis - Intelligence Engine facts
+ * @param {object} scores   - Rule Engine scores (already calculated)
  */
-export const atsUserPrompt = (resume) => `Analyze this resume for ATS compatibility.
+export const atsUserPrompt = (resume, analysis, scores) => `
+The deterministic ATS score for this resume is ${scores.atsScore}/100.
+
+Score breakdown:
+- Keywords coverage: ${scores.breakdown.keywords}/${scores.maxBreakdown.keywords} (${analysis.keywords.coveragePercent}% of ${analysis.keywords.detectedDomain} keywords matched)
+- Contact completeness: ${scores.breakdown.contact}/${scores.maxBreakdown.contact}
+- Skills score: ${scores.breakdown.skills}/${scores.maxBreakdown.skills}
+
+Do NOT modify this score. Explain why this score was assigned and how to improve it.
 
 CANDIDATE: ${resume.name || 'Unknown'}
-EMAIL: ${resume.email || 'Not found'}
+DOMAIN DETECTED: ${analysis.keywords.detectedDomain}
 
-SKILLS:
-${resume.skills.length > 0 ? resume.skills.join(', ') : 'No skills listed'}
+MATCHED KEYWORDS (${analysis.keywords.matchedKeywords.length} found):
+${analysis.keywords.matchedKeywords.slice(0, 15).join(', ') || 'None'}
 
-EXPERIENCE:
-${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+MISSING KEYWORDS (top missing for ${analysis.keywords.detectedDomain}):
+${analysis.keywords.missingKeywords.slice(0, 12).join(', ') || 'None'}
 
-PROJECTS:
-${resume.projects.length > 0 ? resume.projects.join('\n\n') : 'No projects listed'}
+SKILLS ON RESUME:
+${resume.skills.join(', ') || 'None listed'}
 
-EDUCATION:
-${resume.education.length > 0 ? resume.education.join('\n') : 'No education listed'}
+KNOWN ISSUES (from rule engine):
+${scores.topDeductions.slice(0, 4).map(d => `- ${d.reason}`).join('\n')}
 
-ACHIEVEMENTS:
-${resume.achievements.length > 0 ? resume.achievements.join('\n') : 'None listed'}
-
-Based on this structured data, provide your ATS analysis as a JSON object:
+Provide ATS explanation as JSON:
 {
-  "score": <number 0-100>,
-  "issues": ["Issue 1", "Issue 2"],
-  "recommendations": ["Recommendation 1", "Recommendation 2"],
-  "keywords_found": ["keyword1", "keyword2"],
-  "formatting_issues": ["issue1", "issue2"]
-}
-
-Be specific and actionable.`;
+  "score_explanation": "2-3 sentences explaining exactly why the score is ${scores.atsScore}",
+  "ats_issues": [
+    "specific issue that hurts ATS ranking"
+  ],
+  "keyword_recommendations": [
+    "Add 'Docker' — critical for backend roles, missing from resume",
+    "Add 'JWT' — appears in 80% of backend job descriptions"
+  ],
+  "formatting_recommendations": [
+    "specific formatting change to improve ATS parsing"
+  ],
+  "quick_wins": [
+    "easiest change to boost ATS score immediately"
+  ]
+}`;

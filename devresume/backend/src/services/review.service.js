@@ -19,6 +19,9 @@
 import prisma from '../database/client.js';
 import { processUploadedResume } from './resume.service.js';
 import { orchestrate } from '../ai/orchestrator/agentManager.js';
+import { analyzeResume } from '../intelligence/resumeAnalyzer.js';
+import { calculateScore } from '../ruleEngine/calculateScore.js';
+import { buildFinalReport } from '../ai/aggregator/aggregatorAgent.js';
 import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } from '../ai/agents/companyAgent.js';
 
 // ─────────────────────────────────────────────────────────────
@@ -28,13 +31,28 @@ import { analyzeForCompany, analyzeForMultipleCompanies, SUPPORTED_COMPANIES } f
 /**
  * runAgents(resume)
  *
- * Coordinates execution of multi-agent AI resume reviewer via agentManager.
- *
- * @param {object} resume - Structured resume from resumeParser
- * @returns {object} Aggregated final report
+ * New flow:
+ *   1. Intelligence Engine — gathers facts deterministically (no AI)
+ *   2. Rule Engine         — calculates scores from facts (no AI)
+ *   3. AI Orchestrator     — explains, critiques, recommends (uses AI)
+ *   4. Aggregator          — combines everything into final report
  */
 const runAgents = async (resume) => {
-  return await orchestrate(resume);
+  // Step 1 — Intelligence Engine (pure functions, instant, no API calls)
+  console.log('[ReviewService] Running Intelligence Engine...');
+  const analysis = analyzeResume(resume);
+
+  // Step 2 — Rule Engine (pure math, instant, no API calls)
+  console.log('[ReviewService] Calculating scores...');
+  const scores = calculateScore(analysis);
+
+  // Step 3 — AI Orchestrator (explain/recommend/critique using scores + facts)
+  console.log('[ReviewService] Running AI agents...');
+  const aiReport = await orchestrate(resume, analysis, scores);
+
+  // Step 4 — Aggregator assembles the final report
+  console.log('[ReviewService] Building final report...');
+  return buildFinalReport(resume, analysis, scores, aiReport);
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -95,8 +113,8 @@ export const analyzeAndSave = async (file, userId) => {
     data: {
       userId,
       resumeName: file.originalname,
-      atsScore: report.atsScore,
-      overallScore: report.summary.overallScore,
+      atsScore:   report.atsScore,
+      overallScore: report.overallScore,
       reportJson: report,
     },
   });
@@ -181,22 +199,24 @@ export const deleteReview = async (reviewId, userId) => {
 
 /**
  * analyzeForCompanyGuest(file, company)
- * Analyzes resume against a specific company's hiring bar.
- * No login required.
+ * Runs Intelligence Engine first, passes analysis to company agent.
+ * Analysis is the single source of truth — not the raw resume.
  */
 export const analyzeForCompanyGuest = async (file, company) => {
-  const resume = await processUploadedResume(file);
-  return await analyzeForCompany(resume, company);
+  const resume   = await processUploadedResume(file);
+  const analysis = analyzeResume(resume);          // single source of truth
+  return await analyzeForCompany(analysis, company);
 };
 
 /**
  * analyzeForCompaniesGuest(file, companies)
- * Analyzes resume against multiple companies at once.
+ * Runs Intelligence Engine once, reuses analysis for all companies.
  * No login required. Max 5 companies per request.
  */
 export const analyzeForCompaniesGuest = async (file, companies) => {
-  const resume = await processUploadedResume(file);
-  return await analyzeForMultipleCompanies(resume, companies);
+  const resume   = await processUploadedResume(file);
+  const analysis = analyzeResume(resume);          // run once, reuse for all companies
+  return await analyzeForMultipleCompanies(analysis, companies);
 };
 
 /**

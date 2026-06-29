@@ -240,73 +240,98 @@ export const COMPANY_PROFILES = {
   },
 };
 
-export const companySystemPrompt = `You are an expert technical recruiter and hiring consultant with deep knowledge of what top tech companies look for in candidates.
+export const companySystemPrompt = `You are an expert technical recruiter with deep knowledge of what top tech companies look for.
 
 Your role is to:
-- Evaluate a resume specifically against a target company's hiring bar
-- Check alignment of skills, projects, and experience with the company's tech stack
-- Assess if the candidate meets the company's culture and expectations
+- Evaluate the candidate's analyzed profile against a specific company's hiring bar
+- Check skill alignment using the already-categorized skill data
+- Assess readiness based on keyword coverage and project quality
 - Give a realistic readiness score (0-100)
-- Provide specific, actionable suggestions to improve for that company
+- Provide specific, actionable improvements
 
+You must NOT re-analyze the resume — use the structured analysis provided.
 Always respond with valid JSON only.`;
 
 /**
- * @param {object} resume - Structured resume object from resumeParser
- * @param {string} company - Company key (e.g. "google", "amazon")
+ * @param {object} analysis - Output from resumeAnalyzer.js (single source of truth)
+ * @param {string} company  - Company key (e.g. "google", "amazon")
  */
-export const companyUserPrompt = (resume, company) => {
+export const companyUserPrompt = (analysis, company) => {
   const profile = COMPANY_PROFILES[company.toLowerCase().replace(/\s/g, '')];
 
   if (!profile) {
     throw new Error(`Company profile not found for: ${company}`);
   }
 
-  return `Analyze this candidate's profile for a role at ${profile.name}.
+  // Use analysis as the single source of truth — not raw resume
+  const { skills, projects, experience, keywords, education } = analysis;
+
+  // Calculate how many company tech stack items the candidate already has
+  const allCandidateSkills = [
+    ...skills.categorized.languages,
+    ...skills.categorized.frameworks,
+    ...skills.categorized.databases,
+    ...skills.categorized.tools,
+    ...skills.categorized.cloud,
+    ...skills.categorized.other,
+  ].map(s => s.toLowerCase());
+
+  const matchingTech = profile.techStack.filter(t =>
+    allCandidateSkills.some(s => s.includes(t.toLowerCase()))
+  );
+
+  const missingTech = profile.techStack.filter(t =>
+    !allCandidateSkills.some(s => s.includes(t.toLowerCase()))
+  );
+
+  return `Evaluate this candidate for a role at ${profile.name}.
 
 COMPANY PROFILE:
 - Tier: ${profile.tier}
 - Key Focus Areas: ${profile.focus.join(', ')}
-- Primary Tech Stack: ${profile.techStack.join(', ')}
-- Important Soft Skills: ${profile.softSkills.join(', ')}
+- Required Tech Stack: ${profile.techStack.join(', ')}
+- Soft Skills Valued: ${profile.softSkills.join(', ')}
 - What ${profile.name} looks for:
-${profile.expectations.map((e) => `  • ${e}`).join('\n')}
+${profile.expectations.map(e => `  • ${e}`).join('\n')}
 
-CANDIDATE: ${resume.name || 'Unknown'}
+CANDIDATE ANALYSIS (pre-analyzed — use this, do not re-analyze):
 
-SKILLS:
-${resume.skills.length > 0 ? resume.skills.join(', ') : 'No skills listed'}
+Skills by category:
+- Languages:  ${skills.categorized.languages.join(', ')  || 'none'}
+- Frameworks: ${skills.categorized.frameworks.join(', ') || 'none'}
+- Databases:  ${skills.categorized.databases.join(', ')  || 'none'}
+- Tools:      ${skills.categorized.tools.join(', ')      || 'none'}
+- Cloud:      ${skills.categorized.cloud.join(', ')      || 'none'}
+Total skills: ${skills.totalSkills || 0}
 
-EXPERIENCE:
-${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+Tech stack match:
+- Already has: ${matchingTech.join(', ') || 'none from required stack'}
+- Missing:     ${missingTech.join(', ')  || 'none'}
 
-PROJECTS:
-${resume.projects.length > 0 ? resume.projects.join('\n\n') : 'No projects listed'}
+Keyword coverage: ${keywords.coveragePercent}% (${keywords.detectedDomain} domain)
+Missing keywords: ${keywords.missingKeywords.slice(0, 8).join(', ')}
 
-EDUCATION:
-${resume.education.length > 0 ? resume.education.join('\n') : 'Not listed'}
+Projects: ${projects.projects?.length || 0} total
+${(projects.projects || []).map(p => `- "${p.title}" scored ${p.score}/${p.maxScore} (issues: ${p.issues.join(', ') || 'none'})`).join('\n')}
 
-ACHIEVEMENTS:
-${resume.achievements.length > 0 ? resume.achievements.join('\n') : 'None listed'}
+Experience entries: ${experience.entries?.length || 0}
+Has metrics in experience: ${experience.checks?.hasMetrics || false}
 
-Evaluate how ready this candidate is for ${profile.name} and respond with this exact JSON structure:
+Education: ${education.entries?.join(', ') || 'not listed'}
+
+Evaluate readiness for ${profile.name} and respond with this JSON:
 {
   "company": "${profile.name}",
   "tier": "${profile.tier}",
   "readiness_score": <number 0-100>,
-  "is_ready": <true if score >= 70, false otherwise>,
-  "verdict": "one line summary of readiness",
-  "matching_skills": ["skills the candidate has that match"],
-  "missing_skills": ["important skills missing for this company"],
-  "matching_experience": ["experience/projects that align with company needs"],
-  "gaps": ["specific gaps that would hold this candidate back"],
+  "is_ready": <true if score >= 70>,
+  "verdict": "one line summary",
+  "matching_skills": ["skills candidate has that align with ${profile.name}"],
+  "missing_skills": ["important skills missing for ${profile.name}"],
+  "gaps": ["specific gaps holding the candidate back"],
   "suggestions": [
-    {
-      "area": "area to improve",
-      "action": "specific thing to do",
-      "priority": "high|medium|low"
-    }
+    { "area": "area", "action": "specific action", "priority": "high|medium|low" }
   ],
-  "resume_improvements": ["specific resume changes to target this company"]
+  "resume_improvements": ["specific resume changes to target ${profile.name}"]
 }`;
 };

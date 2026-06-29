@@ -1,22 +1,21 @@
 /**
  * companyAgent.js
- * Receives structured resume JSON from resumeParser.
+ *
+ * Consumes analyzer output as the single source of truth.
+ * Does NOT re-read the raw resume — uses pre-analyzed facts.
  */
 import { callAI } from '../../config/aiClient.js';
 import { companySystemPrompt, companyUserPrompt, COMPANY_PROFILES } from '../prompts/company.prompt.js';
 
-// List of all supported company keys (e.g. "google", "amazon")
 export const SUPPORTED_COMPANIES = Object.keys(COMPANY_PROFILES);
 
 /**
- * analyzeForCompany(resume, company)
+ * analyzeForCompany(analysis, company)
  *
- * Analyzes a structured resume against a specific company's hiring bar.
- *
- * @param {object} resume  - Structured resume object from resumeParser
- * @param {string} company - Company key e.g. "google", "amazon"
+ * @param {object} analysis - Output from resumeAnalyzer.js (single source of truth)
+ * @param {string} company  - Company key e.g. "google", "amazon"
  */
-export const analyzeForCompany = async (resume, company) => {
+export const analyzeForCompany = async (analysis, company) => {
   const companyKey = company.toLowerCase().replace(/\s/g, '');
 
   if (!COMPANY_PROFILES[companyKey]) {
@@ -26,8 +25,7 @@ export const analyzeForCompany = async (resume, company) => {
   }
 
   try {
-    const data = await callAI(companySystemPrompt, companyUserPrompt(resume, company));
-    return data;
+    return await callAI(companySystemPrompt, companyUserPrompt(analysis, company));
   } catch (error) {
     console.error(`[Company Agent] Error (${company}):`, error.message);
     throw new Error(`Company analysis failed for ${company}: ${error.message}`);
@@ -35,31 +33,24 @@ export const analyzeForCompany = async (resume, company) => {
 };
 
 /**
- * analyzeForMultipleCompanies(resume, companies)
+ * analyzeForMultipleCompanies(analysis, companies)
  *
- * Analyzes a resume against multiple companies in parallel.
- * Uses Promise.allSettled so one failure doesn't block the rest.
- *
- * @param {object}   resume    - Structured resume object from resumeParser
+ * @param {object}   analysis  - Output from resumeAnalyzer.js
  * @param {string[]} companies - Array of company keys
  */
-export const analyzeForMultipleCompanies = async (resume, companies) => {
+export const analyzeForMultipleCompanies = async (analysis, companies) => {
   const results = await Promise.allSettled(
-    companies.map((company) => analyzeForCompany(resume, company))
+    companies.map(company => analyzeForCompany(analysis, company))
   );
 
   return results.map((result, index) => {
-    if (result.status === 'fulfilled') {
-      return result.value;
-    } else {
-      // Return a clean error object instead of crashing
-      return {
-        company: companies[index],
-        error: result.reason.message,
-        readiness_score: 0,
-        is_ready: false,
-        verdict: 'Analysis failed for this company',
-      };
-    }
+    if (result.status === 'fulfilled') return result.value;
+    return {
+      company:         companies[index],
+      error:           result.reason.message,
+      readiness_score: 0,
+      is_ready:        false,
+      verdict:         'Analysis failed for this company',
+    };
   });
 };

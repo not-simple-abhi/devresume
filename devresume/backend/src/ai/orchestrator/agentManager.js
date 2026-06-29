@@ -1,90 +1,67 @@
-import { analyzeATS } from '../agents/atsAgent.js';
+/**
+ * agentManager.js
+ *
+ * AI Orchestrator — coordinates all AI agents.
+ *
+ * IMPORTANT: AI agents NO LONGER calculate scores.
+ * Scores come from the Rule Engine (calculateScore.js).
+ * AI agents only: Explain, Critique, Recommend, Rewrite.
+ *
+ * Input:
+ *   resume   — structured resume JSON
+ *   analysis — facts from Intelligence Engine
+ *   scores   — calculated scores from Rule Engine
+ *
+ * Output: AI explanations and recommendations
+ */
+
+import { analyzeATS }      from '../agents/atsAgent.js';
 import { analyzeRecruiter } from '../agents/recruiterAgent.js';
-import { analyzeGrammar } from '../agents/grammarAgent.js';
-import { analyzeSkills } from '../agents/skillsAgent.js';
-import { analyzeProjects } from '../agents/projectAgent.js';
-import { aggregateReports } from '../aggregator/aggregatorAgent.js';
+import { analyzeGrammar }   from '../agents/grammarAgent.js';
+import { analyzeSkills }    from '../agents/skillsAgent.js';
+import { analyzeProjects }  from '../agents/projectAgent.js';
 
 /**
- * Runs the ATS agent.
- * @param {object} resume - Structured resume data
+ * orchestrate(resume, analysis, scores)
+ *
+ * Runs AI agents sequentially (to respect free tier rate limits).
+ * Each agent receives the pre-calculated scores + facts so it
+ * focuses on explanation, not calculation.
+ *
+ * @param {object} resume   - Structured resume from resumeParser
+ * @param {object} analysis - Facts from Intelligence Engine
+ * @param {object} scores   - Scores from Rule Engine
  */
-export const runATS = async (resume) => {
-  return await analyzeATS(resume);
-};
+export const orchestrate = async (resume, analysis, scores) => {
+  console.log(`[AgentManager] Starting AI orchestration for: ${resume.name || 'Unknown'}`);
 
-/**
- * Runs the Grammar agent.
- * @param {object} resume - Structured resume data
- */
-export const runGrammar = async (resume) => {
-  return await analyzeGrammar(resume);
-};
+  // ATS agent — explain the ATS score, keyword gaps, formatting
+  const ats = await analyzeATS(resume, analysis, scores);
+  console.log('[AgentManager] ATS done');
 
-/**
- * Runs the Recruiter agent.
- * @param {object} resume - Structured resume data
- */
-export const runRecruiter = async (resume) => {
-  return await analyzeRecruiter(resume);
-};
+  // Recruiter agent — overall impression, strengths, weaknesses
+  const recruiter = await analyzeRecruiter(resume, analysis, scores);
+  console.log('[AgentManager] Recruiter done');
 
-/**
- * Runs the Skills agent.
- * @param {object} resume - Structured resume data
- */
-export const runSkills = async (resume) => {
-  return await analyzeSkills(resume);
-};
+  // Grammar agent — writing quality, tone, clarity
+  const grammar = await analyzeGrammar(resume, analysis, scores);
+  console.log('[AgentManager] Grammar done');
 
-/**
- * Runs the Projects agent.
- * @param {object} resume - Structured resume data
- */
-export const runProjects = async (resume) => {
-  return await analyzeProjects(resume);
-};
+  // Skills agent — missing skills, recommendations
+  const skills = await analyzeSkills(resume, analysis, scores);
+  console.log('[AgentManager] Skills done');
 
-/**
- * Aggregates all individual agent reports.
- * @param {object} agentResults - Combined results from all agents
- */
-export const aggregate = async (agentResults) => {
-  return await aggregateReports(agentResults);
-};
+  // Projects agent — project improvement suggestions
+  const projects = await analyzeProjects(resume, analysis, scores);
+  console.log('[AgentManager] Projects done');
 
-/**
- * Main coordinator function. Runs all agents sequentially to respect rate limits
- * and returns the final aggregated report.
- * @param {object} resume - Structured resume data
- * @returns {object} Final aggregated report
- */
-export const orchestrate = async (resume) => {
-  console.log(`[AgentManager] Starting orchestration for: ${resume.name || 'Unknown'}`);
+  console.log('[AgentManager] All AI agents done');
 
-  const ats = await runATS(resume);
-  console.log('[AgentManager] ATS agent analysis completed');
-
-  const recruiter = await runRecruiter(resume);
-  console.log('[AgentManager] Recruiter agent analysis completed');
-
-  const grammar = await runGrammar(resume);
-  console.log('[AgentManager] Grammar agent analysis completed');
-
-  const skills = await runSkills(resume);
-  console.log('[AgentManager] Skills agent analysis completed');
-
-  const projects = await runProjects(resume);
-  console.log('[AgentManager] Projects agent analysis completed');
-
-  console.log('[AgentManager] Aggregating agent outputs...');
-  const finalReport = await aggregate({
+  return {
     ats,
     recruiter,
     grammar,
     skills,
     projects,
-  });
-
-  return finalReport;
+  };
 };

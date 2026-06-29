@@ -1,45 +1,62 @@
 /**
  * project.prompt.js
- * Receives structured resume JSON, not raw text.
+ *
+ * AI role: Suggest how to improve project descriptions.
+ * Do NOT score — Rule Engine handles scoring.
  */
 
-export const projectSystemPrompt = `You are a project portfolio advisor who helps candidates showcase their work effectively.
+export const projectSystemPrompt = `You are a project portfolio advisor for software engineers.
 
-Your role is to:
-- Evaluate each project description for clarity and impact
-- Suggest specific improvements to project descriptions
-- Identify missing information (metrics, tech stack, impact)
-- Recommend additional projects based on the candidate's skill set
-- Score the overall project portfolio quality (0-100)
+Your role is ONLY to:
+- Suggest specific improvements to each project description
+- Recommend adding metrics, links, tech stack mentions
+- Suggest new project ideas based on candidate's skill gaps
+- Help rewrite weak project descriptions
 
+You must NOT calculate scores — scores are already calculated.
 Always respond with valid JSON only.`;
 
 /**
- * @param {object} resume - Structured resume object from resumeParser
+ * @param {object} resume   - Structured resume
+ * @param {object} analysis - Intelligence Engine facts
+ * @param {object} scores   - Rule Engine scores
  */
-export const projectUserPrompt = (resume) => `Evaluate the project portfolio for this candidate.
+export const projectUserPrompt = (resume, analysis, scores) => `
+Help improve this candidate's project portfolio.
 
 CANDIDATE: ${resume.name || 'Unknown'}
 
-PROJECTS:
-${resume.projects.length > 0
-  ? resume.projects.map((p, i) => `Project ${i + 1}:\n${p}`).join('\n\n')
-  : 'No projects listed'}
+PRE-CALCULATED PROJECT SCORE: ${scores.breakdown.projects}/${scores.maxBreakdown.projects}
 
-SKILLS AVAILABLE:
-${resume.skills.length > 0 ? resume.skills.join(', ') : 'Not listed'}
+PROJECT ANALYSIS (from rule engine):
+${(analysis.projects.projects || []).map(p =>
+  `- "${p.title}": ${p.score}/${p.maxScore} — Issues: ${p.issues.join(', ') || 'none'}`
+).join('\n') || 'No project data'}
 
-EXPERIENCE (for context):
-${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+CURRENT PROJECTS:
+${resume.projects.map((p, i) => `Project ${i + 1}:\n${p}`).join('\n\n') || 'No projects listed'}
 
-Provide your project portfolio analysis as a JSON object:
+SKILLS AVAILABLE: ${resume.skills.join(', ') || 'None'}
+
+MISSING KEYWORDS: ${(analysis.keywords.missingKeywords || []).slice(0, 8).join(', ')}
+
+Provide project improvement advice as JSON:
 {
-  "project_strengths": ["Strength 1", "Strength 2"],
   "project_suggestions": [
-    { "current_project": "project name or general", "suggestion": "specific improvement", "impact": "how this helps" }
+    {
+      "project_name": "project title",
+      "current_issue": "what is weak",
+      "improved_description": "rewritten 1-2 line description with action verb + tech + metric",
+      "missing_elements": ["metric", "github link", "live link"]
+    }
   ],
-  "portfolio_score": <number 0-100>,
   "recommended_projects": [
-    { "project_idea": "name", "description": "what to build", "skills_demonstrated": ["skill1"] }
-  ]
+    {
+      "project_idea": "name",
+      "description": "what to build in 1 sentence",
+      "skills_demonstrated": ["skill1", "skill2"],
+      "why_valuable": "why this helps the candidate"
+    }
+  ],
+  "quick_wins": ["immediate things to add to existing projects"]
 }`;

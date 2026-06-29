@@ -1,0 +1,22 @@
+{
+  "domain": "backend",
+  "keywords": [
+    "Node.js", "Express", "Express.js", "REST API", "RESTful API",
+    "JWT", "Authentication", "Authorization", "Middleware",
+    "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite",
+    "Prisma", "Sequelize", "Mongoose",
+    "Docker", "Kubernetes", "CI/CD",
+    "AWS", "GCP", "Azure", "Lambda",
+    "GraphQL", "WebSockets", "gRPC",
+    "Microservices", "Message Queue", "Kafka", "RabbitMQ",
+    "Python", "Django", "Flask", "FastAPI",
+    "Java", "Spring Boot", "Spring",
+    "Go", "Rust", "C#", ".NET",
+    "API Design", "System Design", "Scalability",
+    "Load Balancing", "Caching", "Rate Limiting",
+    "Unit Testing", "Integration Testing", "Jest", "Mocha",
+    "Git", "GitHub", "Linux", "Bash",
+    "ORM", "Database Design", "SQL", "NoSQL",
+    "OAuth", "HTTPS", "TLS", "Security"
+  ]
+}

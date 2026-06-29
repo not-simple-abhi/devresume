@@ -1,47 +1,47 @@
 /**
  * grammar.prompt.js
- * Receives structured resume JSON, not raw text.
- * Uses rawText for grammar analysis since we need the actual written content.
+ *
+ * AI role: Find writing issues, suggest rewrites.
+ * Do NOT score — Rule Engine handles scoring.
  */
 
-export const grammarSystemPrompt = `You are a professional editor specializing in resume writing.
+export const grammarSystemPrompt = `You are a professional resume editor.
 
-Your role is to:
-- Identify grammar, spelling, and punctuation errors
-- Suggest improvements for clarity and conciseness
-- Evaluate overall writing quality and professionalism
-- Check for consistency in tense, voice, and style
-- Score the resume's language quality (0-100)
+Your role is ONLY to:
+- Find grammar, spelling, punctuation errors
+- Suggest clearer rewrites for weak sentences
+- Evaluate writing tone (professional/casual/too formal)
+- Check tense consistency
 
+You must NOT calculate scores.
 Always respond with valid JSON only.`;
 
 /**
- * @param {object} resume - Structured resume object from resumeParser
- * Grammar agent uses rawText since it needs the actual written words.
+ * @param {object} resume   - Structured resume
+ * @param {object} analysis - Intelligence Engine facts
+ * @param {object} scores   - Rule Engine scores
  */
-export const grammarUserPrompt = (resume) => `Check this resume content for grammar and writing quality.
+export const grammarUserPrompt = (resume, analysis, scores) => `
+Check this resume for grammar and writing quality.
 
 CANDIDATE: ${resume.name || 'Unknown'}
 
 EXPERIENCE DESCRIPTIONS:
-${resume.experience.length > 0 ? resume.experience.join('\n\n') : 'No experience listed'}
+${resume.experience.join('\n\n') || 'None listed'}
 
 PROJECT DESCRIPTIONS:
-${resume.projects.length > 0 ? resume.projects.join('\n\n') : 'No projects listed'}
+${resume.projects.join('\n\n') || 'None listed'}
 
 ACHIEVEMENTS:
-${resume.achievements.length > 0 ? resume.achievements.join('\n') : 'None listed'}
+${resume.achievements.join('\n') || 'None listed'}
 
-FULL RESUME TEXT (for reference):
-${resume.rawText ? resume.rawText.substring(0, 2000) : 'Not available'}
-
-Provide your grammar analysis as a JSON object:
+Provide grammar analysis as JSON:
 {
   "errors": [
-    { "type": "grammar|spelling|punctuation", "text": "problematic text", "suggestion": "corrected version" }
+    { "type": "grammar|spelling|punctuation", "text": "original text", "suggestion": "corrected version" }
   ],
-  "suggestions": ["improvement 1", "improvement 2"],
-  "clarity_score": <number 0-100>,
+  "writing_suggestions": ["actionable writing improvement 1", "improvement 2"],
   "tone": "professional|casual|too_formal",
-  "consistency_issues": ["issue1", "issue2"]
+  "tense_consistent": true,
+  "overall_writing_quality": "strong|average|weak"
 }`;

@@ -1,0 +1,23 @@
+{
+  "domain": "ai",
+  "keywords": [
+    "Machine Learning", "Deep Learning", "Neural Networks",
+    "Python", "TensorFlow", "PyTorch", "Keras", "scikit-learn",
+    "NumPy", "Pandas", "Matplotlib", "Seaborn",
+    "NLP", "Natural Language Processing", "Computer Vision",
+    "LLM", "GPT", "BERT", "Transformers", "Hugging Face",
+    "OpenAI", "LangChain", "RAG", "Vector Database",
+    "Pinecone", "Chroma", "FAISS",
+    "Data Science", "Data Analysis", "Feature Engineering",
+    "Model Training", "Model Evaluation", "Hyperparameter Tuning",
+    "Regression", "Classification", "Clustering",
+    "CNN", "RNN", "LSTM", "Attention Mechanism",
+    "Prompt Engineering", "Fine-tuning", "Transfer Learning",
+    "MLOps", "Model Deployment", "FastAPI", "Flask",
+    "AWS SageMaker", "Google Colab", "Jupyter Notebook",
+    "Statistics", "Linear Algebra", "Probability",
+    "A/B Testing", "Experiment Design",
+    "Reinforcement Learning", "GANs",
+    "Data Pipeline", "ETL", "Apache Spark", "Hadoop"
+  ]
+}

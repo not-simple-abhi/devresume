@@ -209,6 +209,8 @@ const parseSkills = (text) => {
     const items = match[1]
       .split(/[,|]/)
       .map(s => s.trim())
+      // Remove anything that looks like a new label "Word:  ..."
+      .map(s => s.split(/\s{2,}[A-Za-z ]+:/)[0].trim())
       .filter(s => s.length > 0 && s.length < 40);
     items.forEach(s => skills.add(s));
   }

@@ -1,19 +1,17 @@
 import { callAI } from '../../config/aiClient.js';
 import { grammarSystemPrompt, grammarUserPrompt } from '../prompts/grammar.prompt.js';
-import { extractJsonFromText } from '../../utils/responseFormatter.js';
 
-export const analyzeGrammar = async (resume) => {
+export const analyzeGrammar = async (resume, analysis, scores) => {
   try {
-    return await callAI(grammarSystemPrompt, grammarUserPrompt(resume));
+    return await callAI(grammarSystemPrompt, grammarUserPrompt(resume, analysis, scores));
   } catch (error) {
     console.error('[Grammar Agent] Error:', error.message);
-    // Return safe default so other agents aren't blocked
     return {
       errors: [],
-      suggestions: ['Could not analyze grammar at this time'],
-      clarity_score: 50,
+      writing_suggestions: ['Could not analyze grammar at this time'],
       tone: 'professional',
-      consistency_issues: [],
+      tense_consistent: true,
+      overall_writing_quality: 'average',
     };
   }
 };
