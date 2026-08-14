@@ -1,10 +1,4 @@
-/**
- * scoringConfig.js
- *
- * Single source of truth for all scoring weights.
- * Never hardcode these numbers anywhere else.
- * Total = 100
- */
+
 
 export const SCORING_CONFIG = {
   contact:    { weight: 10,  label: 'Contact Information' },
@@ -15,7 +9,7 @@ export const SCORING_CONFIG = {
   keywords:   { weight: 10,  label: 'Keyword Coverage' },
 };
 
-// Score labels
+
 export const getScoreLabel = (score) => {
   if (score >= 85) return 'Excellent';
   if (score >= 70) return 'Good';

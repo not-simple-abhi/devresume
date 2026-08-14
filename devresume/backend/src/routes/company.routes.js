@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-// All company routes are public — no login required
+
 router.get('/list', listCompanies);
 router.post('/analyze', uploadMiddleware.single('resume'), analyzeOneCompany);
 router.post('/analyze/batch', uploadMiddleware.single('resume'), analyzeMultipleCompanies);

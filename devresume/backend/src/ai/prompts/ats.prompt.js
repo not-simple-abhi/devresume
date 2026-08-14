@@ -1,11 +1,4 @@
-/**
- * ats.prompt.js
- *
- * Phase 5 update:
- * AI no longer calculates the ATS score.
- * The deterministic ATS score comes from the Rule Engine.
- * AI only explains WHY the score is what it is and suggests improvements.
- */
+
 
 export const atsSystemPrompt = `You are an ATS (Applicant Tracking System) expert.
 
@@ -19,11 +12,7 @@ You must NEVER recalculate or change the score.
 The score is already determined by a deterministic rule engine.
 Always respond with valid JSON only.`;
 
-/**
- * @param {object} resume   - Structured resume
- * @param {object} analysis - Intelligence Engine facts
- * @param {object} scores   - Rule Engine scores (already calculated)
- */
+
 export const atsUserPrompt = (resume, analysis, scores) => `
 The deterministic ATS score for this resume is ${scores.atsScore}/100.
 

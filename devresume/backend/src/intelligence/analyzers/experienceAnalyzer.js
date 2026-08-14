@@ -1,17 +1,4 @@
-/**
- * experienceAnalyzer.js
- *
- * Analyzes work experience / internships for quality.
- * Max score: 20 points
- *
- * Scoring:
- *   Has experience entries     → 4 pts
- *   2+ entries                 → 3 pts
- *   Mentions dates/duration    → 3 pts
- *   Uses action verbs          → 4 pts
- *   Mentions technologies      → 3 pts
- *   Has metrics/impact         → 3 pts
- */
+
 
 const ACTION_VERBS = [
   'built', 'developed', 'created', 'designed', 'implemented', 'engineered',
@@ -73,7 +60,7 @@ export const analyzeExperience = (resume) => {
   };
 
   if (!checks.hasEntries) {
-    // No experience is OK for freshers — small deduction
+    
     deductions.push({ reason: 'No work experience or internships listed', points: -4 });
     return {
       maxScore: 20,
@@ -84,7 +71,7 @@ export const analyzeExperience = (resume) => {
     };
   }
 
-  earnedScore += 4; // has experience
+  earnedScore += 4; 
 
   if (checks.hasMultiple) {
     earnedScore += 3;

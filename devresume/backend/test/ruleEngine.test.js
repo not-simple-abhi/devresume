@@ -1,7 +1,4 @@
-/**
- * ruleEngine.test.js
- * Run: node test/ruleEngine.test.js
- */
+
 
 import { analyzeResume }   from '../src/intelligence/resumeAnalyzer.js';
 import { calculateScore }  from '../src/ruleEngine/calculateScore.js';

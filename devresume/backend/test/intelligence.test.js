@@ -1,15 +1,8 @@
-/**
- * intelligence.test.js
- *
- * Tests the Intelligence Engine (all 6 analyzers + resumeAnalyzer).
- * No API calls, no DB — 100% deterministic.
- *
- * Run: node test/intelligence.test.js
- */
+
 
 import { analyzeResume } from '../src/intelligence/resumeAnalyzer.js';
 
-// Abhinav's actual resume data (from our parser output)
+
 const RESUME = {
   name: 'Abhinav Kumar',
   email: 'abhinav.kumar.ug24@nsut.ac.in',
@@ -59,9 +52,9 @@ Managed coordination between performers and technical crews to ensure scheduling
   rawText: 'Abhinav Kumar C++ Python JavaScript Node.js Express.js MongoDB React.js Flask MySQL Git GitHub REST API',
 };
 
-// ─────────────────────────────────────────────
-// RUN TESTS
-// ─────────────────────────────────────────────
+
+
+
 
 let passed = 0;
 let failed = 0;
@@ -80,7 +73,7 @@ console.log('\n🔍 Running Intelligence Engine tests...\n');
 
 const result = analyzeResume(RESUME);
 
-// ── Contact Analyzer ──────────────────────────
+
 console.log('\n📋 Contact Analyzer');
 check('has earnedScore',        typeof result.contact.earnedScore === 'number');
 check('email detected',         result.contact.checks.email === true);
@@ -91,7 +84,7 @@ check('score > 0',              result.contact.earnedScore > 0);
 check('deductions array',       Array.isArray(result.contact.deductions));
 console.log(`     Score: ${result.contact.earnedScore}/${result.contact.maxScore}`);
 
-// ── Education Analyzer ────────────────────────
+
 console.log('\n📋 Education Analyzer');
 check('has entries',            result.education.entries.length > 0);
 check('degree detected',        result.education.checks.hasDegree === true);
@@ -101,7 +94,7 @@ check('grade detected',         result.education.checks.hasGrade === true);
 check('score > 0',              result.education.earnedScore > 0);
 console.log(`     Score: ${result.education.earnedScore}/${result.education.maxScore}`);
 
-// ── Skills Analyzer ───────────────────────────
+
 console.log('\n📋 Skills Analyzer');
 check('has skills',             result.skills.checks.hasSkills === true);
 check('10+ skills detected',    result.skills.checks.hasTenPlus === true);
@@ -115,7 +108,7 @@ console.log(`     Languages: ${result.skills.categorized.languages.join(', ')}`)
 console.log(`     Frameworks: ${result.skills.categorized.frameworks.join(', ')}`);
 console.log(`     Databases: ${result.skills.categorized.databases.join(', ')}`);
 
-// ── Project Analyzer ──────────────────────────
+
 console.log('\n📋 Project Analyzer');
 check('has projects',           result.projects.checks.hasProjects === true);
 check('multiple projects',      result.projects.checks.hasMultiple === true);
@@ -127,7 +120,7 @@ result.projects.projects.forEach(p => {
   console.log(`     Project ${p.index}: "${p.title}" → ${p.score}/${p.maxScore}`);
 });
 
-// ── Experience Analyzer ───────────────────────
+
 console.log('\n📋 Experience Analyzer');
 check('has entries',            result.experience.checks.hasEntries === true);
 check('dates detected',         result.experience.checks.hasDates === true);
@@ -135,7 +128,7 @@ check('action verbs',           result.experience.checks.hasActionVerbs === true
 check('score > 0',              result.experience.earnedScore > 0);
 console.log(`     Score: ${result.experience.earnedScore}/${result.experience.maxScore}`);
 
-// ── Keyword Analyzer ──────────────────────────
+
 console.log('\n📋 Keyword Analyzer');
 check('domain detected',        result.keywords.detectedDomain !== '');
 check('coverage > 0',           result.keywords.coveragePercent > 0);
@@ -149,7 +142,7 @@ console.log(`     Matched: ${result.keywords.matchedKeywords.slice(0, 5).join(',
 console.log(`     Missing: ${result.keywords.missingKeywords.slice(0, 5).join(', ')}...`);
 console.log(`     Score: ${result.keywords.earnedScore}/${result.keywords.maxScore}`);
 
-// ── Summary ───────────────────────────────────
+
 console.log('\n📋 Overall Summary');
 check('candidateName set',      result.candidateName === 'Abhinav Kumar');
 check('summary exists',         typeof result.summary === 'object');
@@ -166,7 +159,7 @@ const maxTotal = result.contact.maxScore + result.education.maxScore +
 
 console.log(`\n📊 Total Raw Score: ${total}/${maxTotal}`);
 
-// ─────────────────────────────────────────────
+
 console.log('\n' + '─'.repeat(40));
 console.log(`Results: ${passed} passed, ${failed} failed`);
 if (failed === 0) {

@@ -14,7 +14,7 @@ export const config = {
   uploadDir: process.env.UPLOAD_DIR || 'uploads',
 };
 
-// GEMINI_API_KEY is optional at startup; agents will error if it's missing when used.
+
 const requiredEnvVars = ['JWT_SECRET', 'JWT_REFRESH_SECRET', 'DATABASE_URL'];
 
 requiredEnvVars.forEach((varName) => {

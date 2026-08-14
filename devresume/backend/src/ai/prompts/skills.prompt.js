@@ -1,9 +1,4 @@
-/**
- * skills.prompt.js
- *
- * AI role: Recommend missing skills, explain why they matter.
- * Do NOT score — Rule Engine handles scoring.
- */
+
 
 export const skillsSystemPrompt = `You are a technical skills advisor for software engineers.
 
@@ -16,11 +11,7 @@ Your role is ONLY to:
 You must NOT calculate scores.
 Always respond with valid JSON only.`;
 
-/**
- * @param {object} resume   - Structured resume
- * @param {object} analysis - Intelligence Engine facts
- * @param {object} scores   - Rule Engine scores
- */
+
 export const skillsUserPrompt = (resume, analysis, scores) => `
 Analyze this candidate's skills and recommend what to add.
 

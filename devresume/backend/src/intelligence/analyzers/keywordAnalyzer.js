@@ -1,16 +1,4 @@
-/**
- * keywordAnalyzer.js
- *
- * No AI involved. Compares resume skills/text against
- * domain-specific keyword lists to calculate coverage %.
- * Max score: 20 points
- *
- * Steps:
- * 1. Detect which domain the resume targets (backend/frontend/fullstack/ai)
- * 2. Compare resume skills against that domain's keywords
- * 3. Calculate coverage percentage
- * 4. Score based on coverage
- */
+
 
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
@@ -19,7 +7,7 @@ import fs from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Load all keyword files
+
 const loadKeywords = () => {
   const keywordsDir = join(__dirname, '../../config/keywords');
   const domains = {};
@@ -33,13 +21,7 @@ const loadKeywords = () => {
   return domains;
 };
 
-/**
- * detectDomain(resume)
- *
- * Figures out which domain the resume is targeting
- * by counting keyword matches across all domains.
- * Returns the domain with the highest match count.
- */
+
 const detectDomain = (allKeywords, resumeText) => {
   const lower = resumeText.toLowerCase();
   const scores = {};
@@ -48,14 +30,14 @@ const detectDomain = (allKeywords, resumeText) => {
     scores[domain] = keywords.filter(k => lower.includes(k.toLowerCase())).length;
   }
 
-  // Return the domain with the highest match count
+  
   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] || 'fullstack';
 };
 
 export const analyzeKeywords = (resume) => {
   const allKeywords = loadKeywords();
 
-  // Build a single text blob from all resume sections for matching
+  
   const resumeText = [
     resume.rawText || '',
     ...(resume.skills || []),
@@ -63,11 +45,11 @@ export const analyzeKeywords = (resume) => {
     ...(resume.experience || []),
   ].join(' ').toLowerCase();
 
-  // Detect domain
+  
   const detectedDomain = detectDomain(allKeywords, resumeText);
   const domainKeywords = allKeywords[detectedDomain] || [];
 
-  // Find which keywords match and which are missing
+  
   const matchedKeywords = domainKeywords.filter(k =>
     resumeText.includes(k.toLowerCase())
   );
@@ -76,7 +58,7 @@ export const analyzeKeywords = (resume) => {
     !resumeText.includes(k.toLowerCase())
   );
 
-  // Calculate coverage for all domains (useful for frontend display)
+  
   const coverage = {};
   for (const [domain, keywords] of Object.entries(allKeywords)) {
     const matched = keywords.filter(k => resumeText.includes(k.toLowerCase())).length;
@@ -85,7 +67,7 @@ export const analyzeKeywords = (resume) => {
 
   const coveragePercent = Math.round((matchedKeywords.length / domainKeywords.length) * 100);
 
-  // Score based on coverage percentage
+  
   let earnedScore = 0;
   const deductions = [];
 
@@ -107,9 +89,9 @@ export const analyzeKeywords = (resume) => {
     earnedScore: Math.min(earnedScore, 20),
     detectedDomain,
     coveragePercent,
-    coverage,          // all domains coverage
+    coverage,          
     matchedKeywords,
-    missingKeywords: missingKeywords.slice(0, 15), // top 15 missing
+    missingKeywords: missingKeywords.slice(0, 15), 
     deductions,
   };
 };

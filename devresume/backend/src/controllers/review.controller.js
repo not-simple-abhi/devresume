@@ -7,7 +7,7 @@ import {
 } from '../services/review.service.js';
 import { formatSuccessResponse } from '../utils/responseFormatter.js';
 
-// POST /api/review/analyze — no login required
+
 export const analyzeResume = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -21,7 +21,7 @@ export const analyzeResume = async (req, res, next) => {
   }
 };
 
-// POST /api/review/analyze/save — login required, saves result
+
 export const analyzeAndSaveResume = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -35,7 +35,7 @@ export const analyzeAndSaveResume = async (req, res, next) => {
   }
 };
 
-// GET /api/review/history — login required
+
 export const getHistory = async (req, res, next) => {
   try {
     const history = await getUserHistory(req.userId);
@@ -45,7 +45,7 @@ export const getHistory = async (req, res, next) => {
   }
 };
 
-// GET /api/review/:id — login required
+
 export const getReview = async (req, res, next) => {
   try {
     const review = await getReviewById(req.params.id, req.userId);
@@ -55,7 +55,7 @@ export const getReview = async (req, res, next) => {
   }
 };
 
-// DELETE /api/review/:id — login required
+
 export const removeReview = async (req, res, next) => {
   try {
     const result = await deleteReview(req.params.id, req.userId);

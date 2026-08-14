@@ -1,6 +1,6 @@
 import prisma from '../database/client.js';
 
-// Compare two saved reviews side by side
+
 export const compareReviews = async (reviewId1, reviewId2, userId) => {
   const [review1, review2] = await Promise.all([
     prisma.review.findFirst({ where: { id: reviewId1, userId } }),

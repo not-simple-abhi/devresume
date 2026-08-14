@@ -1,20 +1,6 @@
-/**
- * skillsAnalyzer.js
- *
- * Categorizes skills and checks for quality/quantity.
- * Max score: 15 points
- *
- * Scoring:
- *   Has skills at all          → 3 pts
- *   5+ skills                  → 2 pts
- *   10+ skills                 → 2 pts
- *   Has programming languages  → 2 pts
- *   Has frameworks             → 2 pts
- *   Has databases              → 2 pts
- *   No duplicates              → 2 pts (deduction if found)
- */
 
-// Categorization maps — order matters (first match wins)
+
+
 const LANGUAGES = [
   'javascript', 'typescript', 'python', 'java', 'c++', 'c#', 'c ',
   'go', 'rust', 'kotlin', 'swift', 'php', 'ruby', 'scala', 'dart',
@@ -61,7 +47,7 @@ export const analyzeSkills = (resume) => {
   const rawSkills = resume.skills || [];
   const deductions = [];
 
-  // Detect duplicates (case-insensitive)
+  
   const seen = new Set();
   const duplicates = [];
   const uniqueSkills = [];
@@ -76,7 +62,7 @@ export const analyzeSkills = (resume) => {
     }
   }
 
-  // Categorize each unique skill
+  
   const categorized = {
     languages:  [],
     frameworks: [],

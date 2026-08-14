@@ -5,13 +5,13 @@ import {
 } from '../services/review.service.js';
 import { formatSuccessResponse } from '../utils/responseFormatter.js';
 
-// GET /api/company/list — returns all supported companies
+
 export const listCompanies = (req, res) => {
   const companies = getSupportedCompanies();
   res.status(200).json(formatSuccessResponse(companies, 'Supported companies'));
 };
 
-// POST /api/company/analyze — analyze against a single company
+
 export const analyzeOneCompany = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -31,7 +31,7 @@ export const analyzeOneCompany = async (req, res, next) => {
   }
 };
 
-// POST /api/company/analyze/batch — analyze against multiple companies at once
+
 export const analyzeMultipleCompanies = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -44,7 +44,7 @@ export const analyzeMultipleCompanies = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Companies list is required' });
     }
 
-    // Accept both comma-separated string and JSON array
+    
     if (typeof companies === 'string') {
       companies = companies.split(',').map((c) => c.trim());
     }
@@ -58,7 +58,7 @@ export const analyzeMultipleCompanies = async (req, res, next) => {
 
     const results = await analyzeForCompaniesGuest(req.file, companies);
 
-    // Sort by readiness score descending
+    
     const sorted = results.sort((a, b) => (b.readiness_score || 0) - (a.readiness_score || 0));
 
     res.status(200).json(

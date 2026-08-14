@@ -1,9 +1,4 @@
-/**
- * gemini.test.js  (now tests OpenRouter)
- *
- * Quick test to verify OpenRouter API is working.
- * Run with:  node test/gemini.test.js
- */
+
 
 import dotenv from 'dotenv';
 dotenv.config();

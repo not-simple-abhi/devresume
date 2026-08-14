@@ -1,9 +1,4 @@
-/**
- * project.prompt.js
- *
- * AI role: Suggest how to improve project descriptions.
- * Do NOT score — Rule Engine handles scoring.
- */
+
 
 export const projectSystemPrompt = `You are a project portfolio advisor for software engineers.
 
@@ -16,11 +11,7 @@ Your role is ONLY to:
 You must NOT calculate scores — scores are already calculated.
 Always respond with valid JSON only.`;
 
-/**
- * @param {object} resume   - Structured resume
- * @param {object} analysis - Intelligence Engine facts
- * @param {object} scores   - Rule Engine scores
- */
+
 export const projectUserPrompt = (resume, analysis, scores) => `
 Help improve this candidate's project portfolio.
 

@@ -1,9 +1,4 @@
-/**
- * grammar.prompt.js
- *
- * AI role: Find writing issues, suggest rewrites.
- * Do NOT score — Rule Engine handles scoring.
- */
+
 
 export const grammarSystemPrompt = `You are a professional resume editor.
 
@@ -16,11 +11,7 @@ Your role is ONLY to:
 You must NOT calculate scores.
 Always respond with valid JSON only.`;
 
-/**
- * @param {object} resume   - Structured resume
- * @param {object} analysis - Intelligence Engine facts
- * @param {object} scores   - Rule Engine scores
- */
+
 export const grammarUserPrompt = (resume, analysis, scores) => `
 Check this resume for grammar and writing quality.
 

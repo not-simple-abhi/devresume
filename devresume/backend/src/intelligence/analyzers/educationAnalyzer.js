@@ -1,18 +1,6 @@
-/**
- * educationAnalyzer.js
- *
- * Analyzes the education section for completeness and quality.
- * Max score: 10 points
- *
- * Scoring:
- *   Has education entries    → 3 pts
- *   Degree mentioned         → 2 pts
- *   Institution mentioned    → 2 pts
- *   Graduation year present  → 2 pts
- *   CGPA / percentage        → 1 pt
- */
 
-// Keywords that indicate a degree
+
+
 const DEGREE_KEYWORDS = [
   'b.tech', 'btech', 'b.e', 'be ', 'bachelor', 'b.sc', 'bsc',
   'm.tech', 'mtech', 'm.e', 'master', 'm.sc', 'msc', 'mba', 'mca',
@@ -20,7 +8,7 @@ const DEGREE_KEYWORDS = [
   'board', 'secondary', 'higher secondary',
 ];
 
-// Keywords that indicate an institution
+
 const INSTITUTION_KEYWORDS = [
   'university', 'college', 'institute', 'iit', 'nit', 'bits', 'nsut',
   'school', 'academy', 'vidyalaya', 'kendriya', 'tech', 'engineering',
@@ -51,11 +39,11 @@ export const analyzeEducation = (resume) => {
     hasGrade:      false,
   };
 
-  // Has any education at all — 3 points
+  
   if (checks.hasEntries) {
     earnedScore += 3;
 
-    // Check each entry for quality
+    
     const allText = entries.join(' ');
 
     checks.hasDegree = hasDegree(allText);

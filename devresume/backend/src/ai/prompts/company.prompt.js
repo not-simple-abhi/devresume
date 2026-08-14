@@ -252,10 +252,7 @@ Your role is to:
 You must NOT re-analyze the resume — use the structured analysis provided.
 Always respond with valid JSON only.`;
 
-/**
- * @param {object} analysis - Output from resumeAnalyzer.js (single source of truth)
- * @param {string} company  - Company key (e.g. "google", "amazon")
- */
+
 export const companyUserPrompt = (analysis, company) => {
   const profile = COMPANY_PROFILES[company.toLowerCase().replace(/\s/g, '')];
 
@@ -263,10 +260,10 @@ export const companyUserPrompt = (analysis, company) => {
     throw new Error(`Company profile not found for: ${company}`);
   }
 
-  // Use analysis as the single source of truth — not raw resume
+  
   const { skills, projects, experience, keywords, education } = analysis;
 
-  // Calculate how many company tech stack items the candidate already has
+  
   const allCandidateSkills = [
     ...skills.categorized.languages,
     ...skills.categorized.frameworks,

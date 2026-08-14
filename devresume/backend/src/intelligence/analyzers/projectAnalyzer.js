@@ -1,13 +1,6 @@
-/**
- * projectAnalyzer.js
- *
- * This is the most important analyzer.
- * Each project is checked for title, description quality,
- * tech stack, action verbs, metrics, and links.
- * Max score: 25 points
- */
 
-// Strong action verbs that show ownership and impact
+
+
 const ACTION_VERBS = [
   'built', 'developed', 'created', 'designed', 'implemented', 'engineered',
   'architected', 'deployed', 'launched', 'optimized', 'improved', 'reduced',
@@ -15,19 +8,19 @@ const ACTION_VERBS = [
   'managed', 'collaborated', 'delivered', 'shipped', 'published', 'contributed',
 ];
 
-// Metric patterns — numbers show real impact
+
 const METRIC_PATTERNS = [
-  /\d+\s*%/,          // "40% reduction"
-  /\d+\+?\s*users?/i, // "500+ users"
-  /\d+x\s/,           // "3x faster"
-  /\$\d+/,            // "$50k revenue"
-  /\d+\s*ms\b/i,      // "200ms response"
-  /\d+\s*(k|m|b)\b/i, // "10k requests"
-  /\d+\s*requests?/i, // "1000 requests"
-  /\d+\s*stars?/i,    // "100 stars"
+  /\d+\s*%/,          
+  /\d+\+?\s*users?/i, 
+  /\d+x\s/,           
+  /\$\d+/,            
+  /\d+\s*ms\b/i,      
+  /\d+\s*(k|m|b)\b/i, 
+  /\d+\s*requests?/i, 
+  /\d+\s*stars?/i,    
 ];
 
-// Link patterns
+
 const LINK_PATTERNS = {
   github: /github\.com/i,
   live:   /https?:\/\/(?!github)/i,
@@ -42,7 +35,7 @@ const hasMetrics = (text) =>
   METRIC_PATTERNS.some(p => p.test(text));
 
 const hasTechStack = (text) => {
-  // A tech stack is mentioned if we see known tech words
+  
   const techWords = [
     'react', 'node', 'python', 'java', 'mongodb', 'sql', 'aws', 'docker',
     'flask', 'django', 'express', 'html', 'css', 'javascript', 'typescript',
@@ -61,34 +54,34 @@ const analyzeOneProject = (projectText, index) => {
   const issues = [];
   let score = 0;
 
-  // Title check — first line or first sentence
+  
   const firstLine = projectText.split('\n')[0].trim();
   const hasTitle = firstLine.length > 3 && firstLine.length < 100;
 
   if (hasTitle) { score += 2; }
   else { issues.push('No clear project title'); }
 
-  // Description length — meaningful description
+  
   const hasDescription = projectText.length > 50;
   if (hasDescription) { score += 2; }
   else { issues.push('Description too short — explain what you built'); }
 
-  // Action verbs
+  
   const usesActionVerb = hasActionVerb(projectText);
   if (usesActionVerb) { score += 2; }
   else { issues.push('No action verbs — start with "Built", "Developed", "Designed" etc.'); }
 
-  // Tech stack mentioned
+  
   const usesTech = hasTechStack(projectText);
   if (usesTech) { score += 2; }
   else { issues.push('Tech stack not mentioned — add the technologies used'); }
 
-  // Metrics / numbers
+  
   const usesMetrics = hasMetrics(projectText);
   if (usesMetrics) { score += 3; }
   else { issues.push('No metrics — add numbers like "500+ users", "40% faster", "3000 requests/day"'); }
 
-  // Links
+  
   const links = hasLink(projectText);
   if (links.github) { score += 1; }
   else { issues.push('No GitHub link'); }
@@ -99,7 +92,7 @@ const analyzeOneProject = (projectText, index) => {
   return {
     index: index + 1,
     title: firstLine.substring(0, 60),
-    score,         // out of 13 per project
+    score,         
     maxScore: 13,
     checks: {
       hasTitle,
@@ -128,25 +121,25 @@ export const analyzeProjects = (resume) => {
     };
   }
 
-  // Analyze each project individually
+  
   const analyzedProjects = projects.map((text, i) => analyzeOneProject(text, i));
 
-  // Score: base points for having projects + quality of each project
+  
   let earnedScore = 0;
 
-  // 3 pts for having at least 1 project
+  
   earnedScore += 3;
 
-  // 3 pts for having 2+ projects
+  
   if (projects.length >= 2) { earnedScore += 3; }
   else { deductions.push({ reason: 'Only 1 project — aim for 2-3 strong projects', points: -3 }); }
 
-  // Up to 19 pts from individual project quality (averaged across projects)
+  
   const avgProjectScore = analyzedProjects.reduce((sum, p) => sum + p.score, 0) / analyzedProjects.length;
   const qualityPoints = Math.round((avgProjectScore / 13) * 19);
   earnedScore += qualityPoints;
 
-  // Collect deductions from individual projects
+  
   analyzedProjects.forEach((p) => {
     p.issues.forEach((issue) => {
       deductions.push({ reason: `Project ${p.index}: ${issue}`, points: -1 });

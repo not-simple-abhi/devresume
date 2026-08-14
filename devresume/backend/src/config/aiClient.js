@@ -1,30 +1,13 @@
-/**
- * aiClient.js
- *
- * Calls AI models via OpenRouter (https://openrouter.ai)
- * OpenRouter is OpenAI-API compatible — same request format,
- * works with 200+ models including free Gemini models.
- *
- * Model used: google/gemini-2.0-flash-exp:free (free tier on OpenRouter)
- */
+
 
 import { extractJsonFromText } from '../utils/responseFormatter.js';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-// Free Gemma 4 31B model on OpenRouter
+
 const MODEL = 'nvidia/nemotron-3-super-120b-a12b:free';
 
-/**
- * callAI(systemPrompt, userPrompt)
- *
- * Sends a prompt to the AI via OpenRouter and returns parsed JSON.
- * Includes retry logic for 429 rate limit errors.
- *
- * @param {string} systemPrompt - Role/instructions for the AI
- * @param {string} userPrompt   - The actual content to analyze
- * @returns {object} Parsed JSON response
- */
+
 export const callAI = async (systemPrompt, userPrompt, retries = 3) => {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
@@ -52,10 +35,10 @@ export const callAI = async (systemPrompt, userPrompt, retries = 3) => {
       }),
     });
 
-    // If rate limited, wait and retry
+    
     if (response.status === 429) {
       if (attempt < retries) {
-        const waitSeconds = attempt * 15; // 15s, 30s, 45s
+        const waitSeconds = attempt * 15; 
         console.log(`[AI] Rate limited. Waiting ${waitSeconds}s before retry ${attempt}/${retries}...`);
         await new Promise((resolve) => setTimeout(resolve, waitSeconds * 1000));
         continue;

@@ -1,16 +1,4 @@
-/**
- * pipeline.test.js
- *
- * Tests the resume upload & parsing pipeline WITHOUT calling Gemini.
- * Run this with:  node test/pipeline.test.js
- *
- * What it tests:
- *  1. resumeParser  — extracts name, email, skills etc. from raw text
- *  2. pdfParser     — reads a real PDF file
- *  3. docxParser    — reads a real DOCX file
- *  4. resume.service — full pipeline (extract → parse → cleanup)
- *  5. Edge cases    — empty text, corrupted file, unsupported type
- */
+
 
 import { parseResume } from '../src/parsers/resumeParser.js';
 import { parsePDF } from '../src/utils/pdfParser.js';
@@ -22,9 +10,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
+
+
+
 
 let passed = 0;
 let failed = 0;
@@ -57,9 +45,9 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-// ─────────────────────────────────────────────
-// SAMPLE RESUME TEXT
-// ─────────────────────────────────────────────
+
+
+
 
 const SAMPLE_RESUME = `
 Abhinav Sharma
@@ -102,9 +90,9 @@ Top 10 — HackMIT 2023
 Google Summer of Code Contributor 2022
 `;
 
-// ─────────────────────────────────────────────
-// TEST SUITE 1: resumeParser.js
-// ─────────────────────────────────────────────
+
+
+
 
 console.log('\n📋 Suite 1: resumeParser.js\n');
 
@@ -170,9 +158,9 @@ test('includes rawText in output', () => {
   assert(result.rawText.length > 50, 'rawText should not be empty');
 });
 
-// ─────────────────────────────────────────────
-// TEST SUITE 2: Edge Cases for resumeParser
-// ─────────────────────────────────────────────
+
+
+
 
 console.log('\n📋 Suite 2: resumeParser.js — Edge Cases\n');
 
@@ -209,22 +197,22 @@ test('removes duplicate skills', () => {
   assert(uniqueSkills.size === result.skills.length, 'should not have duplicate skills');
 });
 
-// ─────────────────────────────────────────────
-// TEST SUITE 3: processUploadedResume() edge cases
-// (without actual files — simulating bad inputs)
-// ─────────────────────────────────────────────
+
+
+
+
 
 console.log('\n📋 Suite 3: processUploadedResume() — Edge Cases\n');
 
 await testAsync('rejects unsupported file type (.txt)', async () => {
-  // Create a fake multer file object with .txt extension
+  
   const fakeFile = {
     originalname: 'resume.txt',
     path: path.join(__dirname, 'fixtures', 'dummy.txt'),
     mimetype: 'text/plain',
   };
 
-  // Ensure the fixture file exists
+  
   fs.mkdirSync(path.join(__dirname, 'fixtures'), { recursive: true });
   fs.writeFileSync(fakeFile.path, 'This is a text file');
 
@@ -239,7 +227,7 @@ await testAsync('rejects unsupported file type (.txt)', async () => {
     );
   }
 
-  // Cleanup: file should be deleted even on error
+  
   const fileStillExists = fs.existsSync(fakeFile.path);
   assert(!fileStillExists, 'temp file should be deleted even after error');
 
@@ -253,7 +241,7 @@ await testAsync('rejects empty/corrupted PDF (too little text)', async () => {
     mimetype: 'application/pdf',
   };
 
-  // Create a fake "PDF" that is actually just a few bytes — not a real PDF
+  
   fs.mkdirSync(path.join(__dirname, 'fixtures'), { recursive: true });
   fs.writeFileSync(fakeFile.path, '%PDF-1.4 fake corrupted content');
 
@@ -262,11 +250,11 @@ await testAsync('rejects empty/corrupted PDF (too little text)', async () => {
     await processUploadedResume(fakeFile);
   } catch (err) {
     errorThrown = true;
-    // Could fail at parse level or text extraction level — both are fine
+    
     assert(err.message.length > 0, 'should throw a meaningful error message');
   }
 
-  // File should always be cleaned up
+  
   const fileStillExists = fs.existsSync(fakeFile.path);
   assert(!fileStillExists, 'temp file should be deleted even after failed parsing');
 
@@ -274,8 +262,8 @@ await testAsync('rejects empty/corrupted PDF (too little text)', async () => {
 });
 
 await testAsync('temp file is deleted after successful parse', async () => {
-  // Create a fake .pdf file that we know will fail text extraction
-  // but we want to verify cleanup still happens
+  
+  
   const fakeFile = {
     originalname: 'test.pdf',
     path: path.join(__dirname, 'fixtures', 'test_cleanup.pdf'),
@@ -288,16 +276,16 @@ await testAsync('temp file is deleted after successful parse', async () => {
   try {
     await processUploadedResume(fakeFile);
   } catch {
-    // Expected to fail — we only care about cleanup
+    
   }
 
   const fileStillExists = fs.existsSync(fakeFile.path);
   assert(!fileStillExists, 'temp file must always be deleted regardless of outcome');
 });
 
-// ─────────────────────────────────────────────
-// TEST SUITE 4: Real file parsing (if files exist)
-// ─────────────────────────────────────────────
+
+
+
 
 console.log('\n📋 Suite 4: Real File Parsing (optional — needs test fixtures)\n');
 
@@ -327,9 +315,9 @@ if (fs.existsSync(sampleDocxPath)) {
   console.log('     Place a real resume DOCX at: test/fixtures/sample_resume.docx');
 }
 
-// ─────────────────────────────────────────────
-// RESULTS
-// ─────────────────────────────────────────────
+
+
+
 
 console.log('\n' + '─'.repeat(40));
 console.log(`Results: ${passed} passed, ${failed} failed`);

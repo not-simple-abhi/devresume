@@ -1,9 +1,4 @@
-/**
- * recruiter.prompt.js
- *
- * AI role: Explain WHY the scores are what they are.
- * Do NOT calculate scores — those come from the Rule Engine.
- */
+
 
 export const recruiterSystemPrompt = `You are an experienced tech recruiter reviewing resumes.
 
@@ -16,11 +11,7 @@ Your role is ONLY to:
 You must NOT calculate or mention scores — scores are already calculated.
 Always respond with valid JSON only.`;
 
-/**
- * @param {object} resume   - Structured resume
- * @param {object} analysis - Intelligence Engine facts
- * @param {object} scores   - Rule Engine scores (already calculated)
- */
+
 export const recruiterUserPrompt = (resume, analysis, scores) => `
 Review this candidate's profile as an experienced recruiter.
 
