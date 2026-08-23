@@ -74,8 +74,8 @@ export const analyzeAndSave = async (file, userId) => {
     data: {
       userId,
       resumeName: file.originalname,
-      atsScore:   report.atsScore,
-      overallScore: report.overallScore,
+      atsScore:     report.deterministicAnalysis.atsScore,
+      overallScore: report.deterministicAnalysis.overall,
       reportJson: report,
     },
   });
