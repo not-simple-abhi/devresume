@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CheckCircle2, Circle, Link2, Sparkles, X, Check, Layers, Lightbulb } from 'lucide-react'
+import { CheckCircle2, Circle, Sparkles, X, Check, Layers, Lightbulb } from 'lucide-react'
 import { useReviewStore } from '@/store/review.store'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
@@ -9,10 +9,6 @@ import EmptyState from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 
 // ─── Type normalization ───────────────────────────────────────────────────────
-// AI returns suggestions as objects: { project_name, improved_description, current_issue, missing_elements }
-// AI returns recommendedProjects as objects: { project_idea, description, skills_demonstrated, why_valuable }
-// quickWins may be strings
-
 interface AISuggestion {
   project_name?: string
   improved_description?: string
@@ -43,7 +39,7 @@ function ImpactTag({ label }: { label: 'HIGH IMPACT' | 'MEDIUM IMPACT' | 'LOW IM
     'LOW IMPACT':    'bg-gray-100 text-gray-500 border-gray-200',
   }
   return (
-    <span className={cn('text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider', colorMap[label])}>
+    <span className={cn('text-xs font-bold px-2 py-0.5 rounded border uppercase tracking-wider', colorMap[label])}>
       {label}
     </span>
   )
@@ -57,8 +53,8 @@ function ProjectCard({
   project: { title: string; score: number; maxScore: number; issues: string[] }
   aiSuggestion?: AISuggestion
 }) {
-  const [applied, setApplied]       = useState(false)
-  const [discarded, setDiscarded]   = useState(false)
+  const [applied, setApplied]     = useState(false)
+  const [discarded, setDiscarded] = useState(false)
   const pct    = Math.round((project.score / project.maxScore) * 100)
   const impact: 'HIGH IMPACT' | 'MEDIUM IMPACT' | 'LOW IMPACT' =
     pct >= 75 ? 'HIGH IMPACT' : pct >= 50 ? 'MEDIUM IMPACT' : 'LOW IMPACT'
@@ -82,14 +78,13 @@ function ProjectCard({
   return (
     <Card padding="none" className="overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3 border-b border-gray-50">
+      <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3 border-b border-gray-100">
         <div className="flex items-start gap-3 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center shrink-0">
             <Layers size={16} className="text-violet-600" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              {/* Strip leading bullet/colon from title */}
               <h3 className="text-base font-bold text-gray-900">
                 {project.title.replace(/^[•\-\s]+/, '').replace(/\s*:\s*$/, '')}
               </h3>
@@ -98,7 +93,7 @@ function ProjectCard({
           </div>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-[10px] text-gray-400 mb-0.5">Project Score</p>
+          <p className="text-xs font-semibold text-gray-400 mb-0.5">Project Score</p>
           <p
             className="text-2xl font-bold font-mono-data"
             style={{ color: pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444' }}
@@ -110,29 +105,29 @@ function ProjectCard({
       </div>
 
       {/* Body */}
-      <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-50">
+      <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
         {/* Left: metrics + tech */}
         <div className="px-5 py-4 space-y-4">
           <div>
-            <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2.5">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
               Metrics & Impact
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {metrics.map(({ label, done }) => (
-                <li key={label} className="flex items-start gap-2 text-xs text-gray-600">
+                <li key={label} className="flex items-start gap-2 text-sm font-medium text-gray-700">
                   {done ? (
-                    <CheckCircle2 size={13} className="text-violet-500 mt-0.5 shrink-0" />
+                    <CheckCircle2 size={14} className="text-violet-500 mt-0.5 shrink-0" />
                   ) : (
-                    <Circle size={13} className="text-gray-300 mt-0.5 shrink-0" />
+                    <Circle size={14} className="text-gray-300 mt-0.5 shrink-0" />
                   )}
-                  <span className={done ? '' : 'text-gray-400'}>{label}</span>
+                  <span className={done ? 'text-gray-700' : 'text-gray-400'}>{label}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2.5">
               Tech Stack
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -145,13 +140,13 @@ function ProjectCard({
           {/* Issues from rule engine */}
           {project.issues.length > 0 && (
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2.5">
                 Issues Found
               </p>
-              <ul className="space-y-1">
+              <ul className="space-y-1.5">
                 {project.issues.map((issue, i) => (
-                  <li key={i} className="flex items-start gap-1.5 text-xs text-gray-500">
-                    <span className="w-1 h-1 rounded-full bg-red-300 mt-1.5 shrink-0" />
+                  <li key={i} className="flex items-start gap-1.5 text-sm font-medium text-gray-600">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-300 mt-1.5 shrink-0" />
                     {issue}
                   </li>
                 ))}
@@ -167,18 +162,18 @@ function ProjectCard({
           {showImproved ? (
             <>
               <div className="flex justify-end">
-                <span className="inline-flex items-center gap-1 text-[9px] px-2 py-0.5 bg-violet-50 text-violet-600 border border-violet-200 rounded-full font-medium">
-                  <Sparkles size={9} /> AI Optimized
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-violet-50 text-violet-600 border border-violet-200 rounded-full font-semibold">
+                  <Sparkles size={10} /> AI Optimized
                 </span>
               </div>
 
               {/* Current issue */}
               {aiSuggestion.current_issue && (
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">
                     Current Issue
                   </p>
-                  <p className="text-xs text-red-400 line-through leading-relaxed">
+                  <p className="text-sm font-medium text-red-400 line-through leading-relaxed">
                     {aiSuggestion.current_issue}
                   </p>
                 </div>
@@ -187,11 +182,11 @@ function ProjectCard({
               {/* Improved */}
               {aiSuggestion.improved_description && (
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-violet-500 mb-1.5">
+                  <p className="text-xs font-bold uppercase tracking-widest text-violet-500 mb-1.5">
                     Improved Description
                   </p>
                   <div className="border-l-2 border-violet-500 pl-3">
-                    <p className="text-xs text-gray-700 leading-relaxed">
+                    <p className="text-sm font-medium text-gray-700 leading-relaxed">
                       {aiSuggestion.improved_description}
                     </p>
                   </div>
@@ -219,25 +214,25 @@ function ProjectCard({
           ) : (
             <div>
               {applied && (
-                <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-3">
-                  <CheckCircle2 size={13} />
+                <div className="flex items-center gap-2 text-sm font-medium text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-3">
+                  <CheckCircle2 size={14} />
                   Changes applied to your resume.
                 </div>
               )}
-              <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2.5">
                 Description
               </p>
               {project.issues.length > 0 ? (
-                <ul className="space-y-1.5">
+                <ul className="space-y-2">
                   {project.issues.map((issue, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
-                      <span className="w-1 h-1 rounded-full bg-gray-300 mt-1.5 shrink-0" />
+                    <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0" />
                       {issue}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-xs text-gray-400">No issues detected for this project.</p>
+                <p className="text-sm font-medium text-gray-400">No issues detected for this project.</p>
               )}
             </div>
           )}
@@ -261,13 +256,11 @@ export default function ProjectsPage() {
   const totalScore = intelligence.projectScores.reduce((s, p) => s + p.score, 0)
   const totalMax   = intelligence.projectScores.reduce((s, p) => s + p.maxScore, 0)
 
-  // Normalize AI suggestions — may be objects or strings
   const aiSuggestions: AISuggestion[] = (projects.suggestions ?? []).map((s) => {
     if (typeof s === 'string') return { improved_description: s }
     return s as AISuggestion
   })
 
-  // Normalize recommended projects — may be objects or strings
   const recommended: RecommendedProject[] = (projects.recommendedProjects ?? []).map((r) => {
     if (typeof r === 'string') return { description: r }
     return r as RecommendedProject
@@ -285,7 +278,7 @@ export default function ProjectsPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900">Project Analysis</h1>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm font-medium text-gray-500">
               Reviewing {intelligence.projectScores.length} project{intelligence.projectScores.length !== 1 ? 's' : ''} found in your resume.
             </p>
           </div>
@@ -293,7 +286,7 @@ export default function ProjectsPage() {
 
         {totalMax > 0 && (
           <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl px-4 py-2.5 shadow-sm">
-            <span className="text-sm text-gray-500">Total Score:</span>
+            <span className="text-sm font-medium text-gray-500">Total Score:</span>
             <span className="font-bold text-gray-900 font-mono-data text-sm">{totalScore}/{totalMax}</span>
             <div className="w-20">
               <ProgressBar value={totalScore} max={totalMax} height="sm" />
@@ -323,21 +316,21 @@ export default function ProjectsPage() {
       {/* Recommended projects */}
       {recommended.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-50">
-            <Sparkles size={14} className="text-violet-500" />
-            <h3 className="text-sm font-semibold text-gray-800">Recommended Projects to Add</h3>
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+            <Sparkles size={15} className="text-violet-500" />
+            <h3 className="text-base font-semibold text-gray-800">Recommended Projects to Add</h3>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {recommended.map((r, i) => (
               <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-4">
                 {r.project_idea && (
-                  <p className="text-sm font-semibold text-gray-800 mb-1">{r.project_idea}</p>
+                  <p className="text-sm font-bold text-gray-800 mb-1.5">{r.project_idea}</p>
                 )}
                 {r.description && (
-                  <p className="text-xs text-gray-600 leading-relaxed mb-2">{r.description}</p>
+                  <p className="text-sm font-medium text-gray-600 leading-relaxed mb-2">{r.description}</p>
                 )}
                 {r.why_valuable && (
-                  <p className="text-xs text-violet-600 mb-2">{r.why_valuable}</p>
+                  <p className="text-sm font-medium text-violet-600 mb-2">{r.why_valuable}</p>
                 )}
                 {r.skills_demonstrated && r.skills_demonstrated.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
@@ -355,14 +348,14 @@ export default function ProjectsPage() {
       {/* Quick wins */}
       {quickWins.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-50">
-            <Lightbulb size={14} className="text-amber-400" />
-            <h3 className="text-sm font-semibold text-gray-800">Quick Wins</h3>
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+            <Lightbulb size={15} className="text-amber-400" />
+            <h3 className="text-base font-semibold text-gray-800">Quick Wins</h3>
           </div>
-          <ul className="space-y-2">
+          <ul className="space-y-2.5">
             {quickWins.map((w, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="w-5 h-5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+              <li key={i} className="flex items-start gap-2.5 text-sm font-medium text-gray-700">
+                <span className="w-5 h-5 rounded-full bg-amber-50 text-amber-600 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   {i + 1}
                 </span>
                 {w}

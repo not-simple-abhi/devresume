@@ -41,11 +41,11 @@ function ReadinessBanner({ status }: { status: string }) {
   const Icon = c.icon
 
   return (
-    <div className={cn('flex items-start gap-3 border rounded-xl px-4 py-3.5', c.bg)}>
-      <Icon size={16} className={cn('mt-0.5 shrink-0', c.iconColor)} />
+    <div className={cn('flex items-start gap-3 border rounded-xl px-4 py-4', c.bg)}>
+      <Icon size={18} className={cn('mt-0.5 shrink-0', c.iconColor)} />
       <div>
-        <p className={cn('text-sm font-semibold', c.text)}>{c.label}</p>
-        <p className="text-xs text-gray-600 mt-0.5 leading-relaxed">{c.desc}</p>
+        <p className={cn('text-base font-bold', c.text)}>{c.label}</p>
+        <p className="text-sm font-medium text-gray-600 mt-1 leading-relaxed">{c.desc}</p>
       </div>
     </div>
   )
@@ -64,17 +64,17 @@ function RecruiterTab() {
 
       {/* Executive Summary */}
       <Card className="border-l-2 border-l-violet-400">
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">Executive Summary</h3>
-        <p className="text-sm text-gray-600 leading-relaxed">{recruiter.summary}</p>
+        <h3 className="text-base font-semibold text-gray-800 mb-3">Executive Summary</h3>
+        <p className="text-sm font-medium text-gray-700 leading-relaxed">{recruiter.summary}</p>
       </Card>
 
       {/* Strengths + Weaknesses side by side */}
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Strengths */}
         <Card>
-          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-50">
-            <CheckCircle2 size={14} className="text-violet-500" />
-            <h3 className="text-sm font-semibold text-gray-800">Key Strengths</h3>
+          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-100">
+            <CheckCircle2 size={15} className="text-violet-500" />
+            <h3 className="text-base font-semibold text-gray-800">Key Strengths</h3>
           </div>
           {recruiter.strengths.length > 0 ? (
             <ul className="space-y-3">
@@ -82,24 +82,24 @@ function RecruiterTab() {
                 <li key={i} className="flex items-start gap-2.5">
                   <span className="text-gray-300 text-sm shrink-0 mt-0.5 font-mono">›</span>
                   <div>
-                    <p className="text-xs font-semibold text-gray-700 font-mono-data">{s.split(/[.,:]/)[0]}</p>
+                    <p className="text-sm font-bold text-gray-800">{s.split(/[.,:]/)[0]}</p>
                     {s.includes('.') && (
-                      <p className="text-xs text-gray-500 mt-0.5">{s.split(/[.:]/)[1]?.trim()}</p>
+                      <p className="text-sm font-medium text-gray-600 mt-0.5">{s.split(/[.:]/)[1]?.trim()}</p>
                     )}
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-xs text-gray-400">No strengths identified.</p>
+            <p className="text-sm font-medium text-gray-400">No strengths identified.</p>
           )}
         </Card>
 
         {/* Areas for Improvement */}
         <Card>
-          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-50">
-            <AlertTriangle size={14} className="text-red-400" />
-            <h3 className="text-sm font-semibold text-gray-800">Areas for Improvement</h3>
+          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-100">
+            <AlertTriangle size={15} className="text-red-400" />
+            <h3 className="text-base font-semibold text-gray-800">Areas for Improvement</h3>
           </div>
           {recruiter.weaknesses.length > 0 ? (
             <ul className="space-y-3">
@@ -107,16 +107,16 @@ function RecruiterTab() {
                 <li key={i} className="flex items-start gap-2.5">
                   <span className="text-gray-300 text-sm shrink-0 mt-0.5 font-mono">›</span>
                   <div>
-                    <p className="text-xs font-semibold text-gray-700 font-mono-data">{w.split(/[.,:]/)[0]}</p>
+                    <p className="text-sm font-bold text-gray-800">{w.split(/[.,:]/)[0]}</p>
                     {w.includes('.') && (
-                      <p className="text-xs text-gray-500 mt-0.5">{w.split(/[.:]/)[1]?.trim()}</p>
+                      <p className="text-sm font-medium text-gray-600 mt-0.5">{w.split(/[.:]/)[1]?.trim()}</p>
                     )}
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-xs text-gray-400">No areas for improvement identified.</p>
+            <p className="text-sm font-medium text-gray-400">No areas for improvement identified.</p>
           )}
         </Card>
       </div>
@@ -124,14 +124,14 @@ function RecruiterTab() {
       {/* Standout Points */}
       {recruiter.standoutPoints.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-50">
-            <Star size={14} className="text-amber-400" />
-            <h3 className="text-sm font-semibold text-gray-800">Standout Points</h3>
+          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-100">
+            <Star size={15} className="text-amber-400" />
+            <h3 className="text-base font-semibold text-gray-800">Standout Points</h3>
           </div>
-          <ul className="space-y-2">
+          <ul className="space-y-2.5">
             {recruiter.standoutPoints.map((p, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                <Star size={12} className="text-amber-400 mt-0.5 shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700">
+                <Star size={13} className="text-amber-400 mt-0.5 shrink-0" />
                 {p}
               </li>
             ))}
@@ -143,14 +143,14 @@ function RecruiterTab() {
       {recruiter.redFlags.length > 0 && (
         <Card className="border-red-100">
           <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-red-50">
-            <Flag size={14} className="text-red-400" />
-            <h3 className="text-sm font-semibold text-gray-800">Red Flags</h3>
+            <Flag size={15} className="text-red-400" />
+            <h3 className="text-base font-semibold text-gray-800">Red Flags</h3>
             <Badge variant="red" size="sm">{recruiter.redFlags.length}</Badge>
           </div>
           <ul className="space-y-2.5">
             {recruiter.redFlags.map((f, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-600 bg-red-50 rounded-lg px-3 py-2">
-                <AlertTriangle size={13} className="text-red-400 mt-0.5 shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700 bg-red-50 rounded-lg px-3 py-2.5">
+                <AlertTriangle size={14} className="text-red-400 mt-0.5 shrink-0" />
                 {f}
               </li>
             ))}
@@ -179,20 +179,20 @@ function GrammarTab() {
       {/* Quality header badges */}
       <div className="flex flex-wrap gap-3">
         <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-2.5 shadow-sm">
-          <span className="text-xs text-gray-500">Writing Quality</span>
+          <span className="text-sm font-medium text-gray-500">Writing Quality</span>
           <Badge
             variant="default"
-            className={cn('capitalize', qualityColor[grammar.writingQuality ?? 'average'])}
+            className={cn('capitalize font-semibold', qualityColor[grammar.writingQuality ?? 'average'])}
           >
             {grammar.writingQuality ?? 'average'}
           </Badge>
         </div>
         <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-2.5 shadow-sm">
-          <span className="text-xs text-gray-500">Tone</span>
+          <span className="text-sm font-medium text-gray-500">Tone</span>
           <Badge variant="gray">{grammar.tone}</Badge>
         </div>
         <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-2.5 shadow-sm">
-          <span className="text-xs text-gray-500">Tense Consistent</span>
+          <span className="text-sm font-medium text-gray-500">Tense Consistent</span>
           {grammar.tenseConsistent ? (
             <Badge variant="green">✓ Yes</Badge>
           ) : (
@@ -204,25 +204,25 @@ function GrammarTab() {
       {/* Errors */}
       {grammar.errors.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-50">
-            <AlertTriangle size={14} className="text-red-400" />
-            <h3 className="text-sm font-semibold text-gray-800">Grammar Errors</h3>
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+            <AlertTriangle size={15} className="text-red-400" />
+            <h3 className="text-base font-semibold text-gray-800">Grammar Errors</h3>
             <Badge variant="red" size="sm">{grammar.errors.length}</Badge>
           </div>
           <div className="space-y-3">
             {grammar.errors.map((err, i) => {
-              const original = err.original ?? err.text ?? ''
-              const suggestion = err.suggestion ?? err.message ?? ''
+              const original   = err.original   ?? err.text    ?? ''
+              const suggestion = err.suggestion  ?? err.message ?? ''
               return (
-                <div key={i} className="bg-gray-50 rounded-lg p-3.5 border border-gray-100">
+                <div key={i} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                   {original && (
-                    <p className="text-xs text-red-500 line-through mb-1">{original}</p>
+                    <p className="text-sm font-medium text-red-500 line-through mb-1.5">{original}</p>
                   )}
                   {suggestion && (
-                    <p className="text-xs text-gray-700">{suggestion}</p>
+                    <p className="text-sm font-medium text-gray-700">{suggestion}</p>
                   )}
                   {!original && !suggestion && (
-                    <p className="text-xs text-gray-600">{JSON.stringify(err)}</p>
+                    <p className="text-sm font-medium text-gray-600">{JSON.stringify(err)}</p>
                   )}
                 </div>
               )
@@ -234,14 +234,14 @@ function GrammarTab() {
       {/* Suggestions */}
       {grammar.suggestions.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-50">
-            <RefreshCw size={14} className="text-violet-400" />
-            <h3 className="text-sm font-semibold text-gray-800">Writing Suggestions</h3>
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+            <RefreshCw size={15} className="text-violet-400" />
+            <h3 className="text-base font-semibold text-gray-800">Writing Suggestions</h3>
           </div>
-          <ul className="space-y-2.5">
+          <ul className="space-y-3">
             {grammar.suggestions.map((s, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="w-1 h-1 rounded-full bg-violet-400 mt-2 shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-2 shrink-0" />
                 {s}
               </li>
             ))}
@@ -250,10 +250,10 @@ function GrammarTab() {
       )}
 
       {grammar.errors.length === 0 && grammar.suggestions.length === 0 && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 text-center">
-          <CheckCircle2 size={24} className="text-emerald-400 mx-auto mb-2" />
-          <p className="text-sm font-semibold text-emerald-700">No grammar issues found</p>
-          <p className="text-xs text-emerald-600 mt-1">Your writing is clean and professional.</p>
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
+          <CheckCircle2 size={28} className="text-emerald-400 mx-auto mb-2" />
+          <p className="text-base font-bold text-emerald-700">No grammar issues found</p>
+          <p className="text-sm font-medium text-emerald-600 mt-1">Your writing is clean and professional.</p>
         </div>
       )}
     </div>
@@ -277,9 +277,9 @@ export default function InsightsPage() {
           <Sparkles size={18} className="text-violet-500" />
           <div>
             <h1 className="text-xl font-bold text-gray-900">AI Insights</h1>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm font-medium text-gray-500">
               Deep analysis and actionable feedback generated for{' '}
-              <span className="text-gray-700 font-medium">'Senior Frontend Engineer'</span> role.
+              <span className="text-gray-700 font-semibold">'Senior Frontend Engineer'</span> role.
             </p>
           </div>
         </div>
