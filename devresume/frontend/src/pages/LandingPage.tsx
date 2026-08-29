@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import {
   Upload,
   Play,
@@ -8,14 +9,91 @@ import {
   RefreshCw,
   ScanText,
   Brain,
-  SpellCheck,
   Layers,
   Building2,
-  GitCompare,
   Sparkles,
   ArrowRight,
   CheckCircle2,
+  FileCheck2,
 } from 'lucide-react'
+import { useStats } from '@/hooks/useStats'
+
+// ─── Animated number counter ─────────────────────────────────────────────────
+function AnimatedCount({ target, suffix = '' }: { target: number; suffix?: string }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (target === 0) return
+    const duration = 1500
+    const steps = 60
+    const increment = target / steps
+    let current = 0
+    ref.current = window.setInterval(() => {
+      current += increment
+      if (current >= target) {
+        setCount(target)
+        clearInterval(ref.current!)
+      } else {
+        setCount(Math.floor(current))
+      }
+    }, duration / steps)
+    return () => clearInterval(ref.current!)
+  }, [target])
+
+  return (
+    <span className="font-mono-data font-bold">
+      {count.toLocaleString()}{suffix}
+    </span>
+  )
+}
+
+// ─── Stats strip ─────────────────────────────────────────────────────────────
+function StatsStrip({ totalReviews }: { totalReviews: number }) {
+  const stats = [
+    {
+      icon: FileCheck2,
+      value: totalReviews,
+      suffix: '+',
+      label: 'Resumes Reviewed',
+      color: 'text-violet-600',
+      bg: 'bg-violet-50 border-violet-200',
+    },
+    {
+      icon: Sparkles,
+      value: 6,
+      suffix: '',
+      label: 'AI Agents Running in Parallel',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50 border-blue-200',
+    },
+    {
+      icon: CheckCircle2,
+      value: 100,
+      suffix: '%',
+      label: 'Free to Try',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50 border-emerald-200',
+    },
+  ]
+
+  return (
+    <div className="grid grid-cols-3 gap-4 mt-10 mb-2">
+      {stats.map(({ icon: Icon, value, suffix, label, color, bg }) => (
+        <div
+          key={label}
+          className={`flex flex-col items-center gap-1.5 rounded-2xl border px-4 py-4 ${bg}`}
+        >
+          <Icon size={18} className={color} />
+          <p className={`text-2xl sm:text-3xl ${color}`}>
+            <AnimatedCount target={value} suffix={suffix} />
+          </p>
+          <p className="text-[10px] text-gray-500 text-center font-medium leading-tight">{label}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 // ─── Mock report card shown in hero ──────────────────────────────────────────
 function HeroMockup() {
@@ -207,6 +285,9 @@ function CapabilityCard({
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function LandingPage() {
+  const { data: stats } = useStats()
+  const totalReviews = stats?.totalReviews ?? 0
+
   return (
     <div className="landing-bg min-h-screen">
       {/* ── Hero ── */}
@@ -241,7 +322,7 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] text-gray-400">
+          <div className="flex items-center gap-4 text-[11px] text-gray-400 mb-6">
             {['SOC2 Type II', 'No Data Storage', 'End-to-End Encryption'].map((t) => (
               <span key={t} className="flex items-center gap-1">
                 <CheckCircle2 size={11} className="text-emerald-400" />
@@ -249,6 +330,9 @@ export default function LandingPage() {
               </span>
             ))}
           </div>
+
+          {/* ── Live stats strip ── */}
+          <StatsStrip totalReviews={totalReviews} />
         </div>
 
         {/* Right — mockup */}

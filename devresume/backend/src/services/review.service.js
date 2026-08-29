@@ -145,6 +145,10 @@ export const deleteReview = async (reviewId, userId) => {
   return { message: 'Review deleted' };
 };
 
+export const getTotalReviewCount = async () => {
+  return await prisma.review.count();
+};
+
 
 
 

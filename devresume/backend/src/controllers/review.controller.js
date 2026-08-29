@@ -4,6 +4,7 @@ import {
   getUserHistory,
   getReviewById,
   deleteReview,
+  getTotalReviewCount,
 } from '../services/review.service.js';
 import { formatSuccessResponse } from '../utils/responseFormatter.js';
 
@@ -60,6 +61,16 @@ export const removeReview = async (req, res, next) => {
   try {
     const result = await deleteReview(req.params.id, req.userId);
     res.status(200).json(formatSuccessResponse(result, 'Review deleted'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getStats = async (req, res, next) => {
+  try {
+    const totalReviews = await getTotalReviewCount();
+    res.status(200).json(formatSuccessResponse({ totalReviews }, 'Stats retrieved'));
   } catch (error) {
     next(error);
   }
