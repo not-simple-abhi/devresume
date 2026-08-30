@@ -12,11 +12,11 @@ interface AnalysisLayoutProps {
 
 export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
   const { activeFileName, activeReport } = useReviewStore()
-  const { isAuthenticated, user } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
 
   const overall = activeReport?.deterministicAnalysis?.overall
-  const ats = activeReport?.deterministicAnalysis?.atsScore
-  const domain = activeReport?.deterministicAnalysis?.intelligence?.domain
+  const ats     = activeReport?.deterministicAnalysis?.atsScore
+  const domain  = activeReport?.deterministicAnalysis?.intelligence?.domain
 
   return (
     <div className="flex h-[calc(100vh-56px)]">
@@ -26,38 +26,41 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <div className="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between shrink-0">
+        <div className="bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-6 py-3 flex items-center justify-between shrink-0">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-1.5 text-sm text-gray-500 min-w-0">
+          <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 min-w-0">
             {isAuthenticated ? (
-              <Link to="/dashboard" className="hover:text-violet-600 transition-colors shrink-0">
+              <Link
+                to="/dashboard"
+                className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors shrink-0"
+              >
                 Dashboard
               </Link>
             ) : (
               <span className="shrink-0">Home</span>
             )}
-            <ChevronRight size={14} className="text-gray-300 shrink-0" />
+            <ChevronRight size={14} className="text-gray-300 dark:text-gray-600 shrink-0" />
             <span className="shrink-0">Analysis</span>
-            <ChevronRight size={14} className="text-gray-300 shrink-0" />
+            <ChevronRight size={14} className="text-gray-300 dark:text-gray-600 shrink-0" />
 
             {/* File + meta */}
             <div className="flex items-center gap-2 min-w-0">
-              <span className="font-medium text-gray-800 truncate">
+              <span className="font-medium text-gray-800 dark:text-gray-200 truncate">
                 {activeFileName ? clampFileName(activeFileName) : 'Resume'}
               </span>
               {domain && (
-                <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 font-medium border border-violet-200">
+                <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 font-medium border border-violet-200 dark:border-violet-800">
                   {domain} domain
                 </span>
               )}
               {overall !== undefined && (
-                <span className="shrink-0 text-[10px] text-gray-500">
-                  Score: <strong className="text-gray-800">{overall}/100</strong>
+                <span className="shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
+                  Score: <strong className="text-gray-800 dark:text-gray-200">{overall}/100</strong>
                 </span>
               )}
               {ats !== undefined && (
-                <span className="shrink-0 text-[10px] text-gray-500">
-                  · ATS: <strong className="text-gray-800">{ats}/100</strong>
+                <span className="shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
+                  · ATS: <strong className="text-gray-800 dark:text-gray-200">{ats}/100</strong>
                 </span>
               )}
             </div>
@@ -75,7 +78,7 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
         </div>
 
         {/* Scrollable page content */}
-        <div className="flex-1 overflow-y-auto bg-[#eef0f7]">
+        <div className="flex-1 overflow-y-auto page-bg">
           <div className="p-6">
             {children}
           </div>

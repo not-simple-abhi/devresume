@@ -16,10 +16,10 @@ export default function AnalysisSidebar() {
   const { activeTab, setActiveTab } = useReviewStore()
 
   return (
-    <aside className="w-[220px] shrink-0 bg-white border-r border-gray-100 flex flex-col min-h-0">
+    <aside className="w-[220px] shrink-0 bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800 flex flex-col min-h-0">
       {/* Section label */}
       <div className="px-5 pt-6 pb-3">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
           Analysis Context
         </p>
       </div>
@@ -33,14 +33,16 @@ export default function AnalysisSidebar() {
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left',
               activeTab === id
-                ? 'bg-violet-50 text-violet-700 border border-violet-200/60'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                ? 'bg-violet-50 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/60'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
             )}
           >
             <Icon
               size={16}
               className={cn(
-                activeTab === id ? 'text-violet-600' : 'text-gray-400'
+                activeTab === id
+                  ? 'text-violet-600 dark:text-violet-400'
+                  : 'text-gray-400 dark:text-gray-500'
               )}
             />
             {label}
@@ -48,7 +50,6 @@ export default function AnalysisSidebar() {
         ))}
       </nav>
 
-      {/* Bottom spacer */}
       <div className="h-6" />
     </aside>
   )

@@ -8,7 +8,6 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import EmptyState from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 
-// ─── Type normalization ───────────────────────────────────────────────────────
 interface AISuggestion {
   project_name?: string
   improved_description?: string
@@ -34,9 +33,9 @@ function normalizeString(s: unknown): string {
 
 function ImpactTag({ label }: { label: 'HIGH IMPACT' | 'MEDIUM IMPACT' | 'LOW IMPACT' }) {
   const colorMap = {
-    'HIGH IMPACT':   'bg-violet-100 text-violet-700 border-violet-200',
-    'MEDIUM IMPACT': 'bg-amber-50 text-amber-600 border-amber-200',
-    'LOW IMPACT':    'bg-gray-100 text-gray-500 border-gray-200',
+    'HIGH IMPACT':   'bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800',
+    'MEDIUM IMPACT': 'bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+    'LOW IMPACT':    'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700',
   }
   return (
     <span className={cn('text-xs font-bold px-2 py-0.5 rounded border uppercase tracking-wider', colorMap[label])}>
@@ -45,7 +44,6 @@ function ImpactTag({ label }: { label: 'HIGH IMPACT' | 'MEDIUM IMPACT' | 'LOW IM
   )
 }
 
-// ─── Single project card ──────────────────────────────────────────────────────
 function ProjectCard({
   project,
   aiSuggestion,
@@ -53,7 +51,7 @@ function ProjectCard({
   project: { title: string; score: number; maxScore: number; issues: string[] }
   aiSuggestion?: AISuggestion
 }) {
-  const [applied, setApplied]     = useState(false)
+  const [applied,   setApplied]   = useState(false)
   const [discarded, setDiscarded] = useState(false)
   const pct    = Math.round((project.score / project.maxScore) * 100)
   const impact: 'HIGH IMPACT' | 'MEDIUM IMPACT' | 'LOW IMPACT' =
@@ -78,14 +76,14 @@ function ProjectCard({
   return (
     <Card padding="none" className="overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3 border-b border-gray-100">
+      <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-start gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center shrink-0">
-            <Layers size={16} className="text-violet-600" />
+          <div className="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center shrink-0">
+            <Layers size={16} className="text-violet-600 dark:text-violet-400" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-base font-bold text-gray-900">
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">
                 {project.title.replace(/^[•\-\s]+/, '').replace(/\s*:\s*$/, '')}
               </h3>
               <ImpactTag label={impact} />
@@ -93,146 +91,105 @@ function ProjectCard({
           </div>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-xs font-semibold text-gray-400 mb-0.5">Project Score</p>
-          <p
-            className="text-2xl font-bold font-mono-data"
-            style={{ color: pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444' }}
-          >
-            {project.score}
-            <span className="text-sm font-normal text-gray-400">/{project.maxScore}</span>
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 mb-0.5">Project Score</p>
+          <p className="text-2xl font-bold font-mono-data" style={{ color: pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444' }}>
+            {project.score}<span className="text-sm font-normal text-gray-400 dark:text-gray-500">/{project.maxScore}</span>
           </p>
         </div>
       </div>
 
       {/* Body */}
-      <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-        {/* Left: metrics + tech */}
+      <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800">
+        {/* Left */}
         <div className="px-5 py-4 space-y-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-              Metrics & Impact
-            </p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Metrics &amp; Impact</p>
             <ul className="space-y-2.5">
               {metrics.map(({ label, done }) => (
-                <li key={label} className="flex items-start gap-2 text-sm font-medium text-gray-700">
-                  {done ? (
-                    <CheckCircle2 size={14} className="text-violet-500 mt-0.5 shrink-0" />
-                  ) : (
-                    <Circle size={14} className="text-gray-300 mt-0.5 shrink-0" />
-                  )}
-                  <span className={done ? 'text-gray-700' : 'text-gray-400'}>{label}</span>
+                <li key={label} className="flex items-start gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {done
+                    ? <CheckCircle2 size={14} className="text-violet-500 dark:text-violet-400 mt-0.5 shrink-0" />
+                    : <Circle      size={14} className="text-gray-300 dark:text-gray-600 mt-0.5 shrink-0" />
+                  }
+                  <span className={done ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 dark:text-gray-600'}>{label}</span>
                 </li>
               ))}
             </ul>
           </div>
-
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2.5">
-              Tech Stack
-            </p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2.5">Tech Stack</p>
             <div className="flex flex-wrap gap-1.5">
-              {mockStack.map((t) => (
-                <Badge key={t} variant="gray" size="sm">{t}</Badge>
-              ))}
+              {mockStack.map((t) => <Badge key={t} variant="gray" size="sm">{t}</Badge>)}
             </div>
           </div>
-
-          {/* Issues from rule engine */}
           {project.issues.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2.5">
-                Issues Found
-              </p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2.5">Issues Found</p>
               <ul className="space-y-1.5">
                 {project.issues.map((issue, i) => (
-                  <li key={i} className="flex items-start gap-1.5 text-sm font-medium text-gray-600">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-300 mt-1.5 shrink-0" />
+                  <li key={i} className="flex items-start gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-300 dark:bg-red-700 mt-1.5 shrink-0" />
                     {issue}
                   </li>
                 ))}
               </ul>
             </div>
           )}
-
           <ProgressBar value={project.score} max={project.maxScore} />
         </div>
 
-        {/* Right: AI description */}
+        {/* Right */}
         <div className="px-5 py-4 space-y-4">
           {showImproved ? (
             <>
               <div className="flex justify-end">
-                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-violet-50 text-violet-600 border border-violet-200 rounded-full font-semibold">
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 rounded-full font-semibold">
                   <Sparkles size={10} /> AI Optimized
                 </span>
               </div>
-
-              {/* Current issue */}
               {aiSuggestion.current_issue && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-                    Current Issue
-                  </p>
-                  <p className="text-sm font-medium text-red-400 line-through leading-relaxed">
-                    {aiSuggestion.current_issue}
-                  </p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1.5">Current Issue</p>
+                  <p className="text-sm font-medium text-red-400 line-through leading-relaxed">{aiSuggestion.current_issue}</p>
                 </div>
               )}
-
-              {/* Improved */}
               {aiSuggestion.improved_description && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-violet-500 mb-1.5">
-                    Improved Description
-                  </p>
-                  <div className="border-l-2 border-violet-500 pl-3">
-                    <p className="text-sm font-medium text-gray-700 leading-relaxed">
-                      {aiSuggestion.improved_description}
-                    </p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-violet-500 dark:text-violet-400 mb-1.5">Improved Description</p>
+                  <div className="border-l-2 border-violet-500 dark:border-violet-600 pl-3">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 leading-relaxed">{aiSuggestion.improved_description}</p>
                   </div>
                 </div>
               )}
-
-              {/* Missing elements */}
               {aiSuggestion.missing_elements && aiSuggestion.missing_elements.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  {aiSuggestion.missing_elements.map((m) => (
-                    <Badge key={m} variant="red" size="sm">{m}</Badge>
-                  ))}
+                  {aiSuggestion.missing_elements.map((m) => <Badge key={m} variant="red" size="sm">{m}</Badge>)}
                 </div>
               )}
-
               <div className="flex gap-2 pt-2">
-                <Button variant="secondary" size="sm" icon={<X size={12} />} onClick={() => setDiscarded(true)}>
-                  Discard
-                </Button>
-                <Button variant="primary" size="sm" icon={<Check size={12} />} onClick={() => setApplied(true)}>
-                  Apply Changes
-                </Button>
+                <Button variant="secondary" size="sm" icon={<X size={12} />} onClick={() => setDiscarded(true)}>Discard</Button>
+                <Button variant="primary"   size="sm" icon={<Check size={12} />} onClick={() => setApplied(true)}>Apply Changes</Button>
               </div>
             </>
           ) : (
             <div>
               {applied && (
-                <div className="flex items-center gap-2 text-sm font-medium text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-3">
-                  <CheckCircle2 size={14} />
-                  Changes applied to your resume.
+                <div className="flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900 rounded-lg px-3 py-2 mb-3">
+                  <CheckCircle2 size={14} /> Changes applied to your resume.
                 </div>
               )}
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2.5">
-                Description
-              </p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2.5">Description</p>
               {project.issues.length > 0 ? (
                 <ul className="space-y-2">
                   {project.issues.map((issue, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0" />
+                    <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 mt-1.5 shrink-0" />
                       {issue}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm font-medium text-gray-400">No issues detected for this project.</p>
+                <p className="text-sm font-medium text-gray-400 dark:text-gray-500">No issues detected for this project.</p>
               )}
             </div>
           )}
@@ -242,7 +199,6 @@ function ProjectCard({
   )
 }
 
-// ─── Main page ────────────────────────────────────────────────────────────────
 export default function ProjectsPage() {
   const { activeReport } = useReviewStore()
 
@@ -273,70 +229,52 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center">
-            <Layers size={18} className="text-violet-600" />
+          <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center">
+            <Layers size={18} className="text-violet-600 dark:text-violet-400" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Project Analysis</h1>
-            <p className="text-sm font-medium text-gray-500">
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Project Analysis</h1>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Reviewing {intelligence.projectScores.length} project{intelligence.projectScores.length !== 1 ? 's' : ''} found in your resume.
             </p>
           </div>
         </div>
-
         {totalMax > 0 && (
-          <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl px-4 py-2.5 shadow-sm">
-            <span className="text-sm font-medium text-gray-500">Total Score:</span>
-            <span className="font-bold text-gray-900 font-mono-data text-sm">{totalScore}/{totalMax}</span>
-            <div className="w-20">
-              <ProgressBar value={totalScore} max={totalMax} height="sm" />
-            </div>
+          <div className="flex items-center gap-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-2.5 shadow-sm">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Score:</span>
+            <span className="font-bold text-gray-900 dark:text-gray-100 font-mono-data text-sm">{totalScore}/{totalMax}</span>
+            <div className="w-20"><ProgressBar value={totalScore} max={totalMax} height="sm" /></div>
           </div>
         )}
       </div>
 
-      {/* Project cards */}
+      {/* Cards */}
       {intelligence.projectScores.length > 0 ? (
         <div className="space-y-4">
           {intelligence.projectScores.map((project, i) => (
-            <ProjectCard
-              key={project.title + i}
-              project={project}
-              aiSuggestion={aiSuggestions[i]}
-            />
+            <ProjectCard key={project.title + i} project={project} aiSuggestion={aiSuggestions[i]} />
           ))}
         </div>
       ) : (
-        <EmptyState
-          title="No projects found"
-          description="No projects were detected in your resume. Consider adding a Projects section."
-        />
+        <EmptyState title="No projects found" description="No projects were detected in your resume. Consider adding a Projects section." />
       )}
 
-      {/* Recommended projects */}
+      {/* Recommended */}
       {recommended.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
-            <Sparkles size={15} className="text-violet-500" />
-            <h3 className="text-base font-semibold text-gray-800">Recommended Projects to Add</h3>
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-800">
+            <Sparkles size={15} className="text-violet-500 dark:text-violet-400" />
+            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Recommended Projects to Add</h3>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {recommended.map((r, i) => (
-              <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-4">
-                {r.project_idea && (
-                  <p className="text-sm font-bold text-gray-800 mb-1.5">{r.project_idea}</p>
-                )}
-                {r.description && (
-                  <p className="text-sm font-medium text-gray-600 leading-relaxed mb-2">{r.description}</p>
-                )}
-                {r.why_valuable && (
-                  <p className="text-sm font-medium text-violet-600 mb-2">{r.why_valuable}</p>
-                )}
+              <div key={i} className="bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4">
+                {r.project_idea && <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1.5">{r.project_idea}</p>}
+                {r.description  && <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed mb-2">{r.description}</p>}
+                {r.why_valuable && <p className="text-sm font-medium text-violet-600 dark:text-violet-400 mb-2">{r.why_valuable}</p>}
                 {r.skills_demonstrated && r.skills_demonstrated.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    {r.skills_demonstrated.map((s) => (
-                      <Badge key={s} variant="default" size="sm">{s}</Badge>
-                    ))}
+                    {r.skills_demonstrated.map((s) => <Badge key={s} variant="default" size="sm">{s}</Badge>)}
                   </div>
                 )}
               </div>
@@ -345,17 +283,17 @@ export default function ProjectsPage() {
         </Card>
       )}
 
-      {/* Quick wins */}
+      {/* Quick Wins */}
       {quickWins.length > 0 && (
         <Card>
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-800">
             <Lightbulb size={15} className="text-amber-400" />
-            <h3 className="text-base font-semibold text-gray-800">Quick Wins</h3>
+            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Quick Wins</h3>
           </div>
           <ul className="space-y-2.5">
             {quickWins.map((w, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-sm font-medium text-gray-700">
-                <span className="w-5 h-5 rounded-full bg-amber-50 text-amber-600 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+              <li key={i} className="flex items-start gap-2.5 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="w-5 h-5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   {i + 1}
                 </span>
                 {w}

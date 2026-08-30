@@ -9,7 +9,7 @@ interface ScoreRingProps {
 }
 
 const sizeMap = {
-  sm: { r: 32, stroke: 5, cx: 40, viewBox: 80, fontSize: 'text-xl', labelSize: 'text-[10px]' },
+  sm: { r: 32, stroke: 5, cx: 40, viewBox: 80,  fontSize: 'text-xl',  labelSize: 'text-[10px]' },
   md: { r: 42, stroke: 6, cx: 52, viewBox: 104, fontSize: 'text-3xl', labelSize: 'text-xs' },
   lg: { r: 52, stroke: 7, cx: 64, viewBox: 128, fontSize: 'text-4xl', labelSize: 'text-sm' },
 }
@@ -36,13 +36,13 @@ export default function ScoreRing({
           viewBox={`0 0 ${viewBox} ${viewBox}`}
           className="-rotate-90"
         >
-          {/* Track */}
+          {/* Track — uses CSS variable so it adapts to dark mode */}
           <circle
             cx={cx}
             cy={cx}
             r={r}
             fill="none"
-            stroke="#e5e7eb"
+            stroke="var(--ring-track)"
             strokeWidth={stroke}
           />
           {/* Progress */}
@@ -72,7 +72,9 @@ export default function ScoreRing({
         </div>
       </div>
       {showLabel && (
-        <span className={`font-medium text-gray-500 ${labelSize}`}>{displayLabel}</span>
+        <span className={`font-medium text-gray-500 dark:text-gray-400 ${labelSize}`}>
+          {displayLabel}
+        </span>
       )}
     </div>
   )

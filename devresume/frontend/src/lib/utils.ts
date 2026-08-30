@@ -13,9 +13,9 @@ export function formatDate(dateString: string): string {
 }
 
 export function scoreColor(score: number): string {
-  if (score >= 71) return '#7c3aed'   // purple / good (matches design)
-  if (score >= 50) return '#f59e0b'   // amber
-  return '#ef4444'                     // red
+  if (score >= 71) return '#7c3aed'
+  if (score >= 50) return '#f59e0b'
+  return '#ef4444'
 }
 
 export function scoreLabel(score: number): string {
@@ -25,10 +25,11 @@ export function scoreLabel(score: number): string {
   return 'Needs Work'
 }
 
+/** Returns Tailwind classes for score-coloured badges — includes dark variants */
 export function scoreLabelColor(score: number): string {
-  if (score >= 65) return 'text-violet-600 bg-violet-50'
-  if (score >= 50) return 'text-amber-600 bg-amber-50'
-  return 'text-red-600 bg-red-50'
+  if (score >= 65) return 'text-violet-600 bg-violet-50 dark:text-violet-300 dark:bg-violet-950'
+  if (score >= 50) return 'text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950'
+  return 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950'
 }
 
 export function clampFileName(name: string, max = 28): string {

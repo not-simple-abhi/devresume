@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
+/* ── Tailwind v4: enable class-based dark mode ───────────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
+  /* ── Light theme tokens ──────────────────────────────────────────────── */
   :root {
-    --bg-base: #eef0f7;
-    --bg-surface: #ffffff;
-    --bg-sidebar: #ffffff;
-    --border: rgba(139, 92, 246, 0.12);
-    --accent: #7c3aed;
-    --accent-light: #8b5cf6;
-    --accent-pale: #ede9fe;
-    --text-primary: #1a1a2e;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --score-red: #ef4444;
-    --score-amber: #f59e0b;
-    --score-green: #10b981;
-    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+    --bg-base:       #eef0f7;
+    --bg-surface:    #ffffff;
+    --bg-sidebar:    #ffffff;
+    --border:        rgba(139, 92, 246, 0.12);
+    --accent:        #7c3aed;
+    --accent-light:  #8b5cf6;
+    --accent-pale:   #ede9fe;
+    --text-primary:  #1a1a2e;
+    --text-secondary:#6b7280;
+    --text-muted:    #9ca3af;
+    --score-red:     #ef4444;
+    --score-amber:   #f59e0b;
+    --score-green:   #10b981;
+    --font-mono:     'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+    /* ScoreRing SVG track */
+    --ring-track:    #e5e7eb;
   }
 
-  * {
-    box-sizing: border-box;
+  /* ── Dark theme tokens ───────────────────────────────────────────────── */
+  .dark {
+    --bg-base:       #0f1117;
+    --bg-surface:    #1a1d27;
+    --bg-sidebar:    #15181f;
+    --border:        rgba(139, 92, 246, 0.20);
+    --accent:        #8b5cf6;
+    --accent-light:  #a78bfa;
+    --accent-pale:   #2d1f5e;
+    --text-primary:  #f0f0f8;
+    --text-secondary:#94a3b8;
+    --text-muted:    #64748b;
+    --ring-track:    #2d3748;
   }
+
+  * { box-sizing: border-box; }
 
   html, body {
     margin: 0;
@@ -29,6 +48,7 @@
     color: var(--text-primary);
     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   /* Scrollbar styling */
@@ -36,6 +56,9 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+  .dark ::-webkit-scrollbar-thumb { background: #374151; }
+  .dark ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
 }
 
 @layer utilities {
@@ -43,21 +66,27 @@
     font-family: var(--font-mono);
   }
 
-  /* ── Landing page background ─────────────────────────────────────── */
-  /* Light lavender base + subtle dot-grid + soft radial purple glow   */
+  /* ── Landing page background ── light ────────────────────────────────── */
   .landing-bg {
     background-color: #f0effe;
     background-image:
-      /* dot grid */
       radial-gradient(circle, rgba(139,92,246,0.18) 1px, transparent 1px),
-      /* top-left purple glow */
       radial-gradient(ellipse 60% 50% at 10% 0%, rgba(167,139,250,0.18) 0%, transparent 70%),
-      /* top-right glow */
       radial-gradient(ellipse 50% 40% at 90% 5%, rgba(139,92,246,0.12) 0%, transparent 60%);
     background-size: 24px 24px, 100% 100%, 100% 100%;
   }
 
-  /* Inner page bg (dashboard, compare, etc.) — same grid, subtler */
+  /* ── Landing page background ── dark ─────────────────────────────────── */
+  .dark .landing-bg {
+    background-color: #0d0b1a;
+    background-image:
+      radial-gradient(circle, rgba(139,92,246,0.12) 1px, transparent 1px),
+      radial-gradient(ellipse 60% 50% at 10% 0%, rgba(109,40,217,0.22) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 5%, rgba(139,92,246,0.14) 0%, transparent 60%);
+    background-size: 24px 24px, 100% 100%, 100% 100%;
+  }
+
+  /* ── Inner page bg ── light ──────────────────────────────────────────── */
   .page-bg {
     background-color: #eef0f7;
     background-image:
@@ -66,7 +95,16 @@
     background-size: 24px 24px, 100% 100%;
   }
 
-  /* Score ring animation */
+  /* ── Inner page bg ── dark ───────────────────────────────────────────── */
+  .dark .page-bg {
+    background-color: #0f1117;
+    background-image:
+      radial-gradient(circle, rgba(139,92,246,0.07) 1px, transparent 1px),
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(109,40,217,0.12) 0%, transparent 60%);
+    background-size: 24px 24px, 100% 100%;
+  }
+
+  /* ── Score ring animation ─────────────────────────────────────────────── */
   .ring-animate {
     stroke-dasharray: 283;
     stroke-dashoffset: 283;
@@ -93,11 +131,11 @@
   }
 
   .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
-  .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.1s;  }
   .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
-  .stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.2s;  }
   .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
-  .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.3s;  }
 
   .bar-animate {
     animation: bar-grow 1s ease-out forwards;
@@ -106,5 +144,11 @@
   @keyframes bar-grow {
     from { transform: scaleX(0); }
     to   { transform: scaleX(1); }
+  }
+
+  /* ── Theme transition ─────────────────────────────────────────────────── */
+  .theme-transition,
+  .theme-transition * {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease !important;
   }
 }

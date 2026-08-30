@@ -13,11 +13,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantMap: Record<ButtonVariant, string> = {
-  primary:   'bg-violet-600 text-white hover:bg-violet-700 active:bg-violet-800',
-  secondary: 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300',
-  ghost:     'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-  danger:    'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100',
-  outline:   'border border-violet-200 text-violet-600 hover:bg-violet-50',
+  primary:
+    'bg-violet-600 text-white hover:bg-violet-700 active:bg-violet-800 dark:bg-violet-700 dark:hover:bg-violet-600',
+  secondary:
+    'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 ' +
+    'dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:border-gray-600',
+  ghost:
+    'text-gray-600 hover:bg-gray-100 hover:text-gray-900 ' +
+    'dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
+  danger:
+    'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 ' +
+    'dark:bg-red-950 dark:text-red-400 dark:border-red-900 dark:hover:bg-red-900',
+  outline:
+    'border border-violet-200 text-violet-600 hover:bg-violet-50 ' +
+    'dark:border-violet-700 dark:text-violet-400 dark:hover:bg-violet-950',
 }
 
 const sizeMap: Record<ButtonSize, string> = {

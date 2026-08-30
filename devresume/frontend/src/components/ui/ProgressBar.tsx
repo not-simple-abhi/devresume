@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 interface ProgressBarProps {
   value: number       // 0-100
   max?: number
-  color?: string      // tailwind bg class or hex
+  color?: string      // hex color
   className?: string
   animated?: boolean
   height?: 'sm' | 'md'
@@ -19,15 +19,14 @@ export default function ProgressBar({
 }: ProgressBarProps) {
   const pct = Math.min(100, Math.round((value / max) * 100))
 
-  // Determine color from value if not explicitly given
   const barColor =
-    color ??
-    (pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444')
+    color ?? (pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444')
 
   return (
     <div
       className={cn(
-        'w-full bg-gray-100 rounded-full overflow-hidden',
+        'w-full rounded-full overflow-hidden',
+        'bg-gray-100 dark:bg-gray-800',
         height === 'sm' ? 'h-1.5' : 'h-2',
         className
       )}
