@@ -64,8 +64,8 @@ app.get('/', (req, res) => {
 // ─── Routes with per-route limiters ───────────────────────────────────────────
 app.use('/api/auth',    authLimiter,    authRoutes);
 app.use('/api/resume',  parseLimiter,   resumeRoutes);
-app.use('/api/review',  analyzeLimiter, reviewRoutes);
-app.use('/api/compare',                 compareRoutes);   // protected by auth + global
+app.use('/api/review',                  reviewRoutes);   // analyzeLimiter applied per-route inside
+app.use('/api/compare',                 compareRoutes);  // protected by auth + global
 app.use('/api/company', companyLimiter, companyRoutes);
 
 // ─── Error handler ────────────────────────────────────────────────────────────
