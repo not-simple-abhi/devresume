@@ -12,23 +12,23 @@ import type { CompareResult } from '@/types/review.types'
 
 function DeltaBadge({ value }: { value: number }) {
   if (value > 0) return (
-    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5">
+    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-full px-2 py-0.5">
       <TrendingUp size={11} /> +{value}
     </span>
   )
   if (value < 0) return (
-    <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
+    <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 rounded-full px-2 py-0.5">
       <TrendingDown size={11} /> {value}
     </span>
   )
   return (
-    <span className="inline-flex items-center gap-1 text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-200 rounded-full px-2 py-0.5">
+    <span className="inline-flex items-center gap-1 text-xs font-semibold text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-2 py-0.5">
       <Minus size={11} /> 0
     </span>
   )
 }
 
-function CompareResult({ result }: { result: CompareResult }) {
+function CompareResultView({ result }: { result: CompareResult }) {
   const r1Stronger = result.review1.overallScore > result.review2.overallScore
   const r2Stronger = result.review2.overallScore > result.review1.overallScore
 
@@ -38,9 +38,9 @@ function CompareResult({ result }: { result: CompareResult }) {
 
   return (
     <div className="space-y-5 animate-fade-in">
-      {/* Recommendation banner */}
-      <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 text-center">
-        <p className="text-sm font-semibold text-violet-800">{result.recommendation}</p>
+      {/* Recommendation */}
+      <div className="bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 rounded-xl p-4 text-center">
+        <p className="text-sm font-semibold text-violet-800 dark:text-violet-300">{result.recommendation}</p>
       </div>
 
       {/* Side-by-side score cards */}
@@ -50,23 +50,21 @@ function CompareResult({ result }: { result: CompareResult }) {
           return (
             <Card
               key={r.id}
-              className={cn(isWinner && 'border-violet-300 ring-1 ring-violet-200')}
+              className={cn(isWinner && 'border-violet-300 dark:border-violet-700 ring-1 ring-violet-200 dark:ring-violet-800')}
             >
               {isWinner && (
-                <div className="text-[9px] font-bold uppercase tracking-widest text-violet-600 mb-2">
+                <div className="text-[9px] font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400 mb-2">
                   ✦ Stronger version
                 </div>
               )}
-              <p className="text-xs font-semibold text-gray-700 truncate mb-1">{r.resumeName}</p>
-              <p className="text-[10px] text-gray-400 mb-4">{formatDate(r.date)}</p>
-
+              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate mb-1">{r.resumeName}</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-4">{formatDate(r.date)}</p>
               <div className="flex justify-center mb-4">
                 <ScoreRing score={r.overallScore} size="md" />
               </div>
-
-              <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                 <span>ATS Score</span>
-                <span className="font-semibold font-mono-data text-gray-800">{r.atsScore}%</span>
+                <span className="font-semibold font-mono-data text-gray-800 dark:text-gray-200">{r.atsScore}%</span>
               </div>
             </Card>
           )
@@ -75,16 +73,16 @@ function CompareResult({ result }: { result: CompareResult }) {
 
       {/* Score deltas */}
       <Card>
-        <h3 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-50">
+        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-3 border-b border-gray-50 dark:border-gray-800">
           Score Differences
         </h3>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">Overall Score</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">Overall Score</span>
             <DeltaBadge value={result.differences.overallScore} />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">ATS Score</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">ATS Score</span>
             <DeltaBadge value={result.differences.atsScore} />
           </div>
         </div>
@@ -93,7 +91,7 @@ function CompareResult({ result }: { result: CompareResult }) {
       {/* Breakdown comparison */}
       {allKeys.length > 0 && (
         <Card>
-          <h3 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-50">
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-3 border-b border-gray-50 dark:border-gray-800">
             Breakdown Comparison
           </h3>
           <div className="space-y-4">
@@ -104,11 +102,11 @@ function CompareResult({ result }: { result: CompareResult }) {
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-gray-600">{label}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{label}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono-data font-semibold text-gray-700 w-8 text-right">{v1}</span>
-                      <span className="text-[10px] text-gray-400">vs</span>
-                      <span className="text-xs font-mono-data font-semibold text-gray-700 w-8">{v2}</span>
+                      <span className="text-xs font-mono-data font-semibold text-gray-700 dark:text-gray-300 w-8 text-right">{v1}</span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">vs</span>
+                      <span className="text-xs font-mono-data font-semibold text-gray-700 dark:text-gray-300 w-8">{v2}</span>
                       <DeltaBadge value={v2 - v1} />
                     </div>
                   </div>
@@ -139,6 +137,11 @@ export default function ComparePage() {
     compareMutation.mutate({ id1, id2 })
   }
 
+  const selectClass =
+    'w-full px-3 py-2 text-sm border rounded-lg outline-none transition-colors ' +
+    'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ' +
+    'border-gray-200 dark:border-gray-700 focus:border-violet-400 dark:focus:border-violet-500'
+
   if (!isLoading && reviews.length < 2) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -159,26 +162,21 @@ export default function ComparePage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center">
-          <GitCompare size={18} className="text-violet-600" />
+        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center">
+          <GitCompare size={18} className="text-violet-600 dark:text-violet-400" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Compare Resumes</h1>
-          <p className="text-xs text-gray-500">Select two saved reviews to see a side-by-side analysis.</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Compare Resumes</h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Select two saved reviews to see a side-by-side analysis.</p>
         </div>
       </div>
 
       {/* Selector */}
       <Card className="mb-5">
         <div className="grid sm:grid-cols-2 gap-4 mb-4">
-          {/* Version 1 */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Version 1</label>
-            <select
-              value={id1}
-              onChange={(e) => setId1(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:border-violet-400 outline-none"
-            >
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Version 1</label>
+            <select value={id1} onChange={(e) => setId1(e.target.value)} className={selectClass}>
               <option value="">Select a review…</option>
               {reviews.map((r) => (
                 <option key={r.id} value={r.id} disabled={r.id === id2}>
@@ -187,15 +185,9 @@ export default function ComparePage() {
               ))}
             </select>
           </div>
-
-          {/* Version 2 */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Version 2</label>
-            <select
-              value={id2}
-              onChange={(e) => setId2(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:border-violet-400 outline-none"
-            >
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Version 2</label>
+            <select value={id2} onChange={(e) => setId2(e.target.value)} className={selectClass}>
               <option value="">Select a review…</option>
               {reviews.map((r) => (
                 <option key={r.id} value={r.id} disabled={r.id === id1}>
@@ -207,30 +199,23 @@ export default function ComparePage() {
         </div>
 
         {id1 === id2 && id1 !== '' && (
-          <p className="text-xs text-amber-600 mb-3">Select two different reviews to compare.</p>
+          <p className="text-xs text-amber-600 dark:text-amber-400 mb-3">Select two different reviews to compare.</p>
         )}
 
-        <Button
-          onClick={handleCompare}
-          loading={compareMutation.isPending}
-          disabled={!canCompare}
-          icon={<GitCompare size={13} />}
-        >
+        <Button onClick={handleCompare} loading={compareMutation.isPending} disabled={!canCompare} icon={<GitCompare size={13} />}>
           Compare
         </Button>
       </Card>
 
       {/* Error */}
       {compareMutation.isError && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 mb-5">
+        <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 text-sm text-red-600 dark:text-red-400 mb-5">
           Comparison failed. Please try again.
         </div>
       )}
 
       {/* Result */}
-      {compareMutation.data && (
-        <CompareResult result={compareMutation.data} />
-      )}
+      {compareMutation.data && <CompareResultView result={compareMutation.data} />}
     </div>
   )
 }

@@ -15,17 +15,17 @@ function CompanyCard({ result, rank }: { result: CompanyAnalysis; rank: number }
   const isBest = rank === 0
 
   const scoreColor =
-    score >= 70 ? 'text-emerald-600' : score >= 50 ? 'text-amber-600' : 'text-red-500'
-  const barColor  =
-    score >= 70 ? '#10b981'          : score >= 50 ? '#f59e0b'          : '#ef4444'
+    score >= 70 ? 'text-emerald-600 dark:text-emerald-400'
+    : score >= 50 ? 'text-amber-600 dark:text-amber-400'
+    : 'text-red-500 dark:text-red-400'
+
+  const barColor =
+    score >= 70 ? '#10b981' : score >= 50 ? '#f59e0b' : '#ef4444'
 
   return (
     <Card
       hover
-      className={cn(
-        'relative',
-        isBest && 'border-violet-300 ring-1 ring-violet-200'
-      )}
+      className={cn('relative', isBest && 'border-violet-300 dark:border-violet-700 ring-1 ring-violet-200 dark:ring-violet-800')}
     >
       {isBest && (
         <div className="absolute top-3 right-3">
@@ -35,36 +35,31 @@ function CompanyCard({ result, rank }: { result: CompanyAnalysis; rank: number }
 
       {/* Company icon + name */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center">
-          <Building2 size={18} className="text-gray-300" />
+        <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center">
+          <Building2 size={18} className="text-gray-300 dark:text-gray-600" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-gray-900">{result.company}</p>
-          <p className="text-[10px] text-gray-400">#{rank + 1} match</p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{result.company}</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500">#{rank + 1} match</p>
         </div>
       </div>
 
-      {/* Readiness score */}
+      {/* Score */}
       <div className="flex items-end justify-between mb-2">
-        <span className="text-xs text-gray-500">Readiness Score</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400">Readiness Score</span>
         <span className={cn('text-2xl font-bold font-mono-data', scoreColor)}>
-          {score}
-          <span className="text-sm font-normal text-gray-400">%</span>
+          {score}<span className="text-sm font-normal text-gray-400 dark:text-gray-500">%</span>
         </span>
       </div>
       <ProgressBar value={score} color={barColor} className="mb-4" />
 
-      {/* Fit summary */}
       {result.fit_summary && (
-        <p className="text-xs text-gray-600 leading-relaxed mb-3">{result.fit_summary}</p>
+        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-3">{result.fit_summary}</p>
       )}
 
-      {/* Matching skills */}
       {result.matching_skills && result.matching_skills.length > 0 && (
         <div className="mb-3">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            Matching Skills
-          </p>
+          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1.5">Matching Skills</p>
           <div className="flex flex-wrap gap-1.5">
             {result.matching_skills.slice(0, 5).map((s) => (
               <Badge key={s} variant="green" size="sm">{s}</Badge>
@@ -73,12 +68,9 @@ function CompanyCard({ result, rank }: { result: CompanyAnalysis; rank: number }
         </div>
       )}
 
-      {/* Missing skills */}
       {result.missing_skills && result.missing_skills.length > 0 && (
         <div>
-          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            Missing Skills
-          </p>
+          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1.5">Missing Skills</p>
           <div className="flex flex-wrap gap-1.5">
             {result.missing_skills.slice(0, 4).map((s) => (
               <Badge key={s} variant="red" size="sm">{s}</Badge>
@@ -95,9 +87,9 @@ export default function CompanyPage() {
   const companies = serverCompanies ?? SUPPORTED_COMPANIES
   const analyzeMutation = useAnalyzeBatch()
 
-  const [file, setFile]       = useState<File | null>(null)
+  const [file, setFile]         = useState<File | null>(null)
   const [selected, setSelected] = useState<string[]>([])
-  const [error, setError]     = useState('')
+  const [error, setError]       = useState('')
 
   const onDrop = useCallback((accepted: File[]) => {
     if (accepted[0]) { setFile(accepted[0]); setError('') }
@@ -137,19 +129,19 @@ export default function CompanyPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center">
-          <Building2 size={18} className="text-violet-600" />
+        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center">
+          <Building2 size={18} className="text-violet-600 dark:text-violet-400" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Company Fit Analysis</h1>
-          <p className="text-xs text-gray-500">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Company Fit Analysis</h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             See how your resume matches top tech companies — no account needed.
           </p>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-[360px_1fr] gap-6">
-        {/* ── Left panel: upload + company picker ── */}
+        {/* ── Left panel ── */}
         <div className="space-y-4">
           {/* Dropzone */}
           <Card padding="none">
@@ -158,26 +150,26 @@ export default function CompanyPage() {
               className={cn(
                 'border-2 border-dashed rounded-xl m-4 p-8 text-center cursor-pointer transition-all',
                 isDragActive
-                  ? 'border-violet-400 bg-violet-50'
+                  ? 'border-violet-400 bg-violet-50 dark:bg-violet-950/40'
                   : file
-                  ? 'border-violet-300 bg-violet-50/40'
-                  : 'border-gray-200 hover:border-violet-300 hover:bg-gray-50'
+                  ? 'border-violet-300 dark:border-violet-700 bg-violet-50/40 dark:bg-violet-950/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 hover:bg-gray-50 dark:hover:bg-gray-800'
               )}
             >
               <input {...getInputProps()} />
               {file ? (
                 <div className="flex flex-col items-center gap-2">
-                  <CheckCircle2 size={22} className="text-violet-500" />
-                  <p className="text-sm font-medium text-gray-700 truncate max-w-full">{file.name}</p>
-                  <p className="text-xs text-gray-400">{(file.size / 1024).toFixed(0)} KB</p>
+                  <CheckCircle2 size={22} className="text-violet-500 dark:text-violet-400" />
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-full">{file.name}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{(file.size / 1024).toFixed(0)} KB</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2">
-                  <Upload size={22} className="text-gray-300" />
-                  <p className="text-sm font-medium text-gray-600">
+                  <Upload size={22} className="text-gray-300 dark:text-gray-600" />
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     {isDragActive ? 'Drop it here' : 'Drop resume or click to browse'}
                   </p>
-                  <p className="text-xs text-gray-400">PDF · DOCX · Max 5 MB</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">PDF · DOCX · Max 5 MB</p>
                 </div>
               )}
             </div>
@@ -194,8 +186,8 @@ export default function CompanyPage() {
           {/* Company selector */}
           <Card>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-800">Select Companies</h3>
-              <span className="text-xs text-gray-400">{selected.length}/{MAX_COMPANY_SELECT}</span>
+              <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Select Companies</h3>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{selected.length}/{MAX_COMPANY_SELECT}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {companies.map((c) => {
@@ -209,10 +201,10 @@ export default function CompanyPage() {
                     className={cn(
                       'text-xs px-3 py-1.5 rounded-lg border font-medium transition-all',
                       isSelected
-                        ? 'bg-violet-600 text-white border-violet-600'
+                        ? 'bg-violet-600 text-white border-violet-600 dark:bg-violet-700 dark:border-violet-700'
                         : isDisabled
-                        ? 'border-gray-100 text-gray-300 cursor-not-allowed'
-                        : 'border-gray-200 text-gray-600 hover:border-violet-300 hover:text-violet-600'
+                        ? 'border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                        : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-violet-300 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400'
                     )}
                   >
                     {c}
@@ -221,13 +213,15 @@ export default function CompanyPage() {
               })}
             </div>
             {selected.length >= MAX_COMPANY_SELECT && (
-              <p className="text-[10px] text-amber-600 mt-2">Maximum {MAX_COMPANY_SELECT} companies per analysis.</p>
+              <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-2">
+                Maximum {MAX_COMPANY_SELECT} companies per analysis.
+              </p>
             )}
           </Card>
 
           {/* Error */}
           {error && (
-            <p className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+            <p className="text-xs text-red-500 bg-red-50 dark:bg-red-950/50 border border-red-100 dark:border-red-900 rounded-lg px-3 py-2">
               {error}
             </p>
           )}
@@ -243,17 +237,19 @@ export default function CompanyPage() {
           </Button>
         </div>
 
-        {/* ── Right panel: results ── */}
+        {/* ── Right panel ── */}
         <div>
           {analyzeMutation.isPending && (
             <div className="flex flex-col items-center justify-center h-full py-20 gap-3">
-              <div className="w-10 h-10 border-2 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-              <p className="text-sm text-gray-500">Analyzing your resume against {selected.length} compan{selected.length === 1 ? 'y' : 'ies'}…</p>
+              <div className="w-10 h-10 border-2 border-violet-200 dark:border-violet-800 border-t-violet-600 dark:border-t-violet-400 rounded-full animate-spin" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Analyzing your resume against {selected.length} compan{selected.length === 1 ? 'y' : 'ies'}…
+              </p>
             </div>
           )}
 
           {analyzeMutation.isError && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600 text-center">
+            <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-xl p-4 text-sm text-red-600 dark:text-red-400 text-center">
               Analysis failed. Please try again.
             </div>
           )}
@@ -261,8 +257,8 @@ export default function CompanyPage() {
           {!analyzeMutation.isPending && results.length > 0 && (
             <div className="space-y-4 animate-fade-in">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp size={14} className="text-violet-500" />
-                <p className="text-sm font-semibold text-gray-700">
+                <TrendingUp size={14} className="text-violet-500 dark:text-violet-400" />
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Results for {results.length} compan{results.length === 1 ? 'y' : 'ies'}, sorted by readiness
                 </p>
               </div>
@@ -276,9 +272,9 @@ export default function CompanyPage() {
 
           {!analyzeMutation.isPending && results.length === 0 && !analyzeMutation.isError && (
             <div className="flex flex-col items-center justify-center h-full py-20 text-center">
-              <Building2 size={40} className="text-gray-200 mb-4" />
-              <p className="text-sm font-medium text-gray-500">Select companies and upload your resume</p>
-              <p className="text-xs text-gray-400 mt-1">Results will appear here after analysis</p>
+              <Building2 size={40} className="text-gray-200 dark:text-gray-700 mb-4" />
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Select companies and upload your resume</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Results will appear here after analysis</p>
             </div>
           )}
         </div>
