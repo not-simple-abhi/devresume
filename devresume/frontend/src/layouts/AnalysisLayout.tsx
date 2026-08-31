@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
-import { ChevronRight, Download, Share2, Sparkles } from 'lucide-react'
+import { ChevronRight, Download, Share2, Sun, Moon } from 'lucide-react'
 import AnalysisSidebar from '@/components/layout/AnalysisSidebar'
 import { useReviewStore } from '@/store/review.store'
 import { useAuthStore } from '@/store/auth.store'
+import { useThemeStore } from '@/store/theme.store'
 import Button from '@/components/ui/Button'
 import { clampFileName } from '@/lib/utils'
 
@@ -13,6 +14,7 @@ interface AnalysisLayoutProps {
 export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
   const { activeFileName, activeReport } = useReviewStore()
   const { isAuthenticated } = useAuthStore()
+  const { isDark, toggle } = useThemeStore()
 
   const overall = activeReport?.deterministicAnalysis?.overall
   const ats     = activeReport?.deterministicAnalysis?.atsScore
@@ -68,6 +70,14 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
 
           {/* Actions */}
           <div className="flex items-center gap-2 shrink-0 ml-4">
+            {/* Theme toggle */}
+            <button
+              onClick={toggle}
+              aria-label="Toggle dark mode"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             <Button variant="secondary" size="sm" icon={<Download size={13} />}>
               Export PDF
             </Button>
