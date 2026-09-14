@@ -5,7 +5,7 @@ import { extractJsonFromText } from '../utils/responseFormatter.js';
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 
-const MODEL = 'nvidia/nemotron-3-super-120b-a12b:free';
+const MODEL = 'nvidia/nemotron-3-ultra-550b-a55b';
 
 
 export const callAI = async (systemPrompt, userPrompt, retries = 3) => {
@@ -31,7 +31,7 @@ export const callAI = async (systemPrompt, userPrompt, retries = 3) => {
           { role: 'user',   content: userPrompt   },
         ],
         temperature: 0.3,
-        max_tokens: 2048,
+        max_tokens: 4096,
       }),
     });
 
