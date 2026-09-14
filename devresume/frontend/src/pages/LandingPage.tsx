@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import {
-  Upload, Play, Code2, Tag, Zap, RefreshCw, ScanText, Brain,
+  Upload, Code2, Tag, Zap, RefreshCw, ScanText, Brain,
   Layers, Building2, Sparkles, ArrowRight, CheckCircle2, FileCheck2,
 } from 'lucide-react'
 import { useStats } from '@/hooks/useStats'
@@ -192,10 +192,7 @@ export default function LandingPage() {
               <Upload size={15} />
               Upload Your Resume — It's Free
             </Link>
-            <button className="inline-flex items-center gap-2 px-5 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-              <Play size={14} className="text-violet-500" />
-              See a sample analysis
-            </button>
+
           </div>
           <div className="flex items-center gap-4 text-[11px] text-gray-400 dark:text-gray-500 mb-6">
             {['SOC2 Type II', 'No Data Storage', 'End-to-End Encryption'].map((t) => (
