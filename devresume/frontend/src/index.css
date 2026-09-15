@@ -6,12 +6,13 @@
 @layer base {
   /* ── Light theme tokens ──────────────────────────────────────────────── */
   :root {
-    --bg-base:       #eef0f7;
-    --bg-surface:    #ffffff;
+    --bg-base:       #ebe8fb;
+    --bg-surface:    #f8f7ff;
     --bg-sidebar:    #ffffff;
     --border:        rgba(139, 92, 246, 0.12);
-    --accent:        #7c3aed;
-    --accent-light:  #8b5cf6;
+    --accent:        #6d28d9;
+    --accent-light:  #7c3aed;
+    --shadow-card:   0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(109,40,217,0.06);
     --accent-pale:   #ede9fe;
     --text-primary:  #1a1a2e;
     --text-secondary:#6b7280;
@@ -26,17 +27,19 @@
 
   /* ── Dark theme tokens ───────────────────────────────────────────────── */
   .dark {
-    --bg-base:       #0f1117;
-    --bg-surface:    #1a1d27;
-    --bg-sidebar:    #15181f;
-    --border:        rgba(139, 92, 246, 0.20);
+    --bg-base:       #07060e;
+    --bg-surface:    #110f1c;
+    --bg-sidebar:    #0d0b18;
+    --border:        rgba(139, 92, 246, 0.22);
+    --border-subtle: rgba(255,255,255,0.05);
     --accent:        #8b5cf6;
     --accent-light:  #a78bfa;
     --accent-pale:   #2d1f5e;
     --text-primary:  #f0f0f8;
     --text-secondary:#94a3b8;
     --text-muted:    #64748b;
-    --ring-track:    #2d3748;
+    --ring-track:    #1e1a35;
+    --shadow-card:   0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(109,40,217,0.15);
   }
 
   * { box-sizing: border-box; }
@@ -73,14 +76,14 @@
 
   /* ── light ── */
   .landing-bg {
-    background-color: #f3f0ff;
+    background-color: #f0edff;
     background-image:
       /* vertical lines */
-      linear-gradient(to right, rgba(139,92,246,0.10) 1px, transparent 1px),
+      linear-gradient(to right, rgba(139,92,246,0.03) 1px, transparent 1px),
       /* horizontal lines */
-      linear-gradient(to bottom, rgba(139,92,246,0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(139,92,246,0.03) 1px, transparent 1px),
       /* top-left violet glow */
-      radial-gradient(ellipse 65% 55% at 8% 0%,  rgba(167,139,250,0.22) 0%, transparent 65%),
+      radial-gradient(ellipse 65% 55% at 8% 0%,  rgba(167,139,250,0.30) 0%, transparent 65%),
       /* top-right accent glow */
       radial-gradient(ellipse 50% 40% at 92% 4%, rgba(139,92,246,0.14) 0%, transparent 60%),
       /* center-bottom warmth */
@@ -95,11 +98,11 @@
 
   /* ── dark ── */
   .dark .landing-bg {
-    background-color: #0d0b1a;
+    background-color: #09080f;
     background-image:
-      linear-gradient(to right, rgba(139,92,246,0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(139,92,246,0.08) 1px, transparent 1px),
-      radial-gradient(ellipse 65% 55% at 8%  0%,  rgba(109,40,217,0.28) 0%, transparent 65%),
+      linear-gradient(to right, rgba(139,92,246,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(139,92,246,0.05) 1px, transparent 1px),
+      radial-gradient(ellipse 65% 55% at 8%  0%,  rgba(109,40,217,0.38) 0%, transparent 65%),
       radial-gradient(ellipse 50% 40% at 92% 4%,  rgba(139,92,246,0.18) 0%, transparent 60%),
       radial-gradient(ellipse 80% 40% at 50% 100%, rgba(76,29,149,0.15) 0%, transparent 70%);
     background-size:
@@ -117,11 +120,11 @@
 
   /* ── light ── */
   .page-bg {
-    background-color: #eeecfb;
+    background-color: #edeafc;
     background-image:
-      linear-gradient(to right,  rgba(139,92,246,0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(139,92,246,0.08) 1px, transparent 1px),
-      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(167,139,250,0.13) 0%, transparent 60%);
+      linear-gradient(to right,  rgba(139,92,246,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(139,92,246,0.04) 1px, transparent 1px),
+      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(167,139,250,0.18) 0%, transparent 60%);
     background-size:
       32px 32px,
       32px 32px,
@@ -130,11 +133,11 @@
 
   /* ── dark ── */
   .dark .page-bg {
-    background-color: #0f1117;
+    background-color: #07060e;
     background-image:
-      linear-gradient(to right,  rgba(139,92,246,0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(139,92,246,0.06) 1px, transparent 1px),
-      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(109,40,217,0.16) 0%, transparent 60%);
+      linear-gradient(to right,  rgba(139,92,246,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(139,92,246,0.03) 1px, transparent 1px),
+      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(109,40,217,0.20) 0%, transparent 60%);
     background-size:
       32px 32px,
       32px 32px,
@@ -187,5 +190,147 @@
   .theme-transition,
   .theme-transition * {
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease !important;
+  }
+
+  /* ── Shimmer skeleton ─────────────────────────────────────────────────── */
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to   { background-position:  200% 0; }
+  }
+  .animate-shimmer {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
+  .dark .animate-shimmer {
+    background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+    background-size: 200% 100%;
+  }
+
+  /* ── CTA live-feed enter / exit ───────────────────────────────────────── */
+  @keyframes cta-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+  @keyframes cta-exit {
+    from { opacity: 1; transform: translateY(0);    }
+    to   { opacity: 0; transform: translateY(-8px); }
+  }
+  .animate-cta-enter { animation: cta-enter 300ms ease-out both; }
+  .animate-cta-exit  { animation: cta-exit  300ms ease-in  both; }
+
+  /* ── Pulse accent ─────────────────────────────────────────────────────── */
+  @keyframes pulse-accent {
+    0%, 100% { opacity: 0.3; }
+    50%       { opacity: 1;   }
+  }
+  .animate-pulse-accent { animation: pulse-accent 1.5s ease-in-out infinite; }
+
+  /* ── Floating particle ────────────────────────────────────────────────── */
+  @keyframes float {
+    0%, 100% { transform: translateY(0);     }
+    50%       { transform: translateY(-12px); }
+  }
+  .animate-float { animation: float var(--float-duration, 4s) ease-in-out infinite; }
+
+  /* ── Pulse ring ───────────────────────────────────────────────────────── */
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1);    opacity: 0.6; }
+    50%       { transform: scale(1.15); opacity: 0.2; }
+  }
+  .animate-pulse-ring { animation: pulse-ring 2s ease-in-out infinite; }
+
+  /* ── Animated dashed border ───────────────────────────────────────────── */
+  @keyframes border-dash {
+    to {
+      background-position: 100% 0, 0 100%, 0 0, 100% 100%;
+    }
+  }
+  .animate-dashed-border {
+    background-image:
+      repeating-linear-gradient(90deg,  #7c3aed 0,   #7c3aed 8px,  transparent 8px,  transparent 16px),
+      repeating-linear-gradient(180deg, #7c3aed 0,   #7c3aed 8px,  transparent 8px,  transparent 16px),
+      repeating-linear-gradient(90deg,  #7c3aed 0,   #7c3aed 8px,  transparent 8px,  transparent 16px),
+      repeating-linear-gradient(180deg, #7c3aed 0,   #7c3aed 8px,  transparent 8px,  transparent 16px);
+    background-size:    16px 2px, 2px 16px, 16px 2px, 2px 16px;
+    background-position: 0 0, 100% 0, 0 100%, 0 0;
+    background-repeat:  repeat-x, repeat-y, repeat-x, repeat-y;
+    animation: border-dash 0.5s linear infinite;
+  }
+
+  /* ── Page transition ──────────────────────────────────────────────────── */
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-page-in {
+    animation: page-in 0.3s ease-out both;
+  }
+
+  /* ── Navbar mutation progress bar ────────────────────────────────────── */
+  @keyframes progress-bar {
+    from { width: 0%; }
+    to   { width: 85%; }
+  }
+  .animate-progress-bar {
+    animation: progress-bar 0.4s ease-out forwards;
+  }
+
+  @keyframes progress-complete {
+    from { width: 85%; opacity: 1; }
+    to   { width: 100%; opacity: 0; }
+  }
+  .animate-progress-complete {
+    animation: progress-complete 0.3s ease-out forwards;
+  }
+
+  /* ── Gradient sweep (footer divider) ─────────────────────────────────── */
+  @keyframes gradient-sweep {
+    from { background-position: -100% 0; }
+    to   { background-position: 200% 0; }
+  }
+  .animate-gradient-sweep {
+    background: linear-gradient(90deg, transparent, #7c3aed, transparent);
+    background-size: 50% 100%;
+    animation: gradient-sweep 3s linear infinite;
+  }
+
+  /* ── HeroMockup: scan overlay sweep ──────────────────────────────────── */
+  @keyframes scan-sweep {
+    from { transform: translateY(-100%); opacity: 0.7; }
+    50%  { opacity: 0.4; }
+    to   { transform: translateY(200%);  opacity: 0; }
+  }
+  .animate-scan-sweep {
+    animation: scan-sweep 800ms ease-in-out forwards;
+  }
+
+  /* ── HeroMockup: typewriter insight reveal ────────────────────────────── */
+  @keyframes typewriter {
+    from { max-width: 0; }
+    to   { max-width: 100ch; }
+  }
+  .animate-typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typewriter 600ms steps(40, end) forwards;
+  }
+
+  /* ── HeroMockup: live status dot ping ────────────────────────────────── */
+  @keyframes status-ping {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    60%       { transform: scale(1.4); opacity: 0; }
+  }
+  .animate-status-ping {
+    animation: status-ping 1.5s ease-in-out infinite;
+  }
+
+  /* ── HeroMockup: insight fade-out on transition ──────────────────────── */
+  @keyframes fade-out-insight {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  .animate-fade-out-insight {
+    animation: fade-out-insight 200ms ease-out forwards;
   }
 }

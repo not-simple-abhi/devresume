@@ -37,3 +37,31 @@ export function clampFileName(name: string, max = 28): string {
   const ext = name.split('.').pop() ?? ''
   return name.slice(0, max - ext.length - 4) + '...' + ext
 }
+
+export function relativeTime(dateString: string): string {
+  const diff = Math.floor((Date.now() - new Date(dateString).getTime()) / 1000)
+
+  if (diff < 60) return 'just now'
+
+  const minutes = Math.floor(diff / 60)
+  if (minutes < 60) return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`
+
+  const hours = Math.floor(diff / 3600)
+  if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`
+
+  if (diff < 172800) return 'yesterday'
+
+  const days = Math.floor(diff / 86400)
+  if (days < 7) return `${days} days ago`
+
+  const weeks = Math.floor(days / 7)
+  if (days < 30) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`
+
+  const months = Math.floor(days / 30)
+  return `${months} ${months === 1 ? 'month' : 'months'} ago`
+}
+
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1_048_576) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / 1_048_576).toFixed(1)} MB`
+}

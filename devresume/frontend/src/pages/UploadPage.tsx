@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useNavigate } from 'react-router-dom'
-import { Upload, File, X, CheckCircle2, Loader2, Sparkles } from 'lucide-react'
+import { Upload, File, FileText, X, CheckCircle2, Loader2, Sparkles } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
 import { useReviewStore } from '@/store/review.store'
 import { useAnalyzeGuest, useAnalyzeAndSave } from '@/hooks/useReview'
 import Button from '@/components/ui/Button'
-import { cn } from '@/lib/utils'
+import { cn, formatFileSize } from '@/lib/utils'
 
 const ANALYSIS_STEPS = [
   'Parsing resume',
@@ -18,6 +18,17 @@ const ANALYSIS_STEPS = [
 ]
 
 function AnalysisProgress({ step }: { step: number }) {
+  const isComplete = step >= ANALYSIS_STEPS.length
+
+  if (isComplete) {
+    return (
+      <div className="w-full max-w-sm mx-auto flex flex-col items-center gap-3 py-4">
+        <CheckCircle2 size={40} className="text-emerald-500" />
+        <p className="text-base font-semibold text-emerald-600 dark:text-emerald-400">Analysis Complete!</p>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full max-w-sm mx-auto">
       <div className="flex items-center justify-between mb-4">
@@ -42,10 +53,14 @@ function AnalysisProgress({ step }: { step: number }) {
           return (
             <div
               key={s}
-              className={cn('flex items-center gap-3 text-sm transition-opacity', pending ? 'opacity-40' : 'opacity-100')}
+              className={cn(
+                'flex items-center gap-3 text-sm transition-opacity rounded-lg px-2 py-1',
+                pending ? 'opacity-40' : 'opacity-100',
+                done ? 'bg-emerald-50 dark:bg-emerald-950/40' : ''
+              )}
             >
               {done ? (
-                <CheckCircle2 size={16} className="text-violet-600 dark:text-violet-400 shrink-0" />
+                <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
               ) : active ? (
                 <Loader2 size={16} className="text-violet-400 animate-spin shrink-0" />
               ) : (
@@ -83,7 +98,7 @@ export default function UploadPage() {
     if (accepted[0]) { setFile(accepted[0]); setError('') }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
     accept: {
       'application/pdf': ['.pdf'],
@@ -145,7 +160,10 @@ export default function UploadPage() {
         )}
 
         {/* Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+        <div className={cn(
+          'bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6',
+          isAnalyzing ? 'animate-dashed-border' : 'border border-gray-100 dark:border-gray-800'
+        )}>
           {isAnalyzing ? (
             <AnalysisProgress step={analysisStep} />
           ) : (
@@ -154,22 +172,30 @@ export default function UploadPage() {
               <div
                 {...getRootProps()}
                 className={cn(
-                  'border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all',
-                  isDragActive
-                    ? 'border-violet-400 bg-violet-50 dark:bg-violet-950/40'
+                  'rounded-xl p-10 text-center cursor-pointer transition-all',
+                  isDragReject
+                    ? 'border-2 border-dashed border-red-400 bg-red-50 dark:bg-red-950/30'
+                    : isDragActive
+                    ? 'animate-dashed-border bg-violet-50 dark:bg-violet-950/40'
                     : file
-                    ? 'border-violet-300 dark:border-violet-700 bg-violet-50/40 dark:bg-violet-950/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    ? 'border-2 border-dashed border-violet-300 dark:border-violet-700 bg-violet-50/40 dark:bg-violet-950/20'
+                    : 'border-2 border-dashed border-violet-200 dark:border-violet-800/60 hover:border-violet-300 dark:hover:border-violet-600 hover:bg-gray-50 dark:hover:bg-gray-800'
                 )}
               >
                 <input {...getInputProps()} />
                 {file ? (
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950 flex items-center justify-center">
-                      <File size={22} className="text-violet-600 dark:text-violet-400" />
+                      {file.type === 'application/pdf'
+                        ? <FileText size={22} className="text-violet-600 dark:text-violet-400" />
+                        : <File size={22} className="text-violet-600 dark:text-violet-400" />
+                      }
                     </div>
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{file.name}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{(file.size / 1024).toFixed(0)} KB</p>
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{file.name}</p>
+                    </div>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{formatFileSize(file.size)}</p>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-3">

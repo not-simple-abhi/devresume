@@ -9,7 +9,7 @@ export default function RootLayout() {
   return (
     <div className={cn('min-h-screen flex flex-col', isLanding ? '' : 'page-bg')}>
       <Navbar />
-      <main className="flex-1">
+      <main key={pathname} className="flex-1 animate-page-in">
         <Outlet />
       </main>
     </div>

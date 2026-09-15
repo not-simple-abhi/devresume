@@ -25,15 +25,16 @@ export default function AnalysisSidebar() {
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 px-3 space-y-0.5">
+      <nav role="navigation" className="flex-1 px-3 space-y-0.5">
         {navItems.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
+            aria-current={activeTab === id ? 'page' : undefined}
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left',
               activeTab === id
-                ? 'bg-violet-50 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/60'
+                ? 'bg-violet-50 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border-l-[3px] border-l-violet-500 dark:border-l-violet-400'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
             )}
           >

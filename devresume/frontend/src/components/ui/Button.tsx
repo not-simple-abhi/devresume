@@ -14,7 +14,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantMap: Record<ButtonVariant, string> = {
   primary:
-    'bg-violet-600 text-white hover:bg-violet-700 active:bg-violet-800 dark:bg-violet-700 dark:hover:bg-violet-600',
+    'bg-violet-600 text-white hover:bg-violet-700 active:bg-violet-800 ' +
+    'hover:shadow-[0_4px_14px_rgba(109,40,217,0.35)] transition-shadow ' +
+    'dark:bg-violet-600 dark:hover:bg-violet-500',
   secondary:
     'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 ' +
     'dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:border-gray-600',
@@ -50,8 +52,12 @@ export default function Button({
     <button
       {...props}
       disabled={disabled || loading}
+      aria-disabled={loading ? 'true' : undefined}
+      aria-busy={loading ? 'true' : undefined}
+      aria-label={loading && typeof children === 'string' ? `${children}, loading` : undefined}
       className={cn(
         'inline-flex items-center justify-center font-medium rounded-lg transition-all',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantMap[variant],
         sizeMap[size],

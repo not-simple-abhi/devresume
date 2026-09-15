@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useIsMutating } from '@tanstack/react-query'
 import { Menu, X, Sparkles, LayoutDashboard, Upload, Building2, GitCompare, LogOut, User, Sun, Moon } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
 import { useThemeStore } from '@/store/theme.store'
@@ -16,6 +17,18 @@ export default function Navbar() {
   const navigate   = useNavigate()
   const location   = useLocation()
   const isLanding  = location.pathname === '/'
+
+  const mutatingCount = useIsMutating()
+  const [showBar, setShowBar] = useState(false)
+
+  useEffect(() => {
+    if (mutatingCount > 0) {
+      setShowBar(true)
+    } else if (showBar) {
+      const timeout = setTimeout(() => setShowBar(false), 300)
+      return () => clearTimeout(timeout)
+    }
+  }, [mutatingCount, showBar])
 
   const [mobileOpen,  setMobileOpen]  = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -40,12 +53,12 @@ export default function Navbar() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-violet-100/60 dark:border-violet-900/40 shadow-sm">
+    <header className="relative sticky top-0 z-50 bg-white/80 dark:bg-[#0a0916]/85 backdrop-blur-md shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
-          <div className="w-7 h-7 rounded-md bg-violet-600 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
             <Sparkles size={14} className="text-white" />
           </div>
           <span className="text-sm tracking-wide font-bold">DevResume</span>
@@ -193,8 +206,8 @@ export default function Navbar() {
                     cn(
                       'block px-3 py-2 rounded-md text-sm font-medium transition-colors',
                       isActive
-                        ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60 border-l-2 border-violet-500 pl-[10px]'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60'
                     )
                   }
                 >
@@ -238,6 +251,20 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {showBar && (
+        <div
+          className={cn(
+            'absolute bottom-0 left-0 h-[2px] bg-violet-500',
+            mutatingCount > 0 ? 'animate-progress-bar' : 'animate-progress-complete'
+          )}
+        />
+      )}
+
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        style={{ background: isDark ? 'linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent)' : 'linear-gradient(90deg, transparent, rgba(139,92,246,0.25), transparent)' }}
+      />
     </header>
   )
 }

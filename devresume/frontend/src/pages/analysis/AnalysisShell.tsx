@@ -11,11 +11,13 @@ export default function AnalysisShell() {
 
   return (
     <AnalysisLayout>
-      {activeTab === 'overview'  && <OverviewPage />}
-      {activeTab === 'ats'       && <ATSPage />}
-      {activeTab === 'skills'    && <SkillsPage />}
-      {activeTab === 'projects'  && <ProjectsPage />}
-      {activeTab === 'insights'  && <InsightsPage />}
+      <div key={activeTab} className="animate-fade-in">
+        {activeTab === 'overview'  && <OverviewPage />}
+        {activeTab === 'ats'       && <ATSPage />}
+        {activeTab === 'skills'    && <SkillsPage />}
+        {activeTab === 'projects'  && <ProjectsPage />}
+        {activeTab === 'insights'  && <InsightsPage />}
+      </div>
     </AnalysisLayout>
   )
 }

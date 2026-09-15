@@ -12,7 +12,7 @@ interface BadgeProps {
 const variantMap: Record<BadgeVariant, string> = {
   default:
     'bg-violet-50 text-violet-700 border border-violet-200 ' +
-    'dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800',
+    'dark:bg-violet-900/40 dark:text-violet-300 dark:border-violet-700/60',
   violet:
     'bg-violet-600 text-white dark:bg-violet-700',
   green:

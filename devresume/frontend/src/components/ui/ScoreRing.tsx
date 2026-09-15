@@ -28,7 +28,7 @@ export default function ScoreRing({
   const displayLabel = label ?? scoreLabel(score)
 
   return (
-    <div className={`flex flex-col items-center gap-1 ${className}`}>
+    <div className={`flex flex-col items-center gap-1 ${className}`} aria-label={`Score: ${score} out of 100, ${displayLabel}`}>
       <div className="relative inline-flex items-center justify-center">
         <svg
           width={viewBox}

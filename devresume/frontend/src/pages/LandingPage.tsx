@@ -1,3 +1,4 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -5,13 +6,15 @@ import {
   Layers, Building2, Sparkles, ArrowRight, CheckCircle2, FileCheck2,
 } from 'lucide-react'
 import { useStats } from '@/hooks/useStats'
+import CTALiveFeed from '@/components/ui/CTALiveFeed'
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
 // ─── Animated counter ─────────────────────────────────────────────────────────
-function AnimatedCount({ target, suffix = '' }: { target: number; suffix?: string }) {
+function AnimatedCount({ target, suffix = '', isVisible }: { target: number; suffix?: string; isVisible?: boolean }) {
   const [count, setCount] = useState(0)
   const ref = useRef<number | null>(null)
   useEffect(() => {
-    if (target === 0) return
+    if (!isVisible || target === 0) return
     const steps = 60
     const increment = target / steps
     let current = 0
@@ -21,12 +24,12 @@ function AnimatedCount({ target, suffix = '' }: { target: number; suffix?: strin
       else setCount(Math.floor(current))
     }, 1500 / steps)
     return () => clearInterval(ref.current!)
-  }, [target])
+  }, [target, isVisible])
   return <span className="font-mono-data font-bold">{count.toLocaleString()}{suffix}</span>
 }
 
 // ─── Stats strip ──────────────────────────────────────────────────────────────
-function StatsStrip({ totalReviews }: { totalReviews: number }) {
+function StatsStrip({ totalReviews, isVisible }: { totalReviews: number; isVisible: boolean }) {
   const stats = [
     { icon: FileCheck2,  value: totalReviews, suffix: '+', label: 'Resumes Reviewed',             color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/60 border-violet-200 dark:border-violet-800' },
     { icon: Sparkles,    value: 6,            suffix: '',  label: 'AI Agents Running in Parallel', color: 'text-blue-600 dark:text-blue-400',     bg: 'bg-blue-50 dark:bg-blue-950/60 border-blue-200 dark:border-blue-800' },
@@ -35,10 +38,10 @@ function StatsStrip({ totalReviews }: { totalReviews: number }) {
   return (
     <div className="grid grid-cols-3 gap-4 mt-10 mb-2">
       {stats.map(({ icon: Icon, value, suffix, label, color, bg }) => (
-        <div key={label} className={`flex flex-col items-center gap-1.5 rounded-2xl border px-4 py-4 ${bg}`}>
+        <div key={label} className={`flex flex-col items-center gap-1.5 rounded-2xl border px-4 py-4 hover:-translate-y-0.5 hover:border-violet-300 dark:hover:border-violet-600 transition-all duration-150 cursor-default ${bg}`}>
           <Icon size={18} className={color} />
           <p className={`text-2xl sm:text-3xl ${color}`}>
-            <AnimatedCount target={value} suffix={suffix} />
+            <AnimatedCount target={value} suffix={suffix} isVisible={isVisible} />
           </p>
           <p className="text-[10px] text-gray-500 dark:text-gray-400 text-center font-medium leading-tight">{label}</p>
         </div>
@@ -48,42 +51,211 @@ function StatsStrip({ totalReviews }: { totalReviews: number }) {
 }
 
 // ─── Hero mockup ──────────────────────────────────────────────────────────────
-function HeroMockup() {
-  const bars = [
-    { label: 'ATS Parse Rate',       pct: 88, color: '#7c3aed' },
-    { label: 'Active Verb Density',  pct: 72, color: '#7c3aed' },
-    { label: 'Quantifiable Metrics', pct: 43, color: '#ef4444' },
-  ]
+// Dashboard-style browser window: left score panel + right content panel
+
+const SCORE_SECTIONS = [
+  { label: 'ATS Compatibility', pct: 88, status: 'pass'  as const },
+  { label: 'Quantifying Impact', pct: 74, status: 'pass'  as const },
+  { label: 'Active Voice',       pct: 61, status: 'warn'  as const },
+  { label: 'Keyword Density',    pct: 43, status: 'fail'  as const },
+  { label: 'Section Structure',  pct: 90, status: 'pass'  as const },
+]
+
+const ACTIVE_SECTIONS = [
+  { title: 'ATS COMPATIBILITY', pct: 88, color: '#7c3aed' },
+  { title: 'ACTIVE VOICE',      pct: 61, color: '#f59e0b' },
+  { title: 'KEYWORD DENSITY',   pct: 43, color: '#ef4444' },
+]
+
+function ScoreArc({ score }: { score: number }) {
+  // Half-circle arc: r=36, circumference of half = π*r ≈ 113
+  const r = 36
+  const circ = Math.PI * r
+  const offset = circ - (score / 100) * circ
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl shadow-violet-100/40 dark:shadow-violet-900/20 p-5 w-full max-w-xs">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">Analysis Report</p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500">john_doe_backend.pdf</p>
+    <svg width="88" height="52" viewBox="0 0 88 52" className="overflow-visible">
+      {/* Track */}
+      <path
+        d="M 8 44 A 36 36 0 0 1 80 44"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="7"
+        strokeLinecap="round"
+        className="text-gray-100 dark:text-gray-800"
+      />
+      {/* Fill */}
+      <path
+        d="M 8 44 A 36 36 0 0 1 80 44"
+        fill="none"
+        stroke="#7c3aed"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)' }}
+      />
+      {/* Dot at tip */}
+      <circle cx="80" cy="44" r="3.5" fill="#7c3aed" />
+    </svg>
+  )
+}
+
+function HeroMockup() {
+  const [score, setScore]         = useState(0)
+  const [activeIdx, setActiveIdx] = useState(0)
+  const [barPct, setBarPct]       = useState(0)
+  const [tick, setTick]           = useState(0)
+  const reduced = useRef(false)
+
+  useEffect(() => {
+    reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  }, [])
+
+  useEffect(() => {
+    if (reduced.current) { setScore(78); return }
+    const t = setTimeout(() => setScore(78), 200)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    if (reduced.current) return
+    const t = setInterval(() => {
+      setActiveIdx(i => (i + 1) % ACTIVE_SECTIONS.length)
+      setTick(n => n + 1)
+    }, 3000)
+    return () => clearInterval(t)
+  }, [])
+
+  useEffect(() => {
+    if (reduced.current) { setBarPct(ACTIVE_SECTIONS[activeIdx].pct); return }
+    setBarPct(0)
+    const t = setTimeout(() => setBarPct(ACTIVE_SECTIONS[activeIdx].pct), 80)
+    return () => clearTimeout(t)
+  }, [activeIdx, tick])
+
+  const section = ACTIVE_SECTIONS[activeIdx]
+
+  return (
+    /* Fixed size — nothing inside should ever change the outer dimensions */
+    <div className="rounded-2xl overflow-hidden shadow-2xl shadow-violet-200/40 dark:shadow-violet-900/30 border border-gray-100 dark:border-[var(--border)] bg-white dark:bg-[var(--bg-surface)]"
+      style={{ width: 580, height: 340 }}>
+
+      {/* Window chrome */}
+      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/60 shrink-0">
+        <span className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
+        <span className="w-2.5 h-2.5 rounded-full bg-amber-400/70" />
+        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/70" />
+        <div className="flex-1 mx-3">
+          <div className="h-3.5 bg-gray-200 dark:bg-gray-700 rounded-full w-40 mx-auto" />
         </div>
-        <span className="text-[9px] px-2 py-0.5 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 rounded-full font-medium">
-          ★ REVIEWED
-        </span>
       </div>
-      <div className="space-y-3 mb-4">
-        {bars.map((b) => (
-          <div key={b.label}>
-            <div className="flex justify-between mb-1">
-              <span className="text-[10px] text-gray-500 dark:text-gray-400">{b.label}</span>
-              <span className="text-[10px] font-mono font-semibold" style={{ color: b.color }}>{b.pct}%</span>
+
+      {/* App header */}
+      <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-100 dark:border-gray-800 shrink-0">
+        <Sparkles size={13} className="text-violet-600 dark:text-violet-400" />
+        <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300 tracking-wide">DevResume</span>
+      </div>
+
+      {/* Body — fixed height, overflow hidden, never grows */}
+      <div className="flex overflow-hidden" style={{ height: 'calc(340px - 37px - 33px)' }}>
+
+        {/* ── Left panel ── */}
+        <div style={{ width: 152 }} className="shrink-0 border-r border-gray-100 dark:border-gray-800 px-4 py-3 flex flex-col overflow-hidden">
+          <p className="text-[9px] font-semibold text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase">Resume Score</p>
+
+          <div className="flex justify-center mb-0.5">
+            <ScoreArc score={score} />
+          </div>
+          <p className="text-center text-lg font-bold text-violet-600 dark:text-violet-400 font-mono-data" style={{ marginTop: -4 }}>
+            {score}/100
+          </p>
+          <p className="text-center text-[9px] text-gray-400 dark:text-gray-500 mb-3">24 Issues</p>
+
+          <div className="space-y-1.5 overflow-hidden">
+            {SCORE_SECTIONS.map((s) => (
+              <div key={s.label} className="flex items-center gap-1.5">
+                <span className={`text-[10px] leading-none ${
+                  s.status === 'pass' ? 'text-emerald-500' :
+                  s.status === 'warn' ? 'text-amber-500' : 'text-red-500'
+                }`}>
+                  {s.status === 'pass' ? '✓' : s.status === 'warn' ? '○' : '✕'}
+                </span>
+                <span className="text-[9px] text-gray-600 dark:text-gray-400 truncate">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Right panel ── */}
+        <div className="flex-1 bg-gray-50/60 dark:bg-gray-900/30 px-4 py-3 flex flex-col gap-2.5 overflow-hidden">
+
+          {/* Section header — fixed height, text crossfades in place */}
+          <div className="flex items-center justify-between h-5 shrink-0">
+            <div className="flex items-center gap-1.5 min-w-0 flex-1 overflow-hidden">
+              <span className="w-1 h-3.5 rounded-full shrink-0 transition-colors duration-500"
+                style={{ backgroundColor: section.color }} />
+              {/* Overlay technique: all labels stacked, only active one visible */}
+              <div className="relative h-4 flex-1 overflow-hidden">
+                {ACTIVE_SECTIONS.map((s, i) => (
+                  <span
+                    key={s.title}
+                    className="absolute inset-0 text-[10px] font-bold tracking-widest whitespace-nowrap transition-opacity duration-400"
+                    style={{
+                      color: s.color,
+                      opacity: i === activeIdx ? 1 : 0,
+                    }}
+                  >
+                    {s.title}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-              <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
+            {/* Fixed-width badge so layout never shifts */}
+            <div className="w-9 text-center shrink-0">
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-medium">
+                {section.pct}%
+              </span>
             </div>
           </div>
-        ))}
-      </div>
-      <div className="bg-violet-50 dark:bg-violet-950/60 border border-violet-100 dark:border-violet-800 rounded-lg p-3">
-        <div className="flex items-start gap-2">
-          <Sparkles size={12} className="text-violet-500 mt-0.5 shrink-0" />
-          <p className="text-[10px] text-violet-700 dark:text-violet-300 leading-relaxed">
-            Your architecture section lacks metric-driven outcomes. Consider quantifying the impact of your caching implementation.
-          </p>
+
+          {/* Fixed skeleton lines above bar */}
+          <div className="space-y-1.5 shrink-0">
+            {[82, 94, 68, 88].map((w, i) => (
+              <div key={i} className="h-2 rounded-full bg-gray-200 dark:bg-gray-700" style={{ width: `${w}%` }} />
+            ))}
+          </div>
+
+          {/* ── Progress bar card — fixed height ── */}
+          <div className="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 px-3 pt-2 pb-2.5 shrink-0">
+            {/* Dot marker that rides with the bar */}
+            <div className="relative h-4 mb-1 overflow-hidden">
+              <div
+                className="absolute top-0 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 shadow-md -translate-x-1/2"
+                style={{
+                  backgroundColor: section.color,
+                  left: `${barPct}%`,
+                  transition: barPct === 0 ? 'none' : 'left 900ms cubic-bezier(0.4,0,0.2,1), background-color 500ms',
+                }}
+              />
+            </div>
+            <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${barPct}%`,
+                  backgroundColor: section.color,
+                  transition: barPct === 0 ? 'none' : 'width 900ms cubic-bezier(0.4,0,0.2,1), background-color 500ms',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Fixed skeleton lines below bar */}
+          <div className="space-y-1.5 shrink-0">
+            {[90, 62, 76, 55, 80].map((w, i) => (
+              <div key={i} className="h-2 rounded-full bg-gray-200 dark:bg-gray-700" style={{ width: `${w}%` }} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -165,47 +337,120 @@ export default function LandingPage() {
   const { data: stats } = useStats()
   const totalReviews = stats?.totalReviews ?? 0
 
+  const { ref: statsRef, isVisible: statsVisible } = useIntersectionObserver()
+  const { ref: pipelineRef, isVisible: pipelineVisible } = useIntersectionObserver()
+  const { ref: capabilitiesRef, isVisible: capabilitiesVisible } = useIntersectionObserver()
+  const { ref: companyRef, isVisible: companyVisible } = useIntersectionObserver()
+
+  const [isIdle, setIsIdle] = useState(false)
+  const lastInteractionRef = useRef(Date.now())
+
+  useEffect(() => {
+    const resetIdle = () => {
+      lastInteractionRef.current = Date.now()
+      setIsIdle(false)
+    }
+    window.addEventListener('pointermove', resetIdle)
+    window.addEventListener('keydown', resetIdle)
+    window.addEventListener('scroll', resetIdle, { passive: true })
+
+    const interval = setInterval(() => {
+      if (Date.now() - lastInteractionRef.current >= 3000) {
+        setIsIdle(true)
+      }
+    }, 500)
+
+    return () => {
+      window.removeEventListener('pointermove', resetIdle)
+      window.removeEventListener('keydown', resetIdle)
+      window.removeEventListener('scroll', resetIdle)
+      clearInterval(interval)
+    }
+  }, [])
+
   return (
     <div className="landing-bg min-h-screen">
 
       {/* ── Hero ── */}
-      <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-20 grid lg:grid-cols-2 gap-12 items-center scroll-mt-14">
+      <section id="hero" className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-20 grid lg:grid-cols-2 gap-12 items-center scroll-mt-14">
+        {/* Floating particles */}
+        {[
+          { size: 8,  top: '10%', left: '5%',   duration: '3s',   delay: '0s'   },
+          { size: 12, top: '20%', left: '85%',  duration: '4.5s', delay: '0.5s' },
+          { size: 6,  top: '60%', left: '2%',   duration: '3.5s', delay: '1s'   },
+          { size: 10, top: '75%', left: '90%',  duration: '5s',   delay: '0.3s' },
+          { size: 7,  top: '40%', left: '92%',  duration: '4s',   delay: '1.2s' },
+          { size: 9,  top: '85%', left: '15%',  duration: '3.8s', delay: '0.7s' },
+        ].map((p, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-violet-400/20 dark:bg-violet-500/20 animate-float pointer-events-none"
+            style={{
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              top: p.top,
+              left: p.left,
+              ['--float-duration' as string]: p.duration,
+              animationDelay: p.delay,
+            } as React.CSSProperties}
+          />
+        ))}
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/70 border border-violet-200 dark:border-violet-800 rounded-full px-3 py-1 mb-5">
-            <Sparkles size={11} />
-            AI Resume Intelligence Platform
+          <div className="animate-slide-up" style={{ animationDelay: '0ms' }}>
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/70 border border-violet-200 dark:border-violet-800 rounded-full px-3 py-1 mb-5">
+              <Sparkles size={11} />
+              AI Resume Intelligence Platform
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-            Your Resume,<br />
-            Analyzed Like an{' '}
-            <span className="text-violet-600 dark:text-violet-400">Engineer</span>
-          </h1>
-          <p className="text-base text-gray-500 dark:text-gray-400 leading-relaxed mb-8 max-w-lg">
-            Not a spell checker. An AI Resume Intelligence Platform built for technical roles.
-            We parse your syntax, evaluate your architecture, and benchmark your impact against FAANG standards.
-          </p>
-          <div className="flex flex-wrap gap-3 mb-6">
-            <Link
-              to="/analyze"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl transition-colors shadow-md shadow-violet-200 dark:shadow-violet-900/40"
-            >
-              <Upload size={15} />
-              Upload Your Resume — It's Free
-            </Link>
-
+          <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+              Your Resume,<br />
+              Analyzed Like an{' '}
+              <span className="pb-1 bg-gradient-to-r from-violet-600 via-purple-500 to-blue-500 bg-clip-text text-transparent">Engineer</span>
+            </h1>
           </div>
-          <div className="flex items-center gap-4 text-[11px] text-gray-400 dark:text-gray-500 mb-6">
-            {['SOC2 Type II', 'No Data Storage', 'End-to-End Encryption'].map((t) => (
-              <span key={t} className="flex items-center gap-1">
-                <CheckCircle2 size={11} className="text-emerald-400" />
-                {t}
-              </span>
-            ))}
+          <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
+            <p className="text-base text-gray-500 dark:text-gray-400 leading-relaxed mb-8 max-w-lg">
+              Not a spell checker. An AI Resume Intelligence Platform built for technical roles.
+              We parse your syntax, evaluate your architecture, and benchmark your impact against FAANG standards.
+            </p>
           </div>
-          <StatsStrip totalReviews={totalReviews} />
+          <div className="animate-slide-up" style={{ animationDelay: '300ms' }}>
+            <div className="flex flex-wrap gap-3 mb-6 items-center">
+              <div className="relative inline-flex">
+                {isIdle && (
+                  <div className="absolute inset-0 rounded-xl border-2 border-violet-400 animate-pulse-ring pointer-events-none" />
+                )}
+                <Link
+                  to="/analyze"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl transition-colors shadow-md shadow-violet-200 dark:shadow-violet-900/40"
+                >
+                  <Upload size={15} />
+                  Upload Your Resume — It's Free
+                </Link>
+              </div>
+              <CTALiveFeed />
+            </div>
+          </div>
+          <div className="animate-slide-up" style={{ animationDelay: '350ms' }}>
+            <div className="flex items-center gap-4 text-[11px] text-gray-400 dark:text-gray-500 mb-6">
+              {['SOC2 Type II', 'No Data Storage', 'End-to-End Encryption'].map((t) => (
+                <span key={t} className="flex items-center gap-1">
+                  <CheckCircle2 size={11} className="text-emerald-400" />
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div ref={statsRef}><StatsStrip totalReviews={totalReviews} isVisible={statsVisible} /></div>
         </div>
         <div className="flex justify-center lg:justify-end">
-          <HeroMockup />
+          <div
+            className="animate-slide-up transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl hover:shadow-violet-200/40 dark:hover:shadow-violet-900/30"
+            style={{ animationDelay: '200ms' }}
+          >
+            <HeroMockup />
+          </div>
         </div>
       </section>
 
@@ -220,11 +465,12 @@ export default function LandingPage() {
               Deterministic parsing combined with protocol LLMs for a comprehensive technical review.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {pipelineSteps.map(({ step, title, desc, icon: Icon, color }) => (
+          <div ref={pipelineRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {pipelineSteps.map(({ step, title, desc, icon: Icon, color }, index) => (
               <div
                 key={step}
-                className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 hover:shadow-md hover:border-violet-100 dark:hover:border-violet-800 transition-all animate-slide-up"
+                className={`bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 hover:shadow-md transition-all hover:border-l-[3px] hover:border-l-violet-500 dark:hover:border-l-violet-400 ${pipelineVisible ? 'animate-slide-up' : 'opacity-0'}`}
+                style={pipelineVisible ? { animationDelay: `${index * 100}ms` } : {}}
               >
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${color}`}>
                   <Icon size={16} />
@@ -243,11 +489,19 @@ export default function LandingPage() {
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">Core Capabilities</h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-auto">
-          <CapabilityCard {...capabilities[0]} />
-          <div className="lg:row-span-2"><CapabilityCard {...capabilities[1]} /></div>
-          <CapabilityCard {...capabilities[2]} />
-          <CapabilityCard {...capabilities[3]} />
+        <div ref={capabilitiesRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-auto">
+          <div className={capabilitiesVisible ? 'animate-fade-in' : 'opacity-0'} style={capabilitiesVisible ? { animationDelay: '0ms' } : {}}>
+            <CapabilityCard {...capabilities[0]} />
+          </div>
+          <div className={`lg:row-span-2 ${capabilitiesVisible ? 'animate-fade-in' : 'opacity-0'}`} style={capabilitiesVisible ? { animationDelay: '80ms' } : {}}>
+            <CapabilityCard {...capabilities[1]} />
+          </div>
+          <div className={capabilitiesVisible ? 'animate-fade-in' : 'opacity-0'} style={capabilitiesVisible ? { animationDelay: '160ms' } : {}}>
+            <CapabilityCard {...capabilities[2]} />
+          </div>
+          <div className={capabilitiesVisible ? 'animate-fade-in' : 'opacity-0'} style={capabilitiesVisible ? { animationDelay: '240ms' } : {}}>
+            <CapabilityCard {...capabilities[3]} />
+          </div>
         </div>
       </section>
 
@@ -262,9 +516,13 @@ export default function LandingPage() {
               See how your resume stacks up against successful engineering candidates at top tech companies.
             </p>
           </div>
-          <div className="flex justify-center gap-8 flex-wrap">
-            {companyScores.map(({ name, match }) => (
-              <div key={name} className="flex flex-col items-center gap-2">
+          <div ref={companyRef} className="flex justify-center gap-8 flex-wrap">
+            {companyScores.map(({ name, match }, index) => (
+              <div
+                key={name}
+                className={`flex flex-col items-center gap-2 ${companyVisible ? 'animate-slide-up' : 'opacity-0'}`}
+                style={companyVisible ? { animationDelay: `${index * 100}ms` } : {}}
+              >
                 <div className="w-14 h-14 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-center">
                   <Building2 size={22} className="text-gray-300 dark:text-gray-600" />
                 </div>
@@ -301,7 +559,7 @@ export default function LandingPage() {
             <p className="text-violet-200 text-sm mb-8 max-w-md mx-auto">
               Join thousands of engineers who've already optimized their resumes with DevResume.
             </p>
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center items-center">
               <Link
                 to="/analyze"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white text-violet-600 text-sm font-semibold rounded-xl hover:bg-violet-50 transition-colors"
@@ -309,6 +567,7 @@ export default function LandingPage() {
                 <Upload size={15} />
                 Analyze My Resume
               </Link>
+              <CTALiveFeed />
               <Link
                 to="/signup"
                 className="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white text-sm font-medium rounded-xl hover:bg-white/10 transition-colors"
@@ -321,6 +580,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
+      <div className="h-px w-full animate-gradient-sweep" />
       <footer className="border-t border-gray-100 dark:border-gray-800 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
