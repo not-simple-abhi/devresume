@@ -1,97 +1,168 @@
+import {
+  matchKeywordsInTextSync,
+  matchKeywordsInText,
+  getKeywordsForDomain,
+  isCacheLoaded,
+} from '../../config/keywordCache.js'
 
+// ─── Fallback domain keywords (used only if cache not loaded) ─────────────────
+import { createRequire } from 'module'
+import { fileURLToPath } from 'url'
+import { dirname, join }  from 'path'
+import fs                 from 'fs'
 
-import { createRequire } from 'module';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import fs from 'fs';
+const __dirname     = dirname(fileURLToPath(import.meta.url))
+const loadFallback  = () => {
+  const dir = join(__dirname, '../../config/keywords')
+  const domains = {}
+  for (const file of fs.readdirSync(dir).filter(f => f.endsWith('.json'))) {
+    const data = JSON.parse(fs.readFileSync(join(dir, file), 'utf-8'))
+    domains[data.domain] = data.keywords
+  }
+  return domains
+}
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// ─── Detect top-2 domains ─────────────────────────────────────────────────────
+const detectDomains = (matchedKeywords) => {
+  const scores = {}
 
-
-const loadKeywords = () => {
-  const keywordsDir = join(__dirname, '../../config/keywords');
-  const domains = {};
-
-  const files = fs.readdirSync(keywordsDir).filter(f => f.endsWith('.json'));
-  for (const file of files) {
-    const data = JSON.parse(fs.readFileSync(join(keywordsDir, file), 'utf-8'));
-    domains[data.domain] = data.keywords;
+  for (const kw of matchedKeywords) {
+    for (const domain of kw.domains) {
+      scores[domain] = (scores[domain] || 0) + kw.weight
+    }
   }
 
-  return domains;
-};
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1])
+  const primary   = sorted[0]?.[0] || 'fullstack'
+  const secondary = sorted[1]?.[0] || null
 
+  return { primary, secondary, scores }
+}
 
-const detectDomain = (allKeywords, resumeText) => {
-  const lower = resumeText.toLowerCase();
-  const scores = {};
+// ─── Weighted coverage calculation ────────────────────────────────────────────
+const calcCoverage = (matchedKeywords, domainKeywords) => {
+  if (domainKeywords.length === 0) return 0
 
-  for (const [domain, keywords] of Object.entries(allKeywords)) {
-    scores[domain] = keywords.filter(k => lower.includes(k.toLowerCase())).length;
-  }
+  const domainIds   = new Set(domainKeywords.map(k => k.id))
+  const matchedInDomain = matchedKeywords.filter(k => domainIds.has(k.id))
 
-  
-  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] || 'fullstack';
-};
+  const totalWeight   = domainKeywords.reduce((s, k) => s + k.weight, 0)
+  const matchedWeight = matchedInDomain.reduce((s, k) => s + k.weight, 0)
 
+  return totalWeight > 0 ? Math.round((matchedWeight / totalWeight) * 100) : 0
+}
+
+// ─── Main export ──────────────────────────────────────────────────────────────
 export const analyzeKeywords = (resume) => {
-  const allKeywords = loadKeywords();
 
-  
+  // ── Build resume text corpus ──
   const resumeText = [
     resume.rawText || '',
-    ...(resume.skills || []),
-    ...(resume.projects || []),
-    ...(resume.experience || []),
-  ].join(' ').toLowerCase();
+    ...(resume.skills       || []),
+    ...(resume.projects     || []),
+    ...(resume.experience   || []),
+  ].join(' ')
 
-  
-  const detectedDomain = detectDomain(allKeywords, resumeText);
-  const domainKeywords = allKeywords[detectedDomain] || [];
-
-  
-  const matchedKeywords = domainKeywords.filter(k =>
-    resumeText.includes(k.toLowerCase())
-  );
-
-  const missingKeywords = domainKeywords.filter(k =>
-    !resumeText.includes(k.toLowerCase())
-  );
-
-  
-  const coverage = {};
-  for (const [domain, keywords] of Object.entries(allKeywords)) {
-    const matched = keywords.filter(k => resumeText.includes(k.toLowerCase())).length;
-    coverage[domain] = Math.round((matched / keywords.length) * 100);
+  // ── Use DB cache if available, fall back to JSON files ──
+  if (!isCacheLoaded()) {
+    console.warn('[KeywordAnalyzer] Cache not loaded — using fallback JSON files')
+    return legacyAnalyze(resumeText)
   }
 
-  const coveragePercent = Math.round((matchedKeywords.length / domainKeywords.length) * 100);
+  // ── Match all keywords in the text ──
+  const matchedKeywords = matchKeywordsInTextSync(resumeText)
 
-  
-  let earnedScore = 0;
-  const deductions = [];
+  // ── Detect primary (and secondary) domain ──
+  const { primary, secondary, scores: domainScores } = detectDomains(matchedKeywords)
 
-  if (coveragePercent >= 60) {
-    earnedScore = 20;
-  } else if (coveragePercent >= 40) {
-    earnedScore = 15;
-    deductions.push({ reason: `Keyword coverage is ${coveragePercent}% — aim for 60%+`, points: -5 });
+  // ── Get domain keyword pools ──
+  const primaryKeywords   = getKeywordsForDomain(primary)
+  const secondaryKeywords = secondary ? getKeywordsForDomain(secondary) : []
+
+  // ── Weighted coverage for primary domain ──
+  const coveragePercent = calcCoverage(matchedKeywords, primaryKeywords)
+
+  // ── Per-domain coverage map ──
+  const coverage = {}
+  for (const [domain, score] of Object.entries(domainScores)) {
+    const domKws = getKeywordsForDomain(domain)
+    coverage[domain] = calcCoverage(matchedKeywords, domKws)
+  }
+
+  // ── Missing keywords (top-weighted unmatched from primary domain) ──
+  const matchedIds    = new Set(matchedKeywords.map(k => k.id))
+  const missingKeywords = primaryKeywords
+    .filter(k => !matchedIds.has(k.id))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 15)
+    .map(k => k.keyword)
+
+  // ── Score: weighted tiers ──
+  let earnedScore = 0
+  const deductions = []
+
+  if (coveragePercent >= 65) {
+    earnedScore = 20
+  } else if (coveragePercent >= 50) {
+    earnedScore = 16
+    deductions.push({ reason: `Keyword coverage ${coveragePercent}% — aim for 65%+`, points: -4 })
+  } else if (coveragePercent >= 35) {
+    earnedScore = 12
+    deductions.push({ reason: `Keyword coverage ${coveragePercent}% — add more ${primary} skills`, points: -8 })
   } else if (coveragePercent >= 20) {
-    earnedScore = 10;
-    deductions.push({ reason: `Low keyword coverage (${coveragePercent}%) — add more relevant skills`, points: -10 });
+    earnedScore = 7
+    deductions.push({ reason: `Low keyword coverage (${coveragePercent}%) — major skill gaps in ${primary}`, points: -13 })
   } else {
-    earnedScore = 5;
-    deductions.push({ reason: `Very low keyword coverage (${coveragePercent}%) — major gaps in ${detectedDomain}`, points: -15 });
+    earnedScore = 3
+    deductions.push({ reason: `Very low keyword coverage (${coveragePercent}%) — critical skill gaps`, points: -17 })
   }
 
   return {
-    maxScore: 20,
-    earnedScore: Math.min(earnedScore, 20),
-    detectedDomain,
+    maxScore:         20,
+    earnedScore:      Math.min(earnedScore, 20),
+    detectedDomain:   primary,
+    secondaryDomain:  secondary,
     coveragePercent,
-    coverage,          
-    matchedKeywords,
-    missingKeywords: missingKeywords.slice(0, 15), 
+    coverage,
+    matchedKeywords:  matchedKeywords.map(k => k.keyword),
+    missingKeywords,
     deductions,
-  };
-};
+  }
+}
+
+// ─── Legacy fallback (JSON files) ────────────────────────────────────────────
+const legacyAnalyze = (resumeText) => {
+  const allKeywords  = loadFallback()
+  const lower        = resumeText.toLowerCase()
+  const scores       = {}
+
+  for (const [domain, keywords] of Object.entries(allKeywords)) {
+    scores[domain] = keywords.filter(k => lower.includes(k.toLowerCase())).length
+  }
+
+  const detectedDomain  = Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] || 'fullstack'
+  const domainKeywords  = allKeywords[detectedDomain] || []
+  const matched         = domainKeywords.filter(k => lower.includes(k.toLowerCase()))
+  const missing         = domainKeywords.filter(k => !lower.includes(k.toLowerCase()))
+  const coveragePercent = Math.round((matched.length / domainKeywords.length) * 100)
+
+  const coverage = {}
+  for (const [domain, keywords] of Object.entries(allKeywords)) {
+    const m = keywords.filter(k => lower.includes(k.toLowerCase())).length
+    coverage[domain] = Math.round((m / keywords.length) * 100)
+  }
+
+  let earnedScore = coveragePercent >= 60 ? 20 : coveragePercent >= 40 ? 15 : coveragePercent >= 20 ? 10 : 5
+  const deductions = earnedScore < 20
+    ? [{ reason: `Keyword coverage is ${coveragePercent}% (fallback mode)`, points: 20 - earnedScore }]
+    : []
+
+  return {
+    maxScore: 20, earnedScore,
+    detectedDomain, secondaryDomain: null,
+    coveragePercent, coverage,
+    matchedKeywords: matched,
+    missingKeywords: missing.slice(0, 15),
+    deductions,
+  }
+}

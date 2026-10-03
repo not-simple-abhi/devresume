@@ -35,3 +35,36 @@ model Review {
 
   @@map("reviews")
 }
+
+model Keyword {
+  id        Int      @id @default(autoincrement())
+  keyword   String   @unique
+  category  String
+  weight    Int      @default(5)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  domains KeywordDomain[]
+  aliases KeywordAlias[]
+
+  @@map("keywords")
+}
+
+model KeywordDomain {
+  keywordId Int    @map("keyword_id")
+  domain    String
+
+  keyword Keyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  @@id([keywordId, domain])
+  @@map("keyword_domains")
+}
+
+model KeywordAlias {
+  id        Int    @id @default(autoincrement())
+  keywordId Int    @map("keyword_id")
+  alias     String @unique
+
+  keyword Keyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  @@map("keyword_aliases")
+}
