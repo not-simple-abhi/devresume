@@ -33,7 +33,7 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <div className="bg-[var(--bg-surface)] dark:bg-[var(--bg-surface)] border-b border-[var(--border)] px-6 py-3 flex items-center justify-between shrink-0">
+        <div className="bg-[var(--bg-surface)] dark:bg-[var(--bg-surface)] border-b border-[var(--border)] px-3 sm:px-6 py-3 flex items-center justify-between shrink-0">
           {/* Breadcrumb */}
           <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 min-w-0">
             {isAuthenticated ? (
@@ -58,7 +58,7 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
                   : activeFileName ? clampFileName(activeFileName) : 'Resume'}
               </span>
               {domain && (
-                <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-medium border border-blue-200 dark:border-blue-800">
+                <span className="hidden sm:inline-flex shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-medium border border-blue-200 dark:border-blue-800">
                   {domain} domain
                 </span>
               )}
@@ -68,7 +68,7 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
                 </span>
               )}
               {ats !== undefined && (
-                <span className="shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
+                <span className="hidden sm:inline shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
                   · ATS: <strong className="font-mono-data text-blue-600 dark:text-blue-400">{ats}/100</strong>
                 </span>
               )}
@@ -92,7 +92,7 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
                 icon={<Download size={13} />}
                 disabled
                 aria-label="Export PDF, coming soon"
-                className="opacity-50 cursor-not-allowed"
+                className="opacity-50 cursor-not-allowed hidden sm:inline-flex"
                 onClick={undefined}
               >
                 Export PDF

@@ -75,7 +75,7 @@ export default function ATSPage() {
               </span>
             </div>
             <ProgressBar value={intelligence.keywordCoverage} className="mb-3" />
-            <div className="grid grid-cols-2 gap-3 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-center">
               <div>
                 <p className="text-base font-bold font-mono-data text-gray-800 dark:text-gray-200">{hardSkills}%</p>
                 <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Hard Skills</p>

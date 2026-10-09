@@ -44,7 +44,7 @@ function CompareResultView({ result }: { result: CompareResult }) {
       </div>
 
       {/* Side-by-side score cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[result.review1, result.review2].map((r, i) => {
           const isWinner = i === 0 ? r1Stronger : r2Stronger
           return (
@@ -161,7 +161,7 @@ export default function ComparePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-5 sm:mb-8">
         <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 flex items-center justify-center">
           <GitCompare size={18} className="text-blue-600 dark:text-blue-400" />
         </div>

@@ -151,7 +151,7 @@ export default function UploadPage() {
 
   return (
     <div className="min-h-[calc(100vh-56px)] page-bg flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg animate-page-in">
+      <div className="w-full max-w-md sm:max-w-lg animate-page-in">
 
         {/* Header */}
         {!isAnalyzing && (

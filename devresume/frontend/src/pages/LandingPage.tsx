@@ -37,9 +37,9 @@ function StatsStrip({ totalReviews, isVisible }: { totalReviews: number; isVisib
     { icon: CheckCircle2, value: 100,          suffix: '%', label: 'Free to Try',                  color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800' },
   ]
   return (
-    <div className="grid grid-cols-3 gap-3 mt-10 mb-2">
+    <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-8 sm:mt-10 mb-2">
       {stats.map(({ icon: Icon, value, suffix, label, color, bg }) => (
-        <div key={label} className={`relative flex flex-col items-center gap-1.5 rounded-2xl border px-3 py-4 card-hover-premium cursor-default overflow-hidden ${bg}`}>
+        <div key={label} className={`relative flex flex-col items-center gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl border px-2 sm:px-3 py-3 sm:py-4 card-hover-premium cursor-default overflow-hidden ${bg}`}>
           <Icon size={17} className={color} />
           <p className={`text-xl sm:text-2xl ${color}`}>
             <AnimatedCount target={value} suffix={suffix} isVisible={isVisible} />
@@ -134,8 +134,8 @@ function HeroMockup() {
   const agent = AGENT_STEPS[agentIdx]
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gray-200/80 dark:border-[var(--border)] bg-white dark:bg-[var(--bg-surface)]"
-      style={{ width: 580, height: 350, boxShadow: '0 32px 80px rgba(29,78,216,0.18), 0 8px 24px rgba(0,0,0,0.08)' }}>
+    <div className="w-full max-w-[580px] rounded-2xl overflow-hidden border border-gray-200/80 dark:border-[var(--border)] bg-white dark:bg-[var(--bg-surface)]"
+      style={{ boxShadow: '0 32px 80px rgba(29,78,216,0.18), 0 8px 24px rgba(0,0,0,0.08)' }}>
 
       {/* Window chrome */}
       <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/60 shrink-0">
@@ -171,10 +171,10 @@ function HeroMockup() {
       </div>
 
       {/* Body */}
-      <div className="flex overflow-hidden" style={{ height: 'calc(350px - 38px - 30px)' }}>
+      <div className="flex overflow-hidden" style={{ minHeight: 220 }}>
 
         {/* Left panel */}
-        <div style={{ width: 148 }} className="shrink-0 border-r border-gray-100 dark:border-gray-800 px-4 py-3 flex flex-col overflow-hidden bg-white dark:bg-transparent">
+        <div className="w-[110px] sm:w-[148px] shrink-0 border-r border-gray-100 dark:border-gray-800 px-2 sm:px-4 py-3 flex flex-col overflow-hidden bg-white dark:bg-transparent">
           <p className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase">Resume Score</p>
           <div className="flex justify-center mb-0.5"><ScoreArc score={score} /></div>
           <p className="text-center text-xl font-bold font-mono-data text-blue-600 dark:text-blue-400" style={{ marginTop: -2 }}>{score}/100</p>
@@ -382,7 +382,7 @@ export default function LandingPage() {
     <div className="landing-bg min-h-screen">
 
       {/* ══ Hero ══════════════════════════════════════════════════════════════ */}
-      <section id="hero" className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-24 grid lg:grid-cols-2 gap-16 items-center scroll-mt-14">
+      <section id="hero" className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-14 sm:pb-24 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center scroll-mt-14">
 
         {/* Floating particles */}
         {[
@@ -413,7 +413,7 @@ export default function LandingPage() {
 
           {/* Headline */}
           <div className="animate-slide-up" style={{ animationDelay: '80ms' }}>
-            <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-black text-gray-900 dark:text-white leading-[1.1] tracking-tight mb-5">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white leading-[1.1] tracking-tight mb-5">
               Your Resume,<br />
               <span className="relative">
                 Analyzed Like{' '}
@@ -431,7 +431,7 @@ export default function LandingPage() {
 
           {/* CTA row */}
           <div className="animate-slide-up" style={{ animationDelay: '240ms' }}>
-            <div className="flex flex-wrap gap-3 mb-6 items-center">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-5 sm:mb-6 items-start sm:items-center">
               <div className="relative inline-flex">
                 {isIdle && <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse-ring pointer-events-none" />}
                 <Link to="/analyze"
@@ -460,7 +460,7 @@ export default function LandingPage() {
         </div>
 
         {/* ── Right column: mockup ── */}
-        <div className="flex justify-center lg:justify-end">
+        <div className="hidden lg:flex justify-end w-full">
           <div className="animate-slide-in-right transition-all duration-300 hover:-translate-y-1" style={{ animationDelay: '100ms' }}>
             <HeroMockup />
           </div>
@@ -468,7 +468,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══ Intelligence Pipeline ══════════════════════════════════════════════ */}
-      <section id="pipeline" className="relative border-t border-blue-100/60 dark:border-blue-900/40 bg-white/70 dark:bg-[var(--bg-surface)] py-24 scroll-mt-14 overflow-hidden">
+      <section id="pipeline" className="relative border-t border-blue-100/60 dark:border-blue-900/40 bg-white/70 dark:bg-[var(--bg-surface)] py-14 sm:py-24 scroll-mt-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-full px-3 py-1 mb-4">
@@ -511,7 +511,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══ Core Capabilities ══════════════════════════════════════════════════ */}
-      <section id="capabilities" className="max-w-7xl mx-auto px-4 sm:px-6 py-24 scroll-mt-14">
+      <section id="capabilities" className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-14 sm:py-24 scroll-mt-14">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-full px-3 py-1 mb-4">
             <Star size={11} />
@@ -545,7 +545,7 @@ export default function LandingPage() {
               See how your resume stacks up against successful engineering candidates at top tech companies.
             </p>
           </div>
-          <div ref={companyRef} className="flex justify-center gap-6 flex-wrap">
+          <div ref={companyRef} className="grid grid-cols-2 sm:flex sm:justify-center gap-4 sm:gap-6 sm:flex-wrap">
             {companyScores.map(({ name, match, color }, index) => (
               <div key={name}
                 className={`flex flex-col items-center gap-2.5 ${companyVisible ? 'animate-reveal-up' : 'opacity-0'}`}
@@ -594,7 +594,7 @@ export default function LandingPage() {
             <p className="text-white/70 text-sm mb-10 max-w-md mx-auto leading-relaxed">
               Join thousands of engineers who've already leveled up their resume with DevResume's AI analysis.
             </p>
-            <div className="flex flex-wrap gap-3 justify-center items-center">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center">
               <Link to="/analyze"
                 className="inline-flex items-center gap-2 px-7 py-3 bg-white text-blue-700 text-sm font-bold rounded-xl hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5">
                 <Upload size={15} />

@@ -128,7 +128,7 @@ export default function CompanyPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-5 sm:mb-8">
         <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 flex items-center justify-center">
           <Building2 size={18} className="text-blue-600 dark:text-blue-400" />
         </div>
@@ -140,7 +140,7 @@ export default function CompanyPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-[360px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-5 sm:gap-6">
         {/* ── Left panel ── */}
         <div className="space-y-4">
           {/* Dropzone */}

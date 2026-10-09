@@ -145,7 +145,7 @@ function ReviewCard({ review, isBest }: { review: SavedReview; isBest?: boolean 
 // ─── Stat cell ────────────────────────────────────────────────────────────────
 function StatCell({ icon: Icon, label, value, color, bg }: { icon: React.ComponentType<{size?: number; className?: string}>; label: string; value: React.ReactNode; color: string; bg: string }) {
   return (
-    <div className={`flex-1 px-5 py-4 text-center relative overflow-hidden ${bg}`}>
+    <div className={`flex-1 px-4 sm:px-5 py-3 sm:py-4 text-center relative overflow-hidden ${bg}`}>
       <div className="flex justify-center mb-1.5">
         <Icon size={14} className={color} />
       </div>
@@ -176,7 +176,7 @@ export default function DashboardPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 animate-page-in">
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between mb-8 flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 sm:mb-8 gap-3 sm:gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
             Welcome back, {user?.name?.split(' ')[0] ?? 'there'} 👋
@@ -202,7 +202,7 @@ export default function DashboardPage() {
       {/* ── Stats bar ── */}
       {(isLoading || reviews.length > 0) && (
         <Card className="mb-6 overflow-hidden !p-0">
-          <div className="flex items-stretch divide-x divide-[var(--border)]">
+          <div className="flex flex-col sm:flex-row sm:items-stretch divide-y sm:divide-y-0 sm:divide-x divide-[var(--border)]">
             {isLoading ? (
               [1, 2, 3, 4].map(i => (
                 <div key={i} className="flex-1 px-5 py-4">

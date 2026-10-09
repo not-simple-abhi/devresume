@@ -185,7 +185,7 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 px-4 py-3 space-y-1 animate-fade-in">
+        <div className="md:hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 px-4 py-3 space-y-1 animate-fade-in max-h-[70vh] overflow-y-auto">
           {isLanding && !isAuthenticated
             ? landingLinks.map((l) => (
                 <button
