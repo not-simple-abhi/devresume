@@ -42,7 +42,7 @@ export default function Card({
       tabIndex={isInteractive ? 0 : undefined}
       className={cn(
         'bg-white dark:bg-[var(--bg-surface)] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm',
-        hover && 'transition-all hover:shadow-[0_8px_30px_rgba(109,40,217,0.12)] dark:hover:shadow-[0_8px_30px_rgba(109,40,217,0.25)] hover:border-violet-100 dark:hover:border-violet-800',
+        hover && 'transition-all hover:shadow-[0_8px_30px_rgba(109,40,217,0.12)] dark:hover:shadow-[0_8px_30px_rgba(109,40,217,0.25)] hover:border-blue-100 dark:hover:border-blue-800',
         isInteractive && 'cursor-pointer',
         paddingMap[padding],
         className

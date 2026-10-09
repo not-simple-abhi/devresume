@@ -39,7 +39,7 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
-                className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors shrink-0"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
               >
                 Dashboard
               </Link>
@@ -58,18 +58,18 @@ export default function AnalysisLayout({ children }: AnalysisLayoutProps) {
                   : activeFileName ? clampFileName(activeFileName) : 'Resume'}
               </span>
               {domain && (
-                <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 font-medium border border-violet-200 dark:border-violet-800">
+                <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-medium border border-blue-200 dark:border-blue-800">
                   {domain} domain
                 </span>
               )}
               {overall !== undefined && (
                 <span className="shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
-                  Score: <strong className="font-mono-data text-violet-600 dark:text-violet-400">{overall}/100</strong>
+                  Score: <strong className="font-mono-data text-blue-600 dark:text-blue-400">{overall}/100</strong>
                 </span>
               )}
               {ats !== undefined && (
                 <span className="shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
-                  · ATS: <strong className="font-mono-data text-violet-600 dark:text-violet-400">{ats}/100</strong>
+                  · ATS: <strong className="font-mono-data text-blue-600 dark:text-blue-400">{ats}/100</strong>
                 </span>
               )}
             </div>

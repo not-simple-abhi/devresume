@@ -33,7 +33,7 @@ function normalizeString(s: unknown): string {
 
 function ImpactTag({ label }: { label: 'HIGH IMPACT' | 'MEDIUM IMPACT' | 'LOW IMPACT' }) {
   const colorMap = {
-    'HIGH IMPACT':   'bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800',
+    'HIGH IMPACT':   'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
     'MEDIUM IMPACT': 'bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800',
     'LOW IMPACT':    'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700',
   }
@@ -78,8 +78,8 @@ function ProjectCard({
       {/* Header */}
       <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-start gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center shrink-0">
-            <Layers size={16} className="text-violet-600 dark:text-violet-400" />
+          <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 flex items-center justify-center shrink-0">
+            <Layers size={16} className="text-blue-600 dark:text-blue-400" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -92,7 +92,7 @@ function ProjectCard({
         </div>
         <div className="text-right shrink-0">
           <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 mb-0.5">Project Score</p>
-          <p className="text-2xl font-bold font-mono-data" style={{ color: pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444' }}>
+          <p className="text-2xl font-bold font-mono-data" style={{ color: pct >= 70 ? '#2563eb' : pct >= 50 ? '#f59e0b' : '#ef4444' }}>
             {project.score}<span className="text-sm font-normal text-gray-400 dark:text-gray-500">/{project.maxScore}</span>
           </p>
         </div>
@@ -108,7 +108,7 @@ function ProjectCard({
               {metrics.map(({ label, done }) => (
                 <li key={label} className="flex items-start gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   {done
-                    ? <CheckCircle2 size={14} className="text-violet-500 dark:text-violet-400 mt-0.5 shrink-0" />
+                    ? <CheckCircle2 size={14} className="text-blue-500 dark:text-blue-400 mt-0.5 shrink-0" />
                     : <Circle      size={14} className="text-gray-300 dark:text-gray-600 mt-0.5 shrink-0" />
                   }
                   <span className={done ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 dark:text-gray-600'}>{label}</span>
@@ -143,7 +143,7 @@ function ProjectCard({
           {showImproved ? (
             <>
               <div className="flex justify-end">
-                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 rounded-full font-semibold">
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-full font-semibold">
                   <Sparkles size={10} /> AI Optimized
                 </span>
               </div>
@@ -155,8 +155,8 @@ function ProjectCard({
               )}
               {aiSuggestion.improved_description && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-violet-500 dark:text-violet-400 mb-1.5">Improved Description</p>
-                  <div className="border-l-2 border-violet-500 dark:border-violet-600 pl-3">
+                  <p className="text-xs font-bold uppercase tracking-widest text-blue-500 dark:text-blue-400 mb-1.5">Improved Description</p>
+                  <div className="border-l-2 border-blue-500 dark:border-blue-600 pl-3">
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 leading-relaxed">{aiSuggestion.improved_description}</p>
                   </div>
                 </div>
@@ -229,8 +229,8 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center">
-            <Layers size={18} className="text-violet-600 dark:text-violet-400" />
+          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 flex items-center justify-center">
+            <Layers size={18} className="text-blue-600 dark:text-blue-400" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">Project Analysis</h1>
@@ -263,7 +263,7 @@ export default function ProjectsPage() {
       {recommended.length > 0 && (
         <Card>
           <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-800">
-            <Sparkles size={15} className="text-violet-500 dark:text-violet-400" />
+            <Sparkles size={15} className="text-blue-500 dark:text-blue-400" />
             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Recommended Projects to Add</h3>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -271,7 +271,7 @@ export default function ProjectsPage() {
               <div key={i} className="bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4">
                 {r.project_idea && <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1.5">{r.project_idea}</p>}
                 {r.description  && <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed mb-2">{r.description}</p>}
-                {r.why_valuable && <p className="text-sm font-medium text-violet-600 dark:text-violet-400 mb-2">{r.why_valuable}</p>}
+                {r.why_valuable && <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">{r.why_valuable}</p>}
                 {r.skills_demonstrated && r.skills_demonstrated.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {r.skills_demonstrated.map((s) => <Badge key={s} variant="default" size="sm">{s}</Badge>)}

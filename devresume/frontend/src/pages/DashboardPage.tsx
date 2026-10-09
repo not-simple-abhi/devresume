@@ -42,7 +42,7 @@ function ReviewCard({ review, isBest }: { review: SavedReview; isBest?: boolean 
     if (confirm(`Delete "${review.resumeName}"?`)) deleteMutation.mutate(review.id)
   }
 
-  const scoreColor = review.overallScore >= 65 ? '#7c3aed' : review.overallScore >= 50 ? '#f59e0b' : '#ef4444'
+  const scoreColor = review.overallScore >= 65 ? '#2563eb' : review.overallScore >= 50 ? '#f59e0b' : '#ef4444'
 
   return (
     <div
@@ -55,13 +55,13 @@ function ReviewCard({ review, isBest }: { review: SavedReview; isBest?: boolean 
     >
       {/* Best indicator top bar */}
       {isBest && (
-        <div className="h-0.5 w-full" style={{ background: 'linear-gradient(90deg, #7c3aed, #a855f7, #6366f1)' }} />
+        <div className="h-0.5 w-full" style={{ background: 'linear-gradient(90deg, #2563eb, #3b82f6, #6366f1)' }} />
       )}
 
       {/* Delete overlay */}
       {deleteMutation.isPending && (
         <div className="absolute inset-0 bg-white/90 dark:bg-gray-900/90 rounded-2xl flex flex-col items-center justify-center gap-2 z-10 backdrop-blur-sm">
-          <Loader2 size={20} className="animate-spin text-violet-500" />
+          <Loader2 size={20} className="animate-spin text-blue-500" />
           <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Deleting…</p>
         </div>
       )}
@@ -70,8 +70,8 @@ function ReviewCard({ review, isBest }: { review: SavedReview; isBest?: boolean 
         {/* Top row */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-50 to-violet-100 dark:from-violet-950 dark:to-violet-900 border border-violet-100 dark:border-violet-800 flex items-center justify-center shrink-0">
-              <FileText size={16} className="text-violet-500 dark:text-violet-400" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border border-blue-100 dark:border-blue-800 flex items-center justify-center shrink-0">
+              <FileText size={16} className="text-blue-500 dark:text-blue-400" />
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate leading-tight">{review.resumeName}</p>
@@ -82,7 +82,7 @@ function ReviewCard({ review, isBest }: { review: SavedReview; isBest?: boolean 
             </div>
           </div>
           {isBest && (
-            <span className="flex items-center gap-1 text-[9px] px-2 py-0.5 bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 rounded-full font-bold shrink-0">
+            <span className="flex items-center gap-1 text-[9px] px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-full font-bold shrink-0">
               <Award size={8} /> BEST
             </span>
           )}
@@ -215,7 +215,7 @@ export default function DashboardPage() {
                 <StatCell icon={BarChart2}  label="Total Reviews" value={reviews.length}  color="text-gray-700 dark:text-gray-200"          bg="" />
                 <StatCell icon={Award}      label="Best Overall"  value={highestOverall}  color={overallColor}                               bg="" />
                 <StatCell icon={Target}     label="Best ATS"      value={`${highestAts}%`} color="text-indigo-600 dark:text-indigo-400"       bg="" />
-                <StatCell icon={TrendingUp} label="Avg Overall"   value={avgOverall}      color="text-violet-600 dark:text-violet-400"        bg="" />
+                <StatCell icon={TrendingUp} label="Avg Overall"   value={avgOverall}      color="text-blue-600 dark:text-blue-400"        bg="" />
               </>
             )}
           </div>
@@ -230,7 +230,7 @@ export default function DashboardPage() {
         </Card>
       )}
       {!isLoading && reviews.length === 1 && (
-        <div className="mb-6 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/40 dark:to-indigo-950/40 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 text-sm text-violet-700 dark:text-violet-300 text-center">
+        <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 text-sm text-blue-700 dark:text-blue-300 text-center">
           <TrendingUp size={14} className="inline mr-1.5 mb-0.5" />
           Upload one more resume to unlock your score history chart.
         </div>

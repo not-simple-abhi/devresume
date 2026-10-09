@@ -104,7 +104,7 @@ export default function SkillsPage() {
         {/* Learning Roadmap */}
         <Card className="lg:col-span-2">
           <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-800">
-            <Rocket size={15} className="text-violet-500 dark:text-violet-400" />
+            <Rocket size={15} className="text-blue-500 dark:text-blue-400" />
             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Learning Roadmap</h3>
           </div>
           {learningRoadmap.length > 0 ? (
@@ -112,10 +112,10 @@ export default function SkillsPage() {
               {learningRoadmap.map((step, i) => (
                 <li key={i} className="flex gap-4 items-start">
                   <div className="flex flex-col items-center gap-1">
-                    <div className="w-6 h-6 rounded-full bg-violet-600 dark:bg-violet-700 text-white text-xs font-bold flex items-center justify-center shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-blue-600 dark:bg-blue-700 text-white text-xs font-bold flex items-center justify-center shrink-0">
                       {i + 1}
                     </div>
-                    {i < learningRoadmap.length - 1 && <div className="w-px h-4 bg-violet-100 dark:bg-violet-900" />}
+                    {i < learningRoadmap.length - 1 && <div className="w-px h-4 bg-blue-100 dark:bg-blue-900" />}
                   </div>
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300 pb-1 leading-relaxed">{step}</p>
                 </li>

@@ -59,7 +59,7 @@ function RecruiterTab() {
     <div className="space-y-4 pt-4 animate-fade-in">
       <ReadinessBanner status={recruiter.interviewReadiness} />
 
-      <Card className="border-l-2 border-l-violet-400 dark:border-l-violet-600">
+      <Card className="border-l-2 border-l-blue-400 dark:border-l-blue-600">
         <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 mb-3">Executive Summary</h3>
         <p className="text-sm font-medium text-gray-700 dark:text-gray-300 leading-relaxed">{recruiter.summary}</p>
       </Card>
@@ -68,7 +68,7 @@ function RecruiterTab() {
         {/* Strengths */}
         <Card>
           <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-gray-100 dark:border-gray-800">
-            <CheckCircle2 size={15} className="text-violet-500 dark:text-violet-400" />
+            <CheckCircle2 size={15} className="text-blue-500 dark:text-blue-400" />
             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Key Strengths</h3>
           </div>
           {recruiter.strengths.length > 0 ? (
@@ -164,7 +164,7 @@ function GrammarTab() {
 
   const qualityColor = {
     excellent: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800',
-    good:      'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950 border-violet-200 dark:border-violet-800',
+    good:      'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800',
     average:   'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800',
     poor:      'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800',
   }
@@ -217,13 +217,13 @@ function GrammarTab() {
       {grammar.suggestions.length > 0 && (
         <Card>
           <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-800">
-            <RefreshCw size={15} className="text-violet-400" />
+            <RefreshCw size={15} className="text-blue-400" />
             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Writing Suggestions</h3>
           </div>
           <ul className="space-y-3">
             {grammar.suggestions.map((s, i) => (
               <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-2 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
                 {s}
               </li>
             ))}
@@ -255,7 +255,7 @@ export default function InsightsPage() {
     <div className="space-y-0 animate-fade-in">
       <div className="flex items-start justify-between mb-4 flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <Sparkles size={18} className="text-violet-500 dark:text-violet-400" />
+          <Sparkles size={18} className="text-blue-500 dark:text-blue-400" />
           <div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">AI Insights</h1>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">

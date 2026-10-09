@@ -58,7 +58,7 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
-          <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
+          <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #2563eb, #1e40af)' }}>
             <Sparkles size={14} className="text-white" />
           </div>
           <span className="text-sm tracking-wide font-bold">DevResume</span>
@@ -71,7 +71,7 @@ export default function Navbar() {
               <button
                 key={l.label}
                 onClick={l.action}
-                className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950 transition-colors"
+                className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
               >
                 {l.label}
               </button>
@@ -85,7 +85,7 @@ export default function Navbar() {
                   cn(
                     'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
                     isActive
-                      ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950'
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
                   )
                 }
@@ -95,10 +95,10 @@ export default function Navbar() {
             ))
           ) : (
             <>
-              <Link to="/analyze" className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950 transition-colors">
+              <Link to="/analyze" className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors">
                 Analyze Resume
               </Link>
-              <Link to="/company" className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950 transition-colors">
+              <Link to="/company" className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors">
                 Company Fit
               </Link>
             </>
@@ -120,7 +120,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen((o) => !o)}
-                className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-semibold uppercase hover:bg-violet-700 transition-colors"
+                className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-semibold uppercase hover:bg-blue-700 transition-colors"
               >
                 {user?.name?.[0] ?? 'U'}
               </button>
@@ -157,7 +157,7 @@ export default function Navbar() {
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-1.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 transition-colors shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
+                className="px-4 py-1.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 dark:shadow-blue-900/40"
               >
                 Get Started
               </Link>
@@ -206,7 +206,7 @@ export default function Navbar() {
                     cn(
                       'block px-3 py-2 rounded-md text-sm font-medium transition-colors',
                       isActive
-                        ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60 border-l-2 border-violet-500 pl-[10px]'
+                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border-l-2 border-blue-500 pl-[10px]'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60'
                     )
                   }
@@ -242,7 +242,7 @@ export default function Navbar() {
                 <Link
                   to="/signup"
                   onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2 text-sm text-white bg-violet-600 rounded-md text-center hover:bg-violet-700"
+                  className="block px-3 py-2 text-sm text-white bg-blue-600 rounded-md text-center hover:bg-blue-700"
                 >
                   Get Started
                 </Link>
@@ -255,7 +255,7 @@ export default function Navbar() {
       {showBar && (
         <div
           className={cn(
-            'absolute bottom-0 left-0 h-[2px] bg-violet-500',
+            'absolute bottom-0 left-0 h-[2px] bg-blue-500',
             mutatingCount > 0 ? 'animate-progress-bar' : 'animate-progress-complete'
           )}
         />

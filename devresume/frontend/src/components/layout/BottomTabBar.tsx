@@ -26,7 +26,7 @@ export default function BottomTabBar() {
           className={cn(
             'flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-[10px] font-medium transition-colors',
             activeTab === id
-              ? 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60'
+              ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60'
               : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
           )}
         >

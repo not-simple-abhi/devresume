@@ -48,7 +48,7 @@ export default function ATSPage() {
           </div>
           <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-2.5 text-center shadow-sm">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-0.5">ATS Match</p>
-            <p className="text-xl font-bold font-mono-data text-violet-600 dark:text-violet-400">
+            <p className="text-xl font-bold font-mono-data text-blue-600 dark:text-blue-400">
               {atsScore}<span className="text-sm font-normal text-gray-400 dark:text-gray-500">%</span>
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function ATSPage() {
           <Card>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Keyword Coverage</h3>
-              <span className="text-sm font-mono-data font-bold text-violet-600 dark:text-violet-400">
+              <span className="text-sm font-mono-data font-bold text-blue-600 dark:text-blue-400">
                 {matched.length} / {matched.length + missing.length}
               </span>
             </div>
@@ -92,7 +92,7 @@ export default function ATSPage() {
         <Card className="lg:col-span-1">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={15} className="text-violet-500 dark:text-violet-400" />
+              <CheckCircle2 size={15} className="text-blue-500 dark:text-blue-400" />
               <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Matched Keywords</h3>
             </div>
             <Badge variant="gray" size="sm">{matched.length} found</Badge>
@@ -101,7 +101,7 @@ export default function ATSPage() {
             {matched.slice(0, 20).map((kw) => (
               <span
                 key={kw}
-                className="inline-flex items-center px-2.5 py-1 text-sm font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:border-violet-200 dark:hover:border-violet-700 transition-colors"
+                className="inline-flex items-center px-2.5 py-1 text-sm font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:border-blue-200 dark:hover:border-blue-700 transition-colors"
               >
                 {kw}
               </span>
@@ -143,10 +143,10 @@ export default function ATSPage() {
       </div>
 
       {/* AI Explanation */}
-      <Card className="border-violet-100 dark:border-violet-900">
+      <Card className="border-blue-100 dark:border-blue-900">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-200 dark:border-violet-800 flex items-center justify-center shrink-0">
-            <Sparkles size={16} className="text-violet-600 dark:text-violet-400" />
+          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 flex items-center justify-center shrink-0">
+            <Sparkles size={16} className="text-blue-600 dark:text-blue-400" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
@@ -189,7 +189,7 @@ export default function ATSPage() {
                 <ul className="space-y-2">
                   {ats.formattingRecommendations.slice(0, 4).map((rec, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-2 shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
                       {rec}
                     </li>
                   ))}

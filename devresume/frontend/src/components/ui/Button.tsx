@@ -14,9 +14,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantMap: Record<ButtonVariant, string> = {
   primary:
-    'bg-violet-600 text-white hover:bg-violet-700 active:bg-violet-800 ' +
+    'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 ' +
     'hover:shadow-[0_4px_14px_rgba(109,40,217,0.35)] transition-shadow ' +
-    'dark:bg-violet-600 dark:hover:bg-violet-500',
+    'dark:bg-blue-600 dark:hover:bg-blue-500',
   secondary:
     'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 ' +
     'dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:border-gray-600',
@@ -27,8 +27,8 @@ const variantMap: Record<ButtonVariant, string> = {
     'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 ' +
     'dark:bg-red-950 dark:text-red-400 dark:border-red-900 dark:hover:bg-red-900',
   outline:
-    'border border-violet-200 text-violet-600 hover:bg-violet-50 ' +
-    'dark:border-violet-700 dark:text-violet-400 dark:hover:bg-violet-950',
+    'border border-blue-200 text-blue-600 hover:bg-blue-50 ' +
+    'dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950',
 }
 
 const sizeMap: Record<ButtonSize, string> = {
@@ -57,7 +57,7 @@ export default function Button({
       aria-label={loading && typeof children === 'string' ? `${children}, loading` : undefined}
       className={cn(
         'inline-flex items-center justify-center font-medium rounded-lg transition-all',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantMap[variant],
         sizeMap[size],

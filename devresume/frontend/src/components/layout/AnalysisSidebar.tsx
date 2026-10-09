@@ -34,7 +34,7 @@ export default function AnalysisSidebar() {
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left',
               activeTab === id
-                ? 'bg-violet-50 dark:bg-violet-950 text-violet-700 dark:text-violet-300 border-l-[3px] border-l-violet-500 dark:border-l-violet-400'
+                ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-l-[3px] border-l-blue-500 dark:border-l-blue-400'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
             )}
           >
@@ -42,7 +42,7 @@ export default function AnalysisSidebar() {
               size={16}
               className={cn(
                 activeTab === id
-                  ? 'text-violet-600 dark:text-violet-400'
+                  ? 'text-blue-600 dark:text-blue-400'
                   : 'text-gray-400 dark:text-gray-500'
               )}
             />

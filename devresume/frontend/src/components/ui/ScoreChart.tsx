@@ -133,7 +133,7 @@ export default function ScoreChart({ data }: ScoreChartProps) {
               </p>
               <div className="space-y-1">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="flex items-center gap-1.5 text-violet-600 dark:text-violet-400"><span className="w-2 h-2 rounded-full bg-violet-500" />Overall</span>
+                  <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400"><span className="w-2 h-2 rounded-full bg-blue-500" />Overall</span>
                   <strong className="font-mono-data">{d.overall}</strong>
                 </div>
                 <div className="flex items-center justify-between gap-4">

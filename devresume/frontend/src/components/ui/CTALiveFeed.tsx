@@ -32,13 +32,13 @@ export default function CTALiveFeed({ steps = DEFAULT_STEPS }: CTALiveFeedProps)
   }, [steps.length])
 
   return (
-    <div className="hidden sm:flex items-center gap-2.5 bg-white dark:bg-gray-900/80 border border-violet-200 dark:border-violet-800/80 rounded-xl px-3 py-2 backdrop-blur-sm shadow-sm">
+    <div className="hidden sm:flex items-center gap-2.5 bg-white dark:bg-gray-900/80 border border-blue-200 dark:border-blue-800/80 rounded-xl px-3 py-2 backdrop-blur-sm shadow-sm">
       {/* Left accent bar */}
-      <div className="w-0.5 self-stretch rounded-full bg-gradient-to-b from-violet-400 to-violet-600 animate-pulse-accent" />
+      <div className="w-0.5 self-stretch rounded-full bg-gradient-to-b from-blue-400 to-blue-600 animate-pulse-accent" />
 
       {/* Icon */}
       <div className="relative shrink-0">
-        <Cpu size={13} className="text-violet-600 dark:text-violet-400" />
+        <Cpu size={13} className="text-blue-600 dark:text-blue-400" />
         <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full animate-live-dot" />
       </div>
 
@@ -53,7 +53,7 @@ export default function CTALiveFeed({ steps = DEFAULT_STEPS }: CTALiveFeedProps)
       {/* Right indicator */}
       <div className="flex gap-0.5 shrink-0 ml-1">
         {[0, 1, 2].map(i => (
-          <span key={i} className="w-1 h-1 rounded-full bg-violet-400 dark:bg-violet-600 animate-pulse-accent"
+          <span key={i} className="w-1 h-1 rounded-full bg-blue-400 dark:bg-blue-600 animate-pulse-accent"
             style={{ animationDelay: `${i * 0.2}s` }} />
         ))}
       </div>

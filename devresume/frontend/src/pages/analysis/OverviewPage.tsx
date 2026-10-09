@@ -87,7 +87,7 @@ export default function OverviewPage() {
             <ol className="space-y-3">
               {actionableSteps.map((step, i) => (
                 <li key={i} className="flex gap-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  <span className="w-5 h-5 rounded-full bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="w-5 h-5 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   {step}
@@ -101,7 +101,7 @@ export default function OverviewPage() {
       {/* ── Right column ── */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Sparkles size={15} className="text-violet-500" />
+          <Sparkles size={15} className="text-blue-500" />
           <h2 className="text-sm font-bold text-gray-700 dark:text-gray-300">AI Generated Insights</h2>
         </div>
 
@@ -109,7 +109,7 @@ export default function OverviewPage() {
         <Card>
           <div className="flex items-start justify-between mb-2">
             <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200">Recruiter Summary</h3>
-            <span className="text-xs px-2 py-0.5 bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 rounded-full font-semibold shrink-0 ml-2">
+            <span className="text-xs px-2 py-0.5 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-full font-semibold shrink-0 ml-2">
               ✦ AI
             </span>
           </div>
@@ -119,13 +119,13 @@ export default function OverviewPage() {
         {/* Strengths */}
         {recruiter.strengths.length > 0 && (
           <Card padding="sm">
-            <p className="text-xs font-bold uppercase tracking-widest text-violet-500 dark:text-violet-400 mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-blue-500 dark:text-blue-400 mb-3">
               Identified Strengths
             </p>
             <ul className="space-y-2">
               {recruiter.strengths.map((s, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  <CheckCircle2 size={14} className="text-violet-500 dark:text-violet-400 mt-0.5 shrink-0" />
+                  <CheckCircle2 size={14} className="text-blue-500 dark:text-blue-400 mt-0.5 shrink-0" />
                   {s}
                 </li>
               ))}
@@ -176,7 +176,7 @@ export default function OverviewPage() {
             </div>
             <div className="flex justify-between text-sm">
               <span className="font-medium text-gray-500 dark:text-gray-400">Coverage</span>
-              <span className="font-bold text-violet-600 dark:text-violet-400">{intelligence.keywordCoverage.toFixed(0)}%</span>
+              <span className="font-bold text-blue-600 dark:text-blue-400">{intelligence.keywordCoverage.toFixed(0)}%</span>
             </div>
             <ProgressBar value={intelligence.keywordCoverage} />
             <div className="flex justify-between text-sm pt-1">

@@ -32,7 +32,7 @@ function AnimatedCount({ target, suffix = '', isVisible }: { target: number; suf
 // ─── Stats strip ──────────────────────────────────────────────────────────────
 function StatsStrip({ totalReviews, isVisible }: { totalReviews: number; isVisible: boolean }) {
   const stats = [
-    { icon: FileCheck2,   value: totalReviews, suffix: '+', label: 'Resumes Reviewed',            color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/60 border-violet-200 dark:border-violet-800' },
+    { icon: FileCheck2,   value: totalReviews, suffix: '+', label: 'Resumes Reviewed',            color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/60 border-blue-200 dark:border-blue-800' },
     { icon: Sparkles,     value: 6,            suffix: '',  label: 'AI Agents in Parallel',        color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800' },
     { icon: CheckCircle2, value: 100,          suffix: '%', label: 'Free to Try',                  color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800' },
   ]
@@ -61,17 +61,17 @@ const SCORE_SECTIONS = [
 ]
 
 const ACTIVE_SECTIONS = [
-  { title: 'ATS COMPATIBILITY', pct: 88, color: '#7c3aed' },
+  { title: 'ATS COMPATIBILITY', pct: 88, color: '#2563eb' },
   { title: 'ACTIVE VOICE',      pct: 61, color: '#f59e0b' },
   { title: 'KEYWORD DENSITY',   pct: 43, color: '#ef4444' },
 ]
 
 const AGENT_STEPS = [
-  { label: 'Parsing structure…',    icon: '⬡', color: '#7c3aed' },
+  { label: 'Parsing structure…',    icon: '⬡', color: '#2563eb' },
   { label: 'Running ATS scan…',     icon: '⬡', color: '#6366f1' },
-  { label: 'Scoring impact…',       icon: '⬡', color: '#7c3aed' },
-  { label: 'Analyzing keywords…',   icon: '⬡', color: '#8b5cf6' },
-  { label: 'Evaluating seniority…', icon: '⬡', color: '#a855f7' },
+  { label: 'Scoring impact…',       icon: '⬡', color: '#2563eb' },
+  { label: 'Analyzing keywords…',   icon: '⬡', color: '#60a5fa' },
+  { label: 'Evaluating seniority…', icon: '⬡', color: '#3b82f6' },
 ]
 
 function ScoreArc({ score }: { score: number }) {
@@ -135,7 +135,7 @@ function HeroMockup() {
 
   return (
     <div className="rounded-2xl overflow-hidden border border-gray-200/80 dark:border-[var(--border)] bg-white dark:bg-[var(--bg-surface)]"
-      style={{ width: 580, height: 350, boxShadow: '0 32px 80px rgba(109,40,217,0.18), 0 8px 24px rgba(0,0,0,0.08)' }}>
+      style={{ width: 580, height: 350, boxShadow: '0 32px 80px rgba(29,78,216,0.18), 0 8px 24px rgba(0,0,0,0.08)' }}>
 
       {/* Window chrome */}
       <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/60 shrink-0">
@@ -252,9 +252,9 @@ function HeroMockup() {
           </div>
 
           {/* Mini insight badge */}
-          <div className="mt-auto shrink-0 flex items-center gap-2 bg-violet-50 dark:bg-violet-950/40 border border-violet-100 dark:border-violet-800/60 rounded-lg px-2.5 py-1.5">
-            <Sparkles size={10} className="text-violet-500 shrink-0" />
-            <span className="text-[9px] text-violet-700 dark:text-violet-300 leading-relaxed truncate">
+          <div className="mt-auto shrink-0 flex items-center gap-2 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-800/60 rounded-lg px-2.5 py-1.5">
+            <Sparkles size={10} className="text-blue-500 shrink-0" />
+            <span className="text-[9px] text-blue-700 dark:text-blue-300 leading-relaxed truncate">
               Add metrics to quantify your system design impact
             </span>
           </div>
@@ -266,7 +266,7 @@ function HeroMockup() {
 
 // ─── Pipeline steps ───────────────────────────────────────────────────────────
 const pipelineSteps = [
-  { step: '01', label: 'PARSE',    title: 'Structural Extraction', desc: 'ATS-grade parsing that maps your experience, skills, and metrics with surgical precision.', icon: Code2,     color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950', border: 'border-violet-100 dark:border-violet-900' },
+  { step: '01', label: 'PARSE',    title: 'Structural Extraction', desc: 'ATS-grade parsing that maps your experience, skills, and metrics with surgical precision.', icon: Code2,     color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950', border: 'border-blue-100 dark:border-blue-900' },
   { step: '02', label: 'MAP',      title: 'Skill Taxonomy',        desc: "Your technologies mapped against a library of 30,000+ developer tools and frameworks.", icon: Tag,       color: 'text-blue-600 dark:text-blue-400',   bg: 'bg-blue-50 dark:bg-blue-950',   border: 'border-blue-100 dark:border-blue-900' },
   { step: '03', label: 'EVALUATE', title: 'Contextual Impact',     desc: 'LLMs evaluate bullet points for technical depth, architectural thinking, and business impact.', icon: Zap,       color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950', border: 'border-emerald-100 dark:border-emerald-900' },
   { step: '04', label: 'OPTIMIZE', title: 'Rewrite Suggestions',   desc: 'Technically sound, metric-focused rewrites that sound like an engineer, not a marketer.', icon: RefreshCw, color: 'text-amber-600 dark:text-amber-400',  bg: 'bg-amber-50 dark:bg-amber-950',  border: 'border-amber-100 dark:border-amber-900' },
@@ -325,13 +325,13 @@ function CapabilityCard({ icon: Icon, title, desc, cta, featured, badge }: (type
   }
   return (
     <div className="bg-white dark:bg-[var(--bg-surface)] rounded-2xl border border-gray-100 dark:border-[var(--border)] p-5 card-hover-premium group">
-      <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950/60 flex items-center justify-center mb-3 border border-violet-100 dark:border-violet-900 group-hover:scale-110 transition-transform duration-200">
-        <Icon size={17} className="text-violet-600 dark:text-violet-400" />
+      <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center mb-3 border border-blue-100 dark:border-blue-900 group-hover:scale-110 transition-transform duration-200">
+        <Icon size={17} className="text-blue-600 dark:text-blue-400" />
       </div>
       <h3 className="font-bold text-sm text-gray-900 dark:text-gray-100 mb-1.5">{title}</h3>
       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</p>
       {cta && (
-        <button className="mt-3 text-xs text-violet-600 dark:text-violet-400 font-semibold hover:text-violet-700 dark:hover:text-violet-300 flex items-center gap-1 group/btn">
+        <button className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-semibold hover:text-violet-700 dark:hover:text-violet-300 flex items-center gap-1 group/btn">
           {cta} <ArrowRight size={11} className="group-hover/btn:translate-x-0.5 transition-transform" />
         </button>
       )}
@@ -395,7 +395,7 @@ export default function LandingPage() {
           { size: 4,  top: '25%', left: '30%',  dur: '6s',   delay: '2s',   opacity: 0.2 },
           { size: 9,  top: '65%', left: '45%',  dur: '4.5s', delay: '0.3s', opacity: 0.15 },
         ].map((p, i) => (
-          <div key={i} className="absolute rounded-full bg-violet-400 dark:bg-violet-500 animate-float pointer-events-none"
+          <div key={i} className="absolute rounded-full bg-blue-400 dark:bg-blue-500 animate-float pointer-events-none"
             style={{ width: p.size, height: p.size, top: p.top, left: p.left, opacity: p.opacity, ['--float-duration' as string]: p.dur, animationDelay: p.delay } as React.CSSProperties} />
         ))}
 
@@ -403,11 +403,11 @@ export default function LandingPage() {
         <div>
           {/* Eyebrow badge */}
           <div className="animate-slide-up" style={{ animationDelay: '0ms' }}>
-            <div className="inline-flex items-center gap-2 text-xs font-semibold text-violet-700 dark:text-violet-300 bg-violet-100/80 dark:bg-violet-950/80 border border-violet-200 dark:border-violet-800 rounded-full px-3.5 py-1.5 mb-6 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-glow-pulse" />
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100/80 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 rounded-full px-3.5 py-1.5 mb-6 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-glow-pulse" />
               AI Resume Intelligence Platform
-              <span className="text-violet-400 dark:text-violet-500">·</span>
-              <span className="text-violet-500 dark:text-violet-400 font-bold">New</span>
+              <span className="text-violet-400 dark:text-blue-500">·</span>
+              <span className="text-blue-500 dark:text-violet-400 font-bold">New</span>
             </div>
           </div>
 
@@ -433,10 +433,10 @@ export default function LandingPage() {
           <div className="animate-slide-up" style={{ animationDelay: '240ms' }}>
             <div className="flex flex-wrap gap-3 mb-6 items-center">
               <div className="relative inline-flex">
-                {isIdle && <div className="absolute inset-0 rounded-xl border-2 border-violet-400 animate-pulse-ring pointer-events-none" />}
+                {isIdle && <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse-ring pointer-events-none" />}
                 <Link to="/analyze"
                   className="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-semibold rounded-xl transition-all shadow-lg"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 8px 24px rgba(109,40,217,0.35)' }}
+                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 8px 24px rgba(29,78,216,0.35)' }}
                   onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-1px)')}
                   onMouseLeave={e => (e.currentTarget.style.transform = '')}
                 >
@@ -469,12 +469,10 @@ export default function LandingPage() {
       </section>
 
       {/* ══ Intelligence Pipeline ══════════════════════════════════════════════ */}
-      <section id="pipeline" className="relative border-t border-violet-100/60 dark:border-violet-900/40 py-24 scroll-mt-14 overflow-hidden"
-        style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(248,247,255,0.9) 100%)' }}>
-        <div className="absolute inset-0 dark:block hidden" style={{ background: 'linear-gradient(180deg, rgba(17,15,28,0.6) 0%, rgba(7,6,14,0.9) 100%)' }} />
+      <section id="pipeline" className="relative border-t border-blue-100/60 dark:border-blue-900/40 bg-white/70 dark:bg-[var(--bg-surface)] py-24 scroll-mt-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 text-xs font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 rounded-full px-3 py-1 mb-4">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-full px-3 py-1 mb-4">
               <Cpu size={11} />
               How It Works
             </div>
@@ -501,7 +499,7 @@ export default function LandingPage() {
                   <span className={`text-[9px] font-black tracking-widest ${color}`}>{step} / {label}</span>
                 </div>
                 {/* Left accent on hover */}
-                <div className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full bg-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                <div className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}>
                   <Icon size={16} className={color} />
                 </div>
@@ -516,7 +514,7 @@ export default function LandingPage() {
       {/* ══ Core Capabilities ══════════════════════════════════════════════════ */}
       <section id="capabilities" className="max-w-7xl mx-auto px-4 sm:px-6 py-24 scroll-mt-14">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 rounded-full px-3 py-1 mb-4">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-full px-3 py-1 mb-4">
             <Star size={11} />
             Capabilities
           </div>
@@ -534,12 +532,12 @@ export default function LandingPage() {
       </section>
 
       {/* ══ Company Readiness ══════════════════════════════════════════════════ */}
-      <section className="border-t border-violet-100/50 dark:border-violet-900/40 py-24 relative overflow-hidden">
+      <section className="border-t border-blue-100/50 dark:border-violet-900/40 py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.05), transparent)' }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 text-xs font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 rounded-full px-3 py-1 mb-4">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-full px-3 py-1 mb-4">
               <Building2 size={11} />
               Company Fit
             </div>
@@ -568,7 +566,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Link to="/company" className="inline-flex items-center gap-2 text-sm text-violet-600 dark:text-violet-400 font-semibold hover:text-violet-700 dark:hover:text-violet-300 group">
+            <Link to="/company" className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-semibold hover:text-violet-700 dark:hover:text-violet-300 group">
               Try company fit analysis <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -599,7 +597,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap gap-3 justify-center items-center">
               <Link to="/analyze"
-                className="inline-flex items-center gap-2 px-7 py-3 bg-white text-violet-700 text-sm font-bold rounded-xl hover:bg-violet-50 transition-all shadow-xl hover:-translate-y-0.5">
+                className="inline-flex items-center gap-2 px-7 py-3 bg-white text-violet-700 text-sm font-bold rounded-xl hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5">
                 <Upload size={15} />
                 Analyze My Resume
               </Link>
@@ -627,9 +625,9 @@ export default function LandingPage() {
             © {new Date().getFullYear()} DevResume. Engineered for Devs.
           </p>
           <div className="flex items-center gap-5 text-xs text-gray-400 dark:text-gray-500">
-            <a href="#" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">GitHub</a>
-            <a href="#" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">Terms</a>
+            <a href="#" className="hover:text-blue-600 dark:hover:text-violet-400 transition-colors">GitHub</a>
+            <a href="#" className="hover:text-blue-600 dark:hover:text-violet-400 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-blue-600 dark:hover:text-violet-400 transition-colors">Terms</a>
           </div>
         </div>
       </footer>
