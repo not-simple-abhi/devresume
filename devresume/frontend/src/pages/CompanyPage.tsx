@@ -25,11 +25,11 @@ function CompanyCard({ result, rank }: { result: CompanyAnalysis; rank: number }
   return (
     <Card
       hover
-      className={cn('relative', isBest && 'border-violet-300 dark:border-violet-700 ring-1 ring-violet-200 dark:ring-violet-800')}
+      className={cn('relative', isBest && 'border-blue-300 dark:border-blue-700 ring-1 ring-blue-200 dark:ring-blue-800')}
     >
       {isBest && (
         <div className="absolute top-3 right-3">
-          <Badge variant="violet" size="sm">Best Match</Badge>
+          <Badge variant="primary" size="sm">Best Match</Badge>
         </div>
       )}
 
@@ -129,8 +129,8 @@ export default function CompanyPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center">
-          <Building2 size={18} className="text-violet-600 dark:text-violet-400" />
+        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 flex items-center justify-center">
+          <Building2 size={18} className="text-blue-600 dark:text-blue-400" />
         </div>
         <div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">Company Fit Analysis</h1>
@@ -150,16 +150,16 @@ export default function CompanyPage() {
               className={cn(
                 'border-2 border-dashed rounded-xl m-4 p-8 text-center cursor-pointer transition-all',
                 isDragActive
-                  ? 'border-violet-400 bg-violet-50 dark:bg-violet-950/40'
+                  ? 'border-blue-400 bg-blue-50 dark:bg-blue-950/40'
                   : file
-                  ? 'border-violet-300 dark:border-violet-700 bg-violet-50/40 dark:bg-violet-950/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+                  ? 'border-blue-300 dark:border-blue-700 bg-blue-50/40 dark:bg-blue-950/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-800'
               )}
             >
               <input {...getInputProps()} />
               {file ? (
                 <div className="flex flex-col items-center gap-2">
-                  <CheckCircle2 size={22} className="text-violet-500 dark:text-violet-400" />
+                  <CheckCircle2 size={22} className="text-blue-500 dark:text-blue-400" />
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-full">{file.name}</p>
                   <p className="text-xs text-gray-400 dark:text-gray-500">{(file.size / 1024).toFixed(0)} KB</p>
                 </div>
@@ -201,10 +201,10 @@ export default function CompanyPage() {
                     className={cn(
                       'text-xs px-3 py-1.5 rounded-lg border font-medium transition-all',
                       isSelected
-                        ? 'bg-violet-600 text-white border-violet-600 dark:bg-violet-700 dark:border-violet-700'
+                        ? 'bg-blue-600 text-white border-blue-600 dark:bg-blue-700 dark:border-blue-700'
                         : isDisabled
                         ? 'border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                        : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-violet-300 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400'
+                        : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400'
                     )}
                   >
                     {c}
@@ -241,7 +241,7 @@ export default function CompanyPage() {
         <div>
           {analyzeMutation.isPending && (
             <div className="flex flex-col items-center justify-center h-full py-20 gap-3">
-              <div className="w-10 h-10 border-2 border-violet-200 dark:border-violet-800 border-t-violet-600 dark:border-t-violet-400 rounded-full animate-spin" />
+              <div className="w-10 h-10 border-2 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Analyzing your resume against {selected.length} compan{selected.length === 1 ? 'y' : 'ies'}…
               </p>
@@ -257,7 +257,7 @@ export default function CompanyPage() {
           {!analyzeMutation.isPending && results.length > 0 && (
             <div className="space-y-4 animate-fade-in">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp size={14} className="text-violet-500 dark:text-violet-400" />
+                <TrendingUp size={14} className="text-blue-500 dark:text-blue-400" />
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Results for {results.length} compan{results.length === 1 ? 'y' : 'ies'}, sorted by readiness
                 </p>

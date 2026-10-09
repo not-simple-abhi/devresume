@@ -18,7 +18,7 @@ const inputBase =
   'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ' +
   'placeholder:text-gray-400 dark:placeholder:text-gray-500'
 
-const inputNormal = `${inputBase} border-gray-200 dark:border-gray-700 focus:border-violet-400 dark:focus:border-violet-500`
+const inputNormal = `${inputBase} border-gray-200 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-500`
 const inputError  = `${inputBase} border-red-300 dark:border-red-700 focus:border-red-400 bg-red-50 dark:bg-red-950/40`
 
 export default function LoginPage() {
@@ -67,7 +67,7 @@ export default function LoginPage() {
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Password</label>
-            <a href="#" className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300">
+            <a href="#" className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
               Forgot password?
             </a>
           </div>
@@ -95,7 +95,7 @@ export default function LoginPage() {
 
       <p className="mt-5 text-center text-xs text-gray-500 dark:text-gray-400">
         Don't have an account?{' '}
-        <Link to="/signup" className="text-violet-600 dark:text-violet-400 font-medium hover:text-violet-700 dark:hover:text-violet-300">
+        <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300">
           Sign up free
         </Link>
       </p>

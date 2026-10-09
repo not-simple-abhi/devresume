@@ -39,8 +39,8 @@ function CompareResultView({ result }: { result: CompareResult }) {
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Recommendation */}
-      <div className="bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 rounded-xl p-4 text-center">
-        <p className="text-sm font-semibold text-violet-800 dark:text-violet-300">{result.recommendation}</p>
+      <div className="bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-center">
+        <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{result.recommendation}</p>
       </div>
 
       {/* Side-by-side score cards */}
@@ -50,10 +50,10 @@ function CompareResultView({ result }: { result: CompareResult }) {
           return (
             <Card
               key={r.id}
-              className={cn(isWinner && 'border-violet-300 dark:border-violet-700 ring-1 ring-violet-200 dark:ring-violet-800')}
+              className={cn(isWinner && 'border-blue-300 dark:border-blue-700 ring-1 ring-blue-200 dark:ring-blue-800')}
             >
               {isWinner && (
-                <div className="text-[9px] font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400 mb-2">
+                <div className="text-[9px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">
                   ✦ Stronger version
                 </div>
               )}
@@ -111,8 +111,8 @@ function CompareResultView({ result }: { result: CompareResult }) {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <ProgressBar value={v1} max={100} color="#7c3aed" height="sm" />
-                    <ProgressBar value={v2} max={100} color="#8b5cf6" height="sm" />
+                    <ProgressBar value={v1} max={100} color="#2563eb" height="sm" />
+                    <ProgressBar value={v2} max={100} color="#3b82f6" height="sm" />
                   </div>
                 </div>
               )
@@ -140,7 +140,7 @@ export default function ComparePage() {
   const selectClass =
     'w-full px-3 py-2 text-sm border rounded-lg outline-none transition-colors ' +
     'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ' +
-    'border-gray-200 dark:border-gray-700 focus:border-violet-400 dark:focus:border-violet-500'
+    'border-gray-200 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-500'
 
   if (!isLoading && reviews.length < 2) {
     return (
@@ -162,8 +162,8 @@ export default function ComparePage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-100 dark:border-violet-800 flex items-center justify-center">
-          <GitCompare size={18} className="text-violet-600 dark:text-violet-400" />
+        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 flex items-center justify-center">
+          <GitCompare size={18} className="text-blue-600 dark:text-blue-400" />
         </div>
         <div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">Compare Resumes</h1>

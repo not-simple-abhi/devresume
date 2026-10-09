@@ -49,7 +49,7 @@ function AnalysisProgress({ step }: { step: number }) {
       {/* Progress bar */}
       <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden mb-5">
         <div className="h-full rounded-full transition-all duration-700 relative overflow-hidden"
-          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #7c3aed, #a855f7)' }}>
+          style={{ width: `${progress}%`, backgroundColor: '#2563eb' }}>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
         </div>
       </div>

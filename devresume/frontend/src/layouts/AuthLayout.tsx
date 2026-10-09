@@ -6,7 +6,7 @@ export default function AuthLayout() {
     <div className="min-h-screen page-bg flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2 mb-8">
-        <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
           <Sparkles size={16} className="text-white" />
         </div>
         <span className="text-lg font-semibold text-gray-900 dark:text-white">DevResume</span>

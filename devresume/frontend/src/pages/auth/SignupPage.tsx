@@ -23,7 +23,7 @@ const inputBase =
   'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ' +
   'placeholder:text-gray-400 dark:placeholder:text-gray-500'
 
-const inputNormal = `${inputBase} border-gray-200 dark:border-gray-700 focus:border-violet-400 dark:focus:border-violet-500`
+const inputNormal = `${inputBase} border-gray-200 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-500`
 const inputError  = `${inputBase} border-red-300 dark:border-red-700 focus:border-red-400 bg-red-50 dark:bg-red-950/40`
 
 export default function SignupPage() {
@@ -93,7 +93,7 @@ export default function SignupPage() {
 
       <p className="mt-5 text-center text-xs text-gray-500 dark:text-gray-400">
         Already have an account?{' '}
-        <Link to="/login" className="text-violet-600 dark:text-violet-400 font-medium hover:text-violet-700 dark:hover:text-violet-300">
+        <Link to="/login" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300">
           Sign in
         </Link>
       </p>

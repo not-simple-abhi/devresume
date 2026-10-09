@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-type BadgeVariant = 'default' | 'violet' | 'green' | 'red' | 'amber' | 'gray' | 'outline'
+type BadgeVariant = 'default' | 'primary' | 'green' | 'red' | 'amber' | 'gray' | 'outline'
 
 interface BadgeProps {
   children: React.ReactNode
@@ -13,7 +13,7 @@ const variantMap: Record<BadgeVariant, string> = {
   default:
     'bg-blue-50 text-blue-700 border border-blue-200 ' +
     'dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700/60',
-  violet:
+  primary:
     'bg-blue-600 text-white dark:bg-blue-700',
   green:
     'bg-emerald-50 text-emerald-700 border border-emerald-200 ' +

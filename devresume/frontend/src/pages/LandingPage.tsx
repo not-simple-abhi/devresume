@@ -86,11 +86,11 @@ function ScoreArc({ score }: { score: number }) {
         style={{ transition: 'stroke-dashoffset 1.4s cubic-bezier(0.16,1,0.3,1)' }} />
       <defs>
         <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#7c3aed" />
-          <stop offset="100%" stopColor="#a855f7" />
+          <stop offset="0%" stopColor="#2563eb" />
+          <stop offset="100%" stopColor="#3b82f6" />
         </linearGradient>
       </defs>
-      <circle cx="76" cy="42" r="3" fill="#a855f7" />
+      <circle cx="76" cy="42" r="3" fill="#3b82f6" />
     </svg>
   )
 }
@@ -153,7 +153,7 @@ function HeroMockup() {
       {/* App sub-header */}
       <div className="flex items-center justify-between px-4 py-1.5 border-b border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-transparent shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
+          <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ backgroundColor: "#2563eb" }}>
             <Sparkles size={10} className="text-white" />
           </div>
           <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300">DevResume</span>
@@ -177,7 +177,7 @@ function HeroMockup() {
         <div style={{ width: 148 }} className="shrink-0 border-r border-gray-100 dark:border-gray-800 px-4 py-3 flex flex-col overflow-hidden bg-white dark:bg-transparent">
           <p className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase">Resume Score</p>
           <div className="flex justify-center mb-0.5"><ScoreArc score={score} /></div>
-          <p className="text-center text-xl font-bold font-mono-data gradient-text-violet" style={{ marginTop: -2 }}>{score}/100</p>
+          <p className="text-center text-xl font-bold font-mono-data text-blue-600 dark:text-blue-400" style={{ marginTop: -2 }}>{score}/100</p>
           <p className="text-center text-[9px] text-gray-400 mb-3">24 Issues Found</p>
 
           <div className="space-y-1.5 overflow-hidden">
@@ -292,11 +292,11 @@ function CapabilityCard({ icon: Icon, title, desc, cta, featured, badge }: (type
   if (featured) {
     return (
       <div className="row-span-2 relative rounded-2xl p-6 flex flex-col text-white overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #6d28d9 0%, #4f46e5 100%)' }}>
+        style={{ backgroundColor: "#1d4ed8" }}>
         <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-20 -translate-y-12 translate-x-12"
-          style={{ background: 'radial-gradient(circle, #a78bfa, transparent)' }} />
+          style={{ background: 'radial-gradient(circle, #93c5fd, transparent)' }} />
         <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full opacity-15 translate-y-8 -translate-x-8"
-          style={{ background: 'radial-gradient(circle, #818cf8, transparent)' }} />
+          style={{ background: 'radial-gradient(circle, #93c5fd, transparent)' }} />
         {badge && (
           <span className="self-end text-[9px] px-2.5 py-1 bg-white/15 backdrop-blur text-white rounded-full mb-4 font-bold tracking-wider relative z-10">⬡ {badge}</span>
         )}
@@ -331,7 +331,7 @@ function CapabilityCard({ icon: Icon, title, desc, cta, featured, badge }: (type
       <h3 className="font-bold text-sm text-gray-900 dark:text-gray-100 mb-1.5">{title}</h3>
       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</p>
       {cta && (
-        <button className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-semibold hover:text-violet-700 dark:hover:text-violet-300 flex items-center gap-1 group/btn">
+        <button className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 group/btn">
           {cta} <ArrowRight size={11} className="group-hover/btn:translate-x-0.5 transition-transform" />
         </button>
       )}
@@ -406,8 +406,8 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100/80 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 rounded-full px-3.5 py-1.5 mb-6 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-glow-pulse" />
               AI Resume Intelligence Platform
-              <span className="text-violet-400 dark:text-blue-500">·</span>
-              <span className="text-blue-500 dark:text-violet-400 font-bold">New</span>
+              <span className="text-blue-400 dark:text-blue-500">·</span>
+              <span className="text-blue-500 dark:text-blue-400 font-bold">New</span>
             </div>
           </div>
 
@@ -417,7 +417,7 @@ export default function LandingPage() {
               Your Resume,<br />
               <span className="relative">
                 Analyzed Like{' '}
-                <span className="gradient-text-animated pb-1">an Engineer</span>
+                <span className="text-blue-600 dark:text-blue-400 pb-1">an Engineer</span>
               </span>
             </h1>
           </div>
@@ -435,8 +435,7 @@ export default function LandingPage() {
               <div className="relative inline-flex">
                 {isIdle && <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse-ring pointer-events-none" />}
                 <Link to="/analyze"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-semibold rounded-xl transition-all shadow-lg"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 8px 24px rgba(29,78,216,0.35)' }}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all shadow-lg"
                   onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-1px)')}
                   onMouseLeave={e => (e.currentTarget.style.transform = '')}
                 >
@@ -486,7 +485,7 @@ export default function LandingPage() {
 
           {/* Connector line (desktop) */}
           <div className="hidden lg:block relative mb-0">
-            <div className="absolute top-[28px] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-violet-200 via-violet-400 to-violet-200 dark:from-violet-900 dark:via-violet-600 dark:to-violet-900 z-0" />
+            <div className="absolute top-[28px] left-[12.5%] right-[12.5%] h-px bg-blue-200 dark:bg-blue-800 z-0" />
           </div>
 
           <div ref={pipelineRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
@@ -532,9 +531,9 @@ export default function LandingPage() {
       </section>
 
       {/* ══ Company Readiness ══════════════════════════════════════════════════ */}
-      <section className="border-t border-blue-100/50 dark:border-violet-900/40 py-24 relative overflow-hidden">
+      <section className="border-t border-blue-100/50 dark:border-blue-900/40 py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.05), transparent)' }} />
+          style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59,130,246,0.05), transparent)' }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-full px-3 py-1 mb-4">
@@ -566,7 +565,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Link to="/company" className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-semibold hover:text-violet-700 dark:hover:text-violet-300 group">
+            <Link to="/company" className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 group">
               Try company fit analysis <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -576,12 +575,12 @@ export default function LandingPage() {
       {/* ══ Final CTA ══════════════════════════════════════════════════════════ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
         <div className="relative rounded-3xl p-10 sm:p-16 text-center overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #5b21b6 0%, #4f46e5 50%, #6d28d9 100%)' }}>
+          style={{ backgroundColor: "#1d4ed8" }}>
           {/* Background orbs */}
           <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full blur-3xl opacity-30 -translate-y-1/2"
-            style={{ background: 'radial-gradient(circle, #a78bfa, transparent)' }} />
+            style={{ background: 'radial-gradient(circle, #93c5fd, transparent)' }} />
           <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full blur-3xl opacity-25 translate-y-1/2"
-            style={{ background: 'radial-gradient(circle, #818cf8, transparent)' }} />
+            style={{ background: 'radial-gradient(circle, #93c5fd, transparent)' }} />
           {/* Grid overlay */}
           <div className="absolute inset-0 opacity-[0.04]"
             style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
@@ -597,7 +596,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap gap-3 justify-center items-center">
               <Link to="/analyze"
-                className="inline-flex items-center gap-2 px-7 py-3 bg-white text-violet-700 text-sm font-bold rounded-xl hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5">
+                className="inline-flex items-center gap-2 px-7 py-3 bg-white text-blue-700 text-sm font-bold rounded-xl hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5">
                 <Upload size={15} />
                 Analyze My Resume
               </Link>
@@ -616,7 +615,7 @@ export default function LandingPage() {
       <footer className="border-t border-gray-100 dark:border-gray-800 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#2563eb" }}>
               <Sparkles size={11} className="text-white" />
             </div>
             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">DevResume</span>
@@ -625,9 +624,9 @@ export default function LandingPage() {
             © {new Date().getFullYear()} DevResume. Engineered for Devs.
           </p>
           <div className="flex items-center gap-5 text-xs text-gray-400 dark:text-gray-500">
-            <a href="#" className="hover:text-blue-600 dark:hover:text-violet-400 transition-colors">GitHub</a>
-            <a href="#" className="hover:text-blue-600 dark:hover:text-violet-400 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-blue-600 dark:hover:text-violet-400 transition-colors">Terms</a>
+            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">GitHub</a>
+            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms</a>
           </div>
         </div>
       </footer>

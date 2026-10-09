@@ -20,7 +20,7 @@ export default function ProgressBar({
   const pct = Math.min(100, Math.round((value / max) * 100))
 
   const barColor =
-    color ?? (pct >= 70 ? '#7c3aed' : pct >= 50 ? '#f59e0b' : '#ef4444')
+    color ?? (pct >= 70 ? '#2563eb' : pct >= 50 ? '#f59e0b' : '#ef4444')
 
   return (
     <div
