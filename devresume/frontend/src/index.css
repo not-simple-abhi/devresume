@@ -6,7 +6,7 @@
 @layer base {
   /* ── Light theme tokens ──────────────────────────────────────────────── */
   :root {
-    --bg-base:       #f0f4ff;
+    --bg-base:       #ffffff;
     --bg-surface:    #ffffff;
     --bg-sidebar:    #ffffff;
     --border:        rgba(37, 99, 235, 0.15);
@@ -76,18 +76,18 @@
 
   /* ── light ── */
   .landing-bg {
-    background-color: #eff6ff;
+    background-color: #ffffff;
     background-image:
       /* vertical lines */
       linear-gradient(to right, rgba(59,130,246,0.04) 1px, transparent 1px),
       /* horizontal lines */
       linear-gradient(to bottom, rgba(59,130,246,0.04) 1px, transparent 1px),
       /* top-left violet glow */
-      radial-gradient(ellipse 65% 55% at 8% 0%,  rgba(96,165,250,0.30) 0%, transparent 65%),
+      radial-gradient(ellipse 65% 55% at 8% 0%,  rgba(96,165,250,0.08) 0%, transparent 65%),
       /* top-right accent glow */
-      radial-gradient(ellipse 50% 40% at 92% 4%, rgba(37,99,235,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 92% 4%, rgba(37,99,235,0.05) 0%, transparent 60%),
       /* center-bottom warmth */
-      radial-gradient(ellipse 80% 40% at 50% 100%, rgba(186,230,253,0.12) 0%, transparent 70%);
+      radial-gradient(ellipse 80% 40% at 50% 100%, rgba(186,230,253,0.05) 0%, transparent 70%);
     background-size:
       40px 40px,
       40px 40px,
@@ -120,11 +120,11 @@
 
   /* ── light ── */
   .page-bg {
-    background-color: #eef2ff;
+    background-color: #ffffff;
     background-image:
       linear-gradient(to right,  rgba(59,130,246,0.05) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(59,130,246,0.05) 1px, transparent 1px),
-      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(96,165,250,0.18) 0%, transparent 60%);
+      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(96,165,250,0.06) 0%, transparent 60%);
     background-size:
       32px 32px,
       32px 32px,
